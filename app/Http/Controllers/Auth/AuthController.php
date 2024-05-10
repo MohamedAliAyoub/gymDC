@@ -62,4 +62,24 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully'], 201);
     }
 
+
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  Request  $request
+     * @return JsonResponse
+     */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        // Validate the incoming request data
+        $request->validate(['email' => 'required|email']);
+
+        // Send the password reset link
+        $status = Password::sendResetLink($request->only('email'));
+
+        // Check the response and return a success or error message
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['error' => __($status)], 400);
+    }
 }
