@@ -13,11 +13,28 @@ use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
+
     /**
-     * Handle an authentication attempt.
-     *
-     * @param  Request  $request
-     * @return JsonResponse
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Authenticate user and generate JWT token",
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="User's email",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="password",
+     *         in="query",
+     *         description="User's password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="Login successful"),
+     *     @OA\Response(response="401", description="Invalid credentials")
+     * )
      */
     public function login(Request $request): JsonResponse
     {
@@ -36,12 +53,34 @@ class AuthController extends Controller
         // Authentication failed, return an error response
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
-
     /**
-     * Register a new user.
-     *
-     * @param  Request  $request
-     * @return JsonResponse
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="User's name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="User's email",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="password",
+     *         in="query",
+     *         description="User's password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="201", description="User registered successfully"),
+     *     @OA\Response(response="422", description="Validation errors")
+     * )
      */
     public function register(Request $request): JsonResponse
     {
@@ -66,11 +105,21 @@ class AuthController extends Controller
 
 
     /**
-     * Send a reset link to the given user.
-     *
-     * @param  Request  $request
-     * @return JsonResponse
+     * @OA\Post(
+     *     path="/forgot-password",
+     *     summary="Send a password reset link to the user's email",
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="User's email",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Password reset link sent successfully"),
+     *     @OA\Response(response=400, description="Invalid email")
+     * )
      */
+
     public function forgotPassword(Request $request): JsonResponse
     {
         // Validate the incoming request data
@@ -84,12 +133,23 @@ class AuthController extends Controller
             ? response()->json(['message' => __($status)], 200)
             : response()->json(['error' => __($status)], 400);
     }
+
     /**
-     * Reset the user's password.
-     *
-     * @param  Request  $request
-     * @return JsonResponse
+     * @OA\Post(
+     *     path="/reset-password",
+     *     summary="Reset the user's password",
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="User's email",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Password reset successfully"),
+     *     @OA\Response(response=400, description="Invalid request or token")
+     * )
      */
+
     public function resetPassword(Request $request): JsonResponse
     {
         // Validate the incoming request data
