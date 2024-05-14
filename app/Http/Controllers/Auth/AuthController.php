@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Auth\AuthResource;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
@@ -36,23 +37,40 @@ class AuthController extends Controller
      *     @OA\Response(response="401", description="Invalid credentials")
      * )
      */
-    public function login(Request $request): JsonResponse
+    public function login(Request $request)
     {
-        // Validate the incoming request data
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|string|email',
+            'password' => 'required|string',
         ]);
 
+        $credentials = $request->only('email', 'password');
+
         // Attempt to authenticate the user
-        if (Auth::attempt($request->only('email', 'password'))) {
-            // Authentication passed, return a success response
-            return response()->json(['message' => 'Successfully logged in', 'user' => auth()->user()], 200);
+        if (!Auth::guard('api')->attempt($credentials)) {
+            // If authentication fails, return error response
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid credentials',
+            ], 401);
         }
 
-        // Authentication failed, return an error response
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        // Authentication successful, generate JWT token
+        $token = Auth::guard('api')->attempt($credentials);
+
+        // Get the authenticated user
+        $user = Auth::guard('api')->user();
+
+        // Return success response with token and user data
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Login successful',
+            'user' => AuthResource::make($user),
+            'token' => $token,
+
+        ]);
     }
+
     /**
      * @OA\Post(
      *     path="/api/register",
@@ -99,8 +117,17 @@ class AuthController extends Controller
         ]);
         $user->save();
 
+
+        // Generate JWT token for the newly registered user
+        $token = Auth::guard('api')->login($user);
+
+
         // Return a success response
-        return response()->json(['message' => 'User registered successfully'], 201);
+        return response()->json([
+            'message' => 'User registered successfully',
+            'data' => AuthResource::make($user),
+            'token' => $token
+        ], 201);
     }
 
 
@@ -123,7 +150,7 @@ class AuthController extends Controller
     public function forgotPassword(Request $request): JsonResponse
     {
         // Validate the incoming request data
-        $request->validate(['email' => 'required|email']);
+        $request->validate(['email' => 'required|email|exists:users']);
 
         // Send the password reset link
         $status = Password::sendResetLink($request->only('email'));
@@ -133,6 +160,7 @@ class AuthController extends Controller
             ? response()->json(['message' => __($status)], 200)
             : response()->json(['error' => __($status)], 400);
     }
+
 
     /**
      * @OA\Post(
@@ -173,8 +201,6 @@ class AuthController extends Controller
             ? response()->json(['message' => __($status)], 200)
             : response()->json(['error' => __($status)], 400);
     }
-
-
 
 
 }
