@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\GoogleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +22,8 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 
-Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

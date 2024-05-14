@@ -9,32 +9,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Laravel\Socialite\Facades\Socialite;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\JsonResponse;
 
 
 class GoogleController extends Controller
 {
 
-    /**
-     * Redirect the user to the Google authentication page.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @OA\Get(
-     *     path="/auth/google",
-     *     summary="Redirect to Google authentication",
-     *     tags={"Authentication"},
-     *     @OA\Response(response=302, description="Redirect to Google authentication page")
-     * )
-     */
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')->redirect();
-    }
 
     /**
      * Handle the Google callback after authentication.
      *
-     * @return RedirectResponse
+     * @return JsonResponse
      *
      * @OA\Get(
      *     path="/auth/google/callback",
@@ -43,28 +29,26 @@ class GoogleController extends Controller
      *     @OA\Response(response=302, description="Redirect after successful Google authentication")
      * )
      */
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(): JsonResponse
     {
-        try {
-            $user = Socialite::driver('google')->user();
-            $finduser = User::where('google_id', $user->id)->first();
-            if ($finduser) {
-                Auth::login($finduser);
-                return redirect()->intended('/dashboard');
-            } else {
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'google_id' => $user->id
-                ]);
-                Auth::login($newUser);
-                return redirect()->intended('/home');
-            }
+    try {
+        $user = Socialite::driver('google')->user();
+        $finduser = User::where('google_id', $user->id)->first();
+        if ($finduser) {
+            $token = $finduser->createToken('authToken')->plainTextToken;
+            return response()->json(['user' => $finduser, 'token' => $token]);
+        } else {
+            $newUser = User::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'google_id' => $user->id
+            ]);
+            $token = $newUser->createToken('authToken')->plainTextToken;
+            return response()->json(['user' => $newUser, 'token' => $token]);
         }
-        catch
-            (Exception $e){
-                dd($e->getMessage());
-
-            }
     }
+    catch (Exception $e){
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
 }
