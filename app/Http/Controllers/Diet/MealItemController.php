@@ -1,0 +1,170 @@
+<?php
+
+namespace App\Http\Controllers\Diet;
+
+use App\Http\Controllers\Controller;
+use App\Models\Diet\MealItem;
+use Illuminate\Http\Request;
+
+class MealItemController extends Controller
+{
+    /**
+     * @OA\Get(
+     *     path="/api/diet/mealitem",
+     *     summary="Retrieve all meal items",
+     *     @OA\Response(response="200", description="Meal items retrieved successfully")
+     * )
+     */
+    public function index()
+    {
+        $mealItems = MealItem::query()->paginate(15);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal items retrieved successfully',
+            'mealItems' => $mealItems,
+        ]);
+    }
+    /**
+     * @OA\Post(
+     *     path="/api/diet/mealitem",
+     *     summary="Create a new meal item",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Meal item's name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="meal_id",
+     *         in="query",
+     *         description="Meal id",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="item_id",
+     *         in="query",
+     *         description="Item id",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Meal item's status",
+     *         required=true,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(response="200", description="Meal item created successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function create(Request $request)
+    {
+        $request->validate([
+            'name' => 'nullable|string',
+            'meal_id' => 'required|integer',
+            'item_id' => 'required|integer',
+            'status' => 'required|boolean',
+        ]);
+
+        $mealItem = MealItem::create($request->all());
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal item created successfully',
+            'mealItem' => $mealItem,
+        ]);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/diet/mealitem/{mealItem}",
+     *     summary="Update an existing meal item",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Meal item's name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="meal_id",
+     *         in="query",
+     *         description="Meal id",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="item_id",
+     *         in="query",
+     *         description="Item id",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Meal item's status",
+     *         required=true,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(response="200", description="Meal item updated successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function update(Request $request, MealItem $mealItem)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'meal_id' => 'required|integer',
+            'item_id' => 'required|integer',
+            'status' => 'required|boolean',
+        ]);
+
+        $mealItem->update($request->all());
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal item updated successfully',
+            'mealItem' => $mealItem,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/diet/mealitem/{mealItem}",
+     *     summary="Retrieve a meal item",
+     *     @OA\Response(response="200", description="Meal item retrieved successfully"),
+     *     @OA\Response(response="404", description="Meal item not found")
+     * )
+     */
+    public function show(MealItem $mealItem)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal item retrieved successfully',
+            'mealItem' => $mealItem,
+        ]);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/diet/mealitem/{mealItem}",
+     *     summary="Delete a meal item",
+     *     @OA\Response(response="200", description="Meal item deleted successfully"),
+     *     @OA\Response(response="404", description="Meal item not found")
+     * )
+     */
+    public function delete(MealItem $mealItem)
+    {
+        $mealItem->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal item deleted successfully',
+        ]);
+    }
+}
