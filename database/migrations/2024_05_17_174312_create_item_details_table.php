@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('item_details', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->string("name")->nullable();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
             $table->boolean("status")->default(true);
             $table->timestamps();
