@@ -102,8 +102,16 @@ class PlanMealController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, PlanMeal $planMeal)
+    public function update(Request $request, $id)
     {
+        try {
+            $planMeal = PlanMeal::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Plan meal not found',
+            ], 404);
+        }
         $request->validate([
             'plan_id' => 'required|integer|exists:plans,id',
             'meal_id' => 'required|integer|exists:meals,id',
@@ -127,8 +135,16 @@ class PlanMealController extends Controller
      *     @OA\Response(response="404", description="Plan meal not found")
      * )
      */
-    public function show(PlanMeal $planMeal)
+    public function show($id)
     {
+        try {
+            $planMeal = PlanMeal::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Plan meal not found',
+            ], 404);
+        }
         $planMeal->load(['meal', 'plan']);
         return response()->json([
             'status' => 'success',
@@ -145,8 +161,16 @@ class PlanMealController extends Controller
      *     @OA\Response(response="404", description="Plan meal not found")
      * )
      */
-    public function delete(PlanMeal $planMeal)
+    public function delete($id)
     {
+        try {
+            $planMeal = PlanMeal::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Plan meal not found',
+            ], 404);
+        }
         $planMeal->delete();
 
         return response()->json([

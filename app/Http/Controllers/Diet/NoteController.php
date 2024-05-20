@@ -147,8 +147,16 @@ class NoteController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, Note $note)
+    public function update(Request $request, $id)
     {
+        try {
+            $note = Note::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Note not found',
+            ], 404);
+        }
         $request->validate([
             'user_id' => 'nullable|integer',
             'title' => 'nullable|string',
@@ -175,8 +183,16 @@ class NoteController extends Controller
      *     @OA\Response(response="404", description="Note not found")
      * )
      */
-    public function show(Note $note)
+    public function show($id)
     {
+        try {
+            $note = Note::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Note not found',
+            ], 404);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Note retrieved successfully',
@@ -192,8 +208,16 @@ class NoteController extends Controller
      *     @OA\Response(response="404", description="Note not found")
      * )
      */
-    public function delete(Note $note)
+    public function delete($id)
     {
+        try {
+            $note = Note::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Note not found',
+            ], 404);
+        }
         $note->delete();
 
         return response()->json([

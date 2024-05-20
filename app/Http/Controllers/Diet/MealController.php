@@ -85,8 +85,16 @@ class MealController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, Meal $meal)
+    public function update(Request $request, $id)
     {
+        try {
+            $meal = Meal::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Meal not found',
+            ], 404);
+        }
         $request->validate([
             'name' => 'required|string',
             'status' => 'required|boolean',
@@ -109,8 +117,17 @@ class MealController extends Controller
      *     @OA\Response(response="404", description="Meal not found")
      * )
      */
-    public function show(Meal $meal)
+    public function show($id)
     {
+        try {
+            $meal = Meal::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Meal not found',
+            ], 404);
+        }
+
         return response()->json([
             'status' => 'success',
             'message' => 'Meal retrieved successfully',
@@ -126,8 +143,16 @@ class MealController extends Controller
      *     @OA\Response(response="404", description="Meal not found")
      * )
      */
-    public function delete(Meal $meal)
+    public function delete($id)
     {
+        try {
+            $meal = Meal::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Meal not found',
+            ], 404);
+        }
         $meal->delete();
 
         return response()->json([

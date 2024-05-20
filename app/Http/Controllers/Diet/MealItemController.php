@@ -115,8 +115,16 @@ class MealItemController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, MealItem $mealItem)
+    public function update(Request $request, $id)
     {
+        try {
+            $mealItem = MealItem::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Meal item not found',
+            ], 404);
+        }
         $request->validate([
             'name' => 'required|string',
             'meal_id' => 'required|integer',
@@ -141,8 +149,16 @@ class MealItemController extends Controller
      *     @OA\Response(response="404", description="Meal item not found")
      * )
      */
-    public function show(MealItem $mealItem)
+    public function show($id)
     {
+        try {
+            $mealItem = MealItem::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Meal item not found',
+            ], 404);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Meal item retrieved successfully',
@@ -158,8 +174,16 @@ class MealItemController extends Controller
      *     @OA\Response(response="404", description="Meal item not found")
      * )
      */
-    public function delete(MealItem $mealItem)
+    public function delete($id)
     {
+        try {
+            $mealItem = MealItem::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Meal item not found',
+            ], 404);
+        }
         $mealItem->delete();
 
         return response()->json([

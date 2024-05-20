@@ -103,8 +103,17 @@ class ItemDetailsController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, ItemDetails $itemDetails)
+    public function update(Request $request, $id)
     {
+        $itemDetails = ItemDetails::findOrFail($id);
+        try {
+            $itemDetails = ItemDetails::query()->findOrFail($itemDetails->id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item detail not found',
+            ], 404);
+        }
         $request->validate([
             'name' => 'required|string',
             'item_id' => 'required|integer|exists:items,id',
@@ -128,8 +137,16 @@ class ItemDetailsController extends Controller
      *     @OA\Response(response="404", description="Item detail not found")
      * )
      */
-    public function show(ItemDetails $itemDetails)
+    public function show($id)
     {
+        try {
+            $itemDetails = ItemDetails::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item detail not found',
+            ], 404);
+        }
         $itemDetails->load('item');
         return response()->json([
             'status' => 'success',
@@ -146,8 +163,16 @@ class ItemDetailsController extends Controller
      *     @OA\Response(response="404", description="Item detail not found")
      * )
      */
-    public function delete(ItemDetails $itemDetails)
+    public function delete($id)
     {
+        try {
+            $itemDetails = ItemDetails::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item detail not found',
+            ], 404);
+        }
         $itemDetails->delete();
 
         return response()->json([

@@ -101,8 +101,16 @@ class StandardTypeController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, StandardType $standardType)
+    public function update(Request $request, $id)
     {
+        try {
+            $standardType = StandardType::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Standard type not found',
+            ], 404);
+        }
         $request->validate([
             'name' => 'required|string',
             'standard_id' => 'required|integer',
@@ -126,8 +134,16 @@ class StandardTypeController extends Controller
      *     @OA\Response(response="404", description="Standard type not found")
      * )
      */
-    public function show(StandardType $standardType)
+    public function show($id)
     {
+        try {
+            $standardType = StandardType::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Standard type not found',
+            ], 404);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Standard type retrieved successfully',
@@ -143,8 +159,16 @@ class StandardTypeController extends Controller
      *     @OA\Response(response="404", description="Standard type not found")
      * )
      */
-    public function delete(StandardType $standardType)
+    public function delete($id)
     {
+        try {
+            $standardType = StandardType::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Standard type not found',
+            ], 404);
+        }
         $standardType->delete();
 
         return response()->json([

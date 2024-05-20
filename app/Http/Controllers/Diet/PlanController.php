@@ -90,8 +90,16 @@ class PlanController extends Controller
      * )
      */
 
-    public function update(Request $request, Plan $plan)
+    public function update(Request $request, $id)
     {
+        try {
+            $plan = Plan::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Plan not found',
+            ], 404);
+        }
         $request->validate([
             'name' => 'required|string',
             'status' => 'nullable|boolean',
@@ -114,8 +122,16 @@ class PlanController extends Controller
      *     @OA\Response(response="404", description="Plan not found")
      * )
      */
-    public function show(Plan $plan)
+    public function show($id)
     {
+        try {
+            $plan = Plan::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Plan not found',
+            ], 404);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Plan retrieved successfully',
@@ -133,15 +149,15 @@ class PlanController extends Controller
      */
     public function delete($id)
     {
-        $plan = Plan::find($id);
 
-        if (!$plan) {
+        try {
+            $plan = Plan::query()->findOrFail($id);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Plan not found',
             ], 404);
         }
-
         $plan->delete();
 
         return response()->json([

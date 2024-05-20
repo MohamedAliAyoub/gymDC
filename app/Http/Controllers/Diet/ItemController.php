@@ -85,8 +85,16 @@ class ItemController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request,$id)
     {
+        try {
+            $item = Item::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item not found',
+            ], 404);
+        }
         $request->validate([
             'name' => 'required|string',
             'status' => 'required|boolean',
@@ -109,8 +117,16 @@ class ItemController extends Controller
      *     @OA\Response(response="404", description="Item not found")
      * )
      */
-    public function show(Item $item)
+    public function show($id)
     {
+        try {
+            $item = Item::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item not found',
+            ], 404);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Item retrieved successfully',
@@ -126,8 +142,16 @@ class ItemController extends Controller
      *     @OA\Response(response="404", description="Item not found")
      * )
      */
-    public function delete(Item $item)
+    public function delete($id)
     {
+        try {
+            $item = Item::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item not found',
+            ], 404);
+        }
         $item->delete();
 
         return response()->json([

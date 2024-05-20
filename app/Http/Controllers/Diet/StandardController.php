@@ -161,8 +161,17 @@ class StandardController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function update(Request $request, Standard $standard)
+    public function update(Request $request, $id)
     {
+        try {
+            $standard = Standard::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Standard not found',
+            ], 404);
+        }
+
         $request->validate([
             'name' => 'required|string',
             'carbohydrate' => 'required|string',
@@ -190,8 +199,16 @@ class StandardController extends Controller
      *     @OA\Response(response="404", description="Standard not found")
      * )
      */
-    public function show(Standard $standard)
+    public function show($id)
     {
+        try {
+            $standard = Standard::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Standard not found',
+            ], 404);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Standard retrieved successfully',
@@ -207,8 +224,16 @@ class StandardController extends Controller
      *     @OA\Response(response="404", description="Standard not found")
      * )
      */
-    public function delete(Standard $standard)
+    public function delete($id)
     {
+        try {
+            $standard = Standard::query()->findOrFail($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Standard not found',
+            ], 404);
+        }
         $standard->delete();
 
         return response()->json([
