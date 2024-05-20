@@ -1,0 +1,1335 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Your API Title",
+        "description": "Your API Description",
+        "contact": {
+            "email": "contact@example.com"
+        },
+        "license": {
+            "name": "License Name",
+            "url": "http://www.example.com/license"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "summary": "Authenticate user and generate JWT token",
+                "operationId": "c373bc4cffa4a56fc64e3979b8ee7b96",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User's email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "User's password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "summary": "Register a new user",
+                "operationId": "ca7c0cb6772de9bffbb8c896980cebc8",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "User's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User's email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "User's password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "summary": "Send a password reset link to the user's email",
+                "operationId": "9e273ee835bbbe0d6ad487331f877940",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User's email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password reset link sent successfully"
+                    },
+                    "400": {
+                        "description": "Invalid email"
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "post": {
+                "summary": "Reset the user's password",
+                "operationId": "3c793085ef8a11bc3209c9bc94792715",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User's email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully"
+                    },
+                    "400": {
+                        "description": "Invalid request or token"
+                    }
+                }
+            }
+        },
+        "/auth/google": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Redirect to Google authentication",
+                "description": "Redirect the user to the Google authentication page.",
+                "operationId": "4c07530bd03259f1dd08c3d704de2a6e",
+                "responses": {
+                    "302": {
+                        "description": "Redirect to Google authentication page"
+                    }
+                }
+            }
+        },
+        "/auth/google/callback": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Handle Google callback after authentication",
+                "description": "Handle the Google callback after authentication.",
+                "operationId": "05a0176efcaf6002205345746ca0c3f4",
+                "responses": {
+                    "302": {
+                        "description": "Redirect after successful Google authentication"
+                    }
+                }
+            }
+        },
+        "/api/diet/item": {
+            "get": {
+                "summary": "Retrieve all items",
+                "operationId": "e475ed9f12d5673b592894173ea03327",
+                "responses": {
+                    "200": {
+                        "description": "Items retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new item",
+                "operationId": "ebcfd9a946fa7b7b266c04367badb439",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Item's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Item's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/item/{item}": {
+            "get": {
+                "summary": "Retrieve an item",
+                "operationId": "b9d4f67dab8948f8d2c26df41de9213d",
+                "responses": {
+                    "200": {
+                        "description": "Item retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing item",
+                "operationId": "75cc47b0e2a7b3677260d8febf23b75a",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Item's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Item's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete an item",
+                "operationId": "b8501fce6ec88f9b2001ea4d96fb5967",
+                "responses": {
+                    "200": {
+                        "description": "Item deleted successfully"
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/itemdetails": {
+            "get": {
+                "summary": "Retrieve all item details",
+                "operationId": "591e11df9bb83f9c3be1928fb584d571",
+                "responses": {
+                    "200": {
+                        "description": "Item details retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new item detail",
+                "operationId": "9eae26d66923b23648488d87a3b24a38",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Item detail's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "description": "Item id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Item detail's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item detail created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/itemdetails/{itemDetails}": {
+            "get": {
+                "summary": "Retrieve an item detail",
+                "operationId": "d14011f842921e971b2a5444eaeeb475",
+                "responses": {
+                    "200": {
+                        "description": "Item detail retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Item detail not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing item detail",
+                "operationId": "aa4e9fc97ce50045c74c4dcf71cb67aa",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Item detail's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "description": "Item id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Item detail's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item detail updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete an item detail",
+                "operationId": "c80be0e3736a059b21a24a56bd62b1e3",
+                "responses": {
+                    "200": {
+                        "description": "Item detail deleted successfully"
+                    },
+                    "404": {
+                        "description": "Item detail not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/meal": {
+            "get": {
+                "summary": "Retrieve all meals",
+                "operationId": "56ea2dbf8f6d62594a6339c05fcaac0f",
+                "responses": {
+                    "200": {
+                        "description": "Meals retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new meal",
+                "operationId": "4094025ace5ecf9ed3bb453328e9a75c",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Meal's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Meal's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/meal/{meal}": {
+            "get": {
+                "summary": "Retrieve a meal",
+                "operationId": "b4eb1cd0f9a7299c490a2b8a94955ba0",
+                "responses": {
+                    "200": {
+                        "description": "Meal retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Meal not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing meal",
+                "operationId": "9030c5ab6fda9865f43d8d250659cf44",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Meal's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Meal's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a meal",
+                "operationId": "a44721abde0bca494c319f11d0d742fd",
+                "responses": {
+                    "200": {
+                        "description": "Meal deleted successfully"
+                    },
+                    "404": {
+                        "description": "Meal not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/mealitem": {
+            "get": {
+                "summary": "Retrieve all meal items",
+                "operationId": "87fd3fd37317328bb77e5453095fe2d1",
+                "responses": {
+                    "200": {
+                        "description": "Meal items retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new meal item",
+                "operationId": "66baa892e8f972d878499208c155a267",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Meal item's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "description": "Item id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Meal item's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal item created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/mealitem/{mealItem}": {
+            "get": {
+                "summary": "Retrieve a meal item",
+                "operationId": "d7dd442ed62e9ebedab8f8c3c0a59504",
+                "responses": {
+                    "200": {
+                        "description": "Meal item retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Meal item not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing meal item",
+                "operationId": "b437369dc3c399018f2d83c40159f51f",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Meal item's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "description": "Item id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Meal item's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal item updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a meal item",
+                "operationId": "802504267fbaba9c17a9e607a755249d",
+                "responses": {
+                    "200": {
+                        "description": "Meal item deleted successfully"
+                    },
+                    "404": {
+                        "description": "Meal item not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/note": {
+            "get": {
+                "summary": "Retrieve all notes",
+                "operationId": "cf09abb161568b20c71f60f2690ed475",
+                "responses": {
+                    "200": {
+                        "description": "Notes retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new note",
+                "operationId": "71beb4e7e2d2e21bde5f5f758d2e5ba2",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Note's title",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "content",
+                        "in": "query",
+                        "description": "Note's content",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Note's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/note/{note}": {
+            "get": {
+                "summary": "Retrieve a note",
+                "operationId": "212fd6eb0f68c4e573b3823d5d7c53ad",
+                "responses": {
+                    "200": {
+                        "description": "Note retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Note not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing note",
+                "operationId": "6b6b30dae1f57ab03db7b8d91047b330",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Note's title",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "content",
+                        "in": "query",
+                        "description": "Note's content",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Note's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a note",
+                "operationId": "1a463c5fcb96e576bd836d6d483a0579",
+                "responses": {
+                    "200": {
+                        "description": "Note deleted successfully"
+                    },
+                    "404": {
+                        "description": "Note not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/plan": {
+            "get": {
+                "summary": "Retrieve all plans",
+                "operationId": "f02cb4b6702cddb539382c49397a9d8c",
+                "responses": {
+                    "200": {
+                        "description": "Plans retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new plan",
+                "operationId": "5365fcaff3d5ab04c374599246c70ad7",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Plan's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/plan/{plan}": {
+            "get": {
+                "summary": "Retrieve a plan",
+                "operationId": "11e127d0f90f966cc66e8dfd8c108333",
+                "responses": {
+                    "200": {
+                        "description": "Plan retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Plan not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing plan",
+                "operationId": "88b1ab6af59b61cd8b86aae31dd76668",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Plan's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a plan",
+                "operationId": "a8c44dbacfbea174551c1c321dbadb62",
+                "responses": {
+                    "200": {
+                        "description": "Plan deleted successfully"
+                    },
+                    "404": {
+                        "description": "Plan not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/planmeal": {
+            "get": {
+                "summary": "Retrieve all plan meals",
+                "operationId": "12da50e080ef6858f2fdc363f6324987",
+                "responses": {
+                    "200": {
+                        "description": "Plan meals retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new plan meal",
+                "operationId": "bc6ad1cfb6f20754e3338819b274bc2e",
+                "parameters": [
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan meal's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan meal created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/planmeal/{planMeal}": {
+            "get": {
+                "summary": "Retrieve a plan meal",
+                "operationId": "d2bb6503e9e74b049423d58a965c9e53",
+                "responses": {
+                    "200": {
+                        "description": "Plan meal retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Plan meal not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing plan meal",
+                "operationId": "fb9cb7f3b8b87441616e00ed84f82190",
+                "parameters": [
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan meal's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan meal updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a plan meal",
+                "operationId": "c1cd854e8d054036ba92a3d744d31c86",
+                "responses": {
+                    "200": {
+                        "description": "Plan meal deleted successfully"
+                    },
+                    "404": {
+                        "description": "Plan meal not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/standard": {
+            "get": {
+                "summary": "Retrieve all standards",
+                "operationId": "da25a14ab41a3fc0cbb0025562f96080",
+                "responses": {
+                    "200": {
+                        "description": "Standards retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new standard",
+                "operationId": "7465f97e8cdc44518208f39bec235f9f",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Standard's name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "carbohydrate",
+                        "in": "query",
+                        "description": "Standard's carbohydrate",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "protein",
+                        "in": "query",
+                        "description": "Standard's protein",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fat",
+                        "in": "query",
+                        "description": "Standard's fat",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "description": "Item id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "item_details_id",
+                        "in": "query",
+                        "description": "Item details id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Standard's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Standard created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/standard/{standard}": {
+            "get": {
+                "summary": "Retrieve a standard",
+                "operationId": "52091ef7cdae986b3c7f3ac7f8794d55",
+                "responses": {
+                    "200": {
+                        "description": "Standard retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Standard not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing standard",
+                "operationId": "194ffe39762a27a0186225f6171f02e9",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Standard's name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "carbohydrate",
+                        "in": "query",
+                        "description": "Standard's carbohydrate",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "protein",
+                        "in": "query",
+                        "description": "Standard's protein",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fat",
+                        "in": "query",
+                        "description": "Standard's fat",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "description": "Item id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "item_details_id",
+                        "in": "query",
+                        "description": "Item details id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Standard's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Standard updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a standard",
+                "operationId": "10ada21d13a54fb173f558c2a9fec33c",
+                "responses": {
+                    "200": {
+                        "description": "Standard deleted successfully"
+                    },
+                    "404": {
+                        "description": "Standard not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/standardtype": {
+            "get": {
+                "summary": "Retrieve all standard types",
+                "operationId": "9145051a93fe7346904c637cf097d0ec",
+                "responses": {
+                    "200": {
+                        "description": "Standard types retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new standard type",
+                "operationId": "4d3ae2e3ee5f62650841b3278109e929",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Standard type's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "standard_id",
+                        "in": "query",
+                        "description": "Standard id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Standard type's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Standard type created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/standardtype/{standardType}": {
+            "get": {
+                "summary": "Retrieve a standard type",
+                "operationId": "18ee8993532825afd50eca3a11041882",
+                "responses": {
+                    "200": {
+                        "description": "Standard type retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Standard type not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing standard type",
+                "operationId": "ca3cc1865f12ca447800378e959e3280",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Standard type's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "standard_id",
+                        "in": "query",
+                        "description": "Standard id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Standard type's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Standard type updated successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a standard type",
+                "operationId": "82a4a92afd55c3c85a2b9341cdf3b44c",
+                "responses": {
+                    "200": {
+                        "description": "Standard type deleted successfully"
+                    },
+                    "404": {
+                        "description": "Standard type not found"
+                    }
+                }
+            }
+        }
+    }
+}

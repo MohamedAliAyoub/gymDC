@@ -25,6 +25,7 @@ class NoteController extends Controller
             'notes' => $notes,
         ]);
     }
+
     /**
      * @OA\Post(
      *     path="/api/diet/note",
@@ -61,7 +62,7 @@ class NoteController extends Controller
      *         name="plan_id",
      *         in="query",
      *         description="Plan id",
-     *         required=false
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
@@ -75,6 +76,7 @@ class NoteController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
+
     public function create(Request $request)
     {
         $request->validate([
@@ -110,7 +112,7 @@ class NoteController extends Controller
      *         name="title",
      *         in="query",
      *         description="Note's title",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
@@ -131,14 +133,14 @@ class NoteController extends Controller
      *         name="plan_id",
      *         in="query",
      *         description="Plan id",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="meal_id",
      *         in="query",
      *         description="Meal id",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(response="200", description="Note updated successfully"),
@@ -148,12 +150,12 @@ class NoteController extends Controller
     public function update(Request $request, Note $note)
     {
         $request->validate([
-            'user_id' => 'required|integer',
-            'title' => 'required|string',
+            'user_id' => 'nullable|integer',
+            'title' => 'nullable|string',
             'content' => 'required|string',
             'status' => 'required|boolean',
-            'plan_id' => 'required|integer',
-            'meal_id' => 'required|integer',
+            'plan_id' => 'nullable|integer|exists:plans,id',
+            'meal_id' => 'nullable|integer|exists:meals,id',
         ]);
 
         $note->update($request->all());

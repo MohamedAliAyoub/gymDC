@@ -34,7 +34,7 @@ class StandardController extends Controller
      *         name="name",
      *         in="query",
      *         description="Standard's name",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
@@ -62,14 +62,14 @@ class StandardController extends Controller
      *         name="item_id",
      *         in="query",
      *         description="Item id",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="item_details_id",
      *         in="query",
      *         description="Item details id",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
@@ -86,12 +86,12 @@ class StandardController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'nullable|string',
             'carbohydrate' => 'required|string',
             'protein' => 'required|string',
             'fat' => 'required|string',
-            'item_id' => 'required|integer',
-            'item_details_id' => 'required|integer',
+            'item_id' => 'nullable|integer|exists:items,id',
+            'item_details_id' => 'nullable|integer|exists:item_details,id',
             'status' => 'required|boolean',
         ]);
 
@@ -112,7 +112,7 @@ class StandardController extends Controller
      *         name="name",
      *         in="query",
      *         description="Standard's name",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
@@ -140,14 +140,14 @@ class StandardController extends Controller
      *         name="item_id",
      *         in="query",
      *         description="Item id",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="item_details_id",
      *         in="query",
      *         description="Item details id",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(

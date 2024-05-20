@@ -11,9 +11,9 @@ class ItemDetailsController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/diet/item",
-     *     summary="Retrieve all items",
-     *     @OA\Response(response="200", description="Items retrieved successfully")
+     *     path="/api/diet/itemdetails",
+     *     summary="Retrieve all item details",
+     *     @OA\Response(response="200", description="Item details retrieved successfully")
      * )
      */
     public function index()
@@ -22,10 +22,12 @@ class ItemDetailsController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Items retrieved successfully',
+            'message' => 'Item details retrieved successfully',
             'items' => ItemDetailsResource::collection($items),
         ]);
     }
+
+
     /**
      * @OA\Post(
      *     path="/api/diet/itemdetails",
