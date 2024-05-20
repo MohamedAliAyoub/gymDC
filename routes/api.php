@@ -36,6 +36,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 
 Route::middleware('auth:api')->group(function () {
+    //diet apis
     Route::prefix('diet')->group(function () {
         Route::prefix('plan')->group(function () {
             Route::get('/', [PlanController::class, 'index']);
@@ -106,6 +107,6 @@ Route::middleware('auth:api')->group(function () {
 
 
     });
-
+    //end diet apis
 
 });
