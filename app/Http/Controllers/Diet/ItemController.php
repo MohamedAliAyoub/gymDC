@@ -40,7 +40,7 @@ class ItemController extends Controller
      *         name="status",
      *         in="query",
      *         description="Item's status",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="boolean")
      *     ),
      *     @OA\Response(response="200", description="Item created successfully"),
@@ -51,7 +51,7 @@ class ItemController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'status' => 'required|boolean',
+            'status' => 'nullable|boolean',
         ]);
 
         $item = Item::create($request->all());
@@ -78,7 +78,7 @@ class ItemController extends Controller
      *         name="status",
      *         in="query",
      *         description="Item's status",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="boolean")
      *     ),
      *     @OA\Response(response="200", description="Item updated successfully"),
@@ -97,7 +97,7 @@ class ItemController extends Controller
         }
         $request->validate([
             'name' => 'required|string',
-            'status' => 'required|boolean',
+            'status' => 'nullable|boolean',
         ]);
 
         $item->update($request->all());

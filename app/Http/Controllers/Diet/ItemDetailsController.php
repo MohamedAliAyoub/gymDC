@@ -96,7 +96,7 @@ class ItemDetailsController extends Controller
      *         name="status",
      *         in="query",
      *         description="Item detail's status",
-     *         required=true,
+     *         required=false,
      *         @OA\Schema(type="boolean")
      *     ),
      *     @OA\Response(response="200", description="Item detail updated successfully"),
