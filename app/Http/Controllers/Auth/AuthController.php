@@ -202,5 +202,72 @@ class AuthController extends Controller
             : response()->json(['error' => __($status)], 400);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Log out the authenticated user",
+     *     @OA\Response(response="200", description="User logged out successfully")
+     * )
+     */
+    public function logout(): JsonResponse
+    {
+        Auth::guard('api')->logout();
+
+        return response()->json([
+            'message' => 'User logged out successfully',
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/change-password",
+     *     summary="Change the user's password",
+     *     @OA\Parameter(
+     *         name="current_password",
+     *         in="query",
+     *         description="Current password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="new_password",
+     *         in="query",
+     *         description="New password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="new_password_confirmation",
+     *         in="query",
+     *         description="Confirm new password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="Password changed successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::guard('api')->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'Invalid current password',
+            ], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password changed successfully',
+        ]);
+    }
 
 }
