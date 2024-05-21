@@ -23,6 +23,9 @@ class ItemDetails extends Model
         'item_id',
         'status',
     ];
+    protected $hidden = [
+        'pivot'
+    ];
 
     /**
      * Get the item that the item detail belongs to.

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Diet\ItemDetailsResource;
+use App\Models\Diet\Item;
 use App\Models\Diet\ItemDetails;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,62 @@ class ItemDetailsController extends Controller
             'status' => 'success',
             'message' => 'Item detail created successfully',
             'itemDetails' => $itemDetails,
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/item-with-details",
+     *     summary="Create a new item with details",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Item's name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Item's status",
+     *         required=true,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="item_details",
+     *         in="query",
+     *         description="Array of item details",
+     *         required=true,
+     *         @OA\Schema(type="array", @OA\Items(ref="#/components/schemas/ItemDetails"))
+     *     ),
+     *     @OA\Response(response="200", description="Item with details created successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function createItemWithDetails(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'status' => 'required|boolean',
+            'item_details' => 'required|array',
+            'item_details.*.name' => 'required|string',
+        ]);
+
+        $item = Item::create([
+            'name' => $request->name,
+            'status' => $request->status,
+        ]);
+
+        $itemDetails = [];
+        foreach ($request->item_details as $detail) {
+            $detail['item_id'] = $item->id;
+            $itemDetails[] = ItemDetails::create($detail);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Item with details created successfully',
+            'item' => $item->load('itemDetails')
         ]);
     }
 

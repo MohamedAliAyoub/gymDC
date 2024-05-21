@@ -32,4 +32,9 @@ class Meal extends Model
     {
         return $this->belongsTo(Plan::class);
     }
+
+    public function items()
+    {
+        return $this->belongsToMany(Item::class , 'meal_items' );
+    }
 }

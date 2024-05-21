@@ -64,6 +64,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{mealItem}', [MealItemController::class, 'update']);
             Route::get('/{mealItem}', [MealItemController::class, 'show']);
             Route::delete('/{mealItem}', [MealItemController::class, 'delete']);
+            Route::post('/storeMealItems', [MealItemController::class, 'storeMealItems']);
         });
         Route::prefix('item')->group(function () {
             Route::get('/', [ItemController::class, 'index']);
@@ -86,6 +87,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{itemDetails}', [ItemDetailsController::class, 'update']);
             Route::get('/{itemDetails}', [ItemDetailsController::class, 'show']);
             Route::delete('/{itemDetails}', [ItemDetailsController::class, 'delete']);
+            Route::post('/createItemWithDetails', [ItemDetailsController::class, 'createItemWithDetails']);
         });
         Route::prefix('standard')->group(function () {
             Route::get('/', [StandardController::class, 'index']);

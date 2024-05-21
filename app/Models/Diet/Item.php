@@ -21,6 +21,9 @@ class Item extends Model
         'name',
         'status',
     ];
+    protected $hidden = [
+        'pivot'
+    ];
 
     /**
      * Get the standards associated with the item.
@@ -28,5 +31,10 @@ class Item extends Model
     public function standards()
     {
         return $this->hasMany(Standard::class);
+    }
+
+    public function itemDetails()
+    {
+        return $this->hasMany(ItemDetails::class);
     }
 }

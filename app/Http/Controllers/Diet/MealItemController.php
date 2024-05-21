@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
+use App\Models\Diet\Meal;
 use App\Models\Diet\MealItem;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,7 @@ class MealItemController extends Controller
             'mealItems' => $mealItems,
         ]);
     }
+
     /**
      * @OA\Post(
      *     path="/api/diet/mealitem",
@@ -76,6 +78,45 @@ class MealItemController extends Controller
             'status' => 'success',
             'message' => 'Meal item created successfully',
             'mealItem' => $mealItem,
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/mealitems",
+     *     summary="Create new meal items",
+     *     @OA\Parameter(
+     *         name="meal_items",
+     *         in="query",
+     *         description="Array of meal items",
+     *         required=true,
+     *         @OA\Schema(type="array", @OA\Items(ref="#/components/schemas/MealItem"))
+     *     ),
+     *     @OA\Response(response="200", description="Meal items created successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function storeMealItems(Request $request)
+    {
+        $request->validate([
+            'meal_name' => 'required|string', // 'meal_name' is not defined in the request body, should be 'meal_id
+            'meal_items' => 'required|array',
+            'meal_items.*.item_id' => 'required|integer|exists:items,id',
+        ]);
+
+        $meal = Meal::query()->create([
+            'name' => $request->meal_name,
+        ]);
+        foreach ($request->meal_items as $mealItemData) {
+            $mealItemData['meal_id'] = $meal->id;
+            $mealItemData['item_id'] = $mealItemData['item_id'];
+             MealItem::create($mealItemData);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal items created successfully',
+            'mealItems' => $meal->load('items'),
         ]);
     }
 
@@ -191,4 +232,6 @@ class MealItemController extends Controller
             'message' => 'Meal item deleted successfully',
         ]);
     }
+
+
 }
