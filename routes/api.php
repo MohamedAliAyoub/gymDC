@@ -34,6 +34,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('logout', [AuthController::class, 'logout']);
 Route::post('change-password', [AuthController::class, 'changePassword']);
 
+
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
@@ -77,7 +78,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{planMeal}', [PlanMealController::class, 'update']);
             Route::get('/{planMeal}', [PlanMealController::class, 'show']);
             Route::delete('/{planMeal}', [PlanMealController::class, 'delete']);
-
+            Route::post('/storePlanMeals', [PlanMealController::class, 'storePlanMeals']);
         });
         Route::prefix('itemDetails')->group(function () {
             Route::get('/', [ItemDetailsController::class, 'index']);

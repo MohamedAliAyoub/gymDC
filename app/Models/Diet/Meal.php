@@ -21,6 +21,9 @@ class Meal extends Model
         'name',
         'status',
     ];
+    protected $hidden = [
+        'pivot'
+    ];
 
     /**
      * Get the plan that the meal belongs to.

@@ -21,6 +21,13 @@ class Plan extends Model
         'name',
         'status',
     ];
+    protected $hidden = [
+        'pivot'
+    ];
+    public  function meals()
+    {
+        return $this->belongsToMany(Meal::class, 'plan_meals');
+    }
 
 
 }

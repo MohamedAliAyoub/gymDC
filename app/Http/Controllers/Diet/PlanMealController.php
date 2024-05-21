@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Diet\PlanMealResource;
+use App\Models\Diet\Plan;
 use App\Models\Diet\PlanMeal;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class PlanMealController extends Controller
      */
     public function index()
     {
-        $planMeals = PlanMeal::query()->with(['meal' , 'plan'])->paginate(15);
+        $planMeals = PlanMeal::query()->with(['meal', 'plan'])->paginate(15);
 
         return response()->json([
             'status' => 'success',
@@ -70,6 +71,61 @@ class PlanMealController extends Controller
             'status' => 'success',
             'message' => 'Plan meal created successfully',
             'planMeal' => $planMeal,
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/planmeals",
+     *     summary="Create a new plan with meals",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Plan's name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Plan's status",
+     *         required=true,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="meal_ids",
+     *         in="query",
+     *         description="Array of meal ids",
+     *         required=true,
+     *         @OA\Schema(type="array", @OA\Items(type="integer"))
+     *     ),
+     *     @OA\Response(response="200", description="Plan with meals created successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function storePlanMeals(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'status' => 'required|boolean',
+            'meal_ids' => 'required|array',
+            'meal_ids.*' => 'required|integer|exists:meals,id',
+        ]);
+
+        $plan = Plan::create($request->only(['name', 'status']));
+
+        foreach ($request->meal_ids as $meal_id) {
+            PlanMeal::create([
+                'plan_id' => $plan->id,
+                'meal_id' => $meal_id,
+                'status' => true,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Plan with meals created successfully',
+            'plan' => $plan->load('meals'),
         ]);
     }
 
