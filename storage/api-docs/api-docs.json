@@ -78,6 +78,16 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "image",
+                        "in": "query",
+                        "description": "User's profile image (optional)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "binary"
+                        }
                     }
                 ],
                 "responses": {
@@ -140,6 +150,71 @@
                 }
             }
         },
+        "/api/logout": {
+            "post": {
+                "summary": "Log out the authenticated user",
+                "operationId": "5ff2dc8b48bff52908d3821a0ecc9b3e",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully"
+                    }
+                }
+            }
+        },
+        "/api/change-password": {
+            "post": {
+                "summary": "Change the user's password",
+                "operationId": "1026adefb381661a240aee795924be23",
+                "parameters": [
+                    {
+                        "name": "current_password",
+                        "in": "query",
+                        "description": "Current password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "new_password",
+                        "in": "query",
+                        "description": "New password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "new_password_confirmation",
+                        "in": "query",
+                        "description": "Confirm new password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/profile": {
+            "get": {
+                "summary": "Get the authenticated user's profile",
+                "operationId": "d5015d0e7229a947188e1ac4752dfa45",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully"
+                    }
+                }
+            }
+        },
         "/auth/google": {
             "get": {
                 "tags": [
@@ -197,7 +272,7 @@
                         "name": "status",
                         "in": "query",
                         "description": "Item's status",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "boolean"
                         }
@@ -243,7 +318,7 @@
                         "name": "status",
                         "in": "query",
                         "description": "Item's status",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "boolean"
                         }
@@ -323,6 +398,54 @@
                 }
             }
         },
+        "/api/diet/item-with-details": {
+            "post": {
+                "summary": "Create a new item with details",
+                "operationId": "0d68fce84a2962ebd422edf16a0f7f11",
+                "requestBody": {
+                    "description": "Item data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Item's name",
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "description": "Item's status",
+                                        "type": "boolean"
+                                    },
+                                    "item_details": {
+                                        "description": "Array of item details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Item detail's name",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Item with details created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
         "/api/diet/itemdetails/{itemDetails}": {
             "get": {
                 "summary": "Retrieve an item detail",
@@ -362,7 +485,7 @@
                         "name": "status",
                         "in": "query",
                         "description": "Item detail's status",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "boolean"
                         }
@@ -491,6 +614,31 @@
                 }
             }
         },
+        "/api/diet/meal/assign": {
+            "post": {
+                "summary": "Assign a meal to a user",
+                "operationId": "87c48f4f1e9b3818ae4f03a723527594",
+                "parameters": [
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal assigned to user successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
         "/api/diet/mealitem": {
             "get": {
                 "summary": "Retrieve all meal items",
@@ -545,6 +693,50 @@
                 "responses": {
                     "200": {
                         "description": "Meal item created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/mealitems": {
+            "post": {
+                "summary": "Create new meal items",
+                "operationId": "1fd5ac4c09a89c09c2e3b04f810e4ff2",
+                "requestBody": {
+                    "description": "Meal data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_name": {
+                                        "description": "Meal's name",
+                                        "type": "string"
+                                    },
+                                    "meal_items": {
+                                        "description": "Array of meal items",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "item_id": {
+                                                    "description": "Item id",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Meal items created successfully"
                     },
                     "400": {
                         "description": "Validation errors"
@@ -902,6 +1094,43 @@
                 }
             }
         },
+        "/api/diet/plan/assign": {
+            "post": {
+                "summary": "Assign a plan to multiple users",
+                "operationId": "9adad811ae5a4a2e4d0381ef30a3d7ef",
+                "parameters": [
+                    {
+                        "name": "user_ids",
+                        "in": "query",
+                        "description": "Array of User IDs",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan assigned to users successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
         "/api/diet/planmeal": {
             "get": {
                 "summary": "Retrieve all plan meals",
@@ -947,6 +1176,52 @@
                 "responses": {
                     "200": {
                         "description": "Plan meal created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/planmeals": {
+            "post": {
+                "summary": "Create a new plan with meals",
+                "operationId": "fbd4925733317efc34662987329e9112",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Plan's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan's status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "meal_ids",
+                        "in": "query",
+                        "description": "Array of meal ids",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan with meals created successfully"
                     },
                     "400": {
                         "description": "Validation errors"

@@ -79,31 +79,41 @@ class ItemDetailsController extends Controller
      * @OA\Post(
      *     path="/api/diet/item-with-details",
      *     summary="Create a new item with details",
-     *     @OA\Parameter(
-     *         name="name",
-     *         in="query",
-     *         description="Item's name",
+     *     @OA\RequestBody(
+     *         description="Item data",
      *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="status",
-     *         in="query",
-     *         description="Item's status",
-     *         required=true,
-     *         @OA\Schema(type="boolean")
-     *     ),
-     *     @OA\Parameter(
-     *         name="item_details",
-     *         in="query",
-     *         description="Array of item details",
-     *         required=true,
-     *         @OA\Schema(type="array", @OA\Items(ref="#/components/schemas/ItemDetails"))
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="name",
+     *                 description="Item's name",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="status",
+     *                 description="Item's status",
+     *                 type="boolean"
+     *             ),
+     *             @OA\Property(
+     *                 property="item_details",
+     *                 description="Array of item details",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="name",
+     *                         description="Item detail's name",
+     *                         type="string"
+     *                     )
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(response="200", description="Item with details created successfully"),
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
+
     public function createItemWithDetails(Request $request)
     {
         $request->validate([

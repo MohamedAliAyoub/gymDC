@@ -85,17 +85,36 @@ class MealItemController extends Controller
      * @OA\Post(
      *     path="/api/diet/mealitems",
      *     summary="Create new meal items",
-     *     @OA\Parameter(
-     *         name="meal_items",
-     *         in="query",
-     *         description="Array of meal items",
+     *     @OA\RequestBody(
+     *         description="Meal data",
      *         required=true,
-     *         @OA\Schema(type="array", @OA\Items(ref="#/components/schemas/MealItem"))
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="meal_name",
+     *                 description="Meal's name",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="meal_items",
+     *                 description="Array of meal items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="item_id",
+     *                         description="Item id",
+     *                         type="integer"
+     *                     )
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(response="200", description="Meal items created successfully"),
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
+
     public function storeMealItems(Request $request)
     {
         $request->validate([
@@ -110,7 +129,7 @@ class MealItemController extends Controller
         foreach ($request->meal_items as $mealItemData) {
             $mealItemData['meal_id'] = $meal->id;
             $mealItemData['item_id'] = $mealItemData['item_id'];
-             MealItem::create($mealItemData);
+            MealItem::create($mealItemData);
         }
 
         return response()->json([

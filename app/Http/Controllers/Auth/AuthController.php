@@ -289,4 +289,20 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/profile",
+     *     summary="Get the authenticated user's profile",
+     *     @OA\Response(response="200", description="User profile retrieved successfully")
+     * )
+     */
+    public function profile(Request $request): JsonResponse
+    {
+        $user = Auth::guard('api')->user();
+
+        return response()->json([
+            'user' => AuthResource::make($user),
+        ]);
+    }
+
 }
