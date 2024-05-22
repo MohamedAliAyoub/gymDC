@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diet\Meal;
+use App\Models\Diet\UserMeal;
 use Illuminate\Http\Request;
 
 class MealController extends Controller
@@ -25,6 +26,7 @@ class MealController extends Controller
             'meals' => $meals,
         ]);
     }
+
     /**
      * @OA\Post(
      *     path="/api/diet/meal",
@@ -158,6 +160,41 @@ class MealController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Meal deleted successfully',
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/meal/assign",
+     *     summary="Assign a meal to a user",
+     *     @OA\Parameter(
+     *         name="meal_id",
+     *         in="query",
+     *         description="Meal's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Meal assigned to user successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function assignMealToUser(Request $request)
+    {
+        $request->validate([
+            'meal_id' => 'required|integer|exists:meals,id',
+        ]);
+
+        $userMeal =UserMeal::query()->create([
+            'user_id' => auth()->id(),
+            'meal_id' => $request->meal_id,
+            'status' => true,
+            'is_eaten' => 1,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Meal assigned to user successfully',
+            'userMeal' => $userMeal,
         ]);
     }
 }

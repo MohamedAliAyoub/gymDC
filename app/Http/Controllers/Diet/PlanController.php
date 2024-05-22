@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diet\Plan;
+use App\Models\Diet\UserPlan;
 use Illuminate\Http\Request;
 
 class PlanController extends Controller
@@ -26,6 +27,7 @@ class PlanController extends Controller
             'plans' => $plans,
         ]);
     }
+
     /**
      * @OA\Post(
      *     path="/api/diet/plan",
@@ -163,6 +165,46 @@ class PlanController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plan deleted successfully',
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/plan/assign",
+     *     summary="Assign a plan to multiple users",
+     *     @OA\Parameter(
+     *         name="user_ids",
+     *         in="query",
+     *         description="Array of User IDs",
+     *         required=true,
+     *         @OA\Schema(type="array", @OA\Items(type="integer"))
+     *     ),
+     *     @OA\Parameter(
+     *         name="plan_id",
+     *         in="query",
+     *         description="Plan's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Plan assigned to users successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function assignPlanToUsers(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'required|integer|exists:users,id',
+            'plan_id' => 'required|integer|exists:plans,id',
+        ]);
+
+        UserPlan::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
+        $userPlans = UserPlan::assignPlanToUsers($request->user_ids, $request->plan_id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Plan assigned to users successfully',
+            'userPlans' => $userPlans,
         ]);
     }
 }

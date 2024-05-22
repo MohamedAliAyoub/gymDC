@@ -26,4 +26,5 @@ class UserMeal extends Model
     {
         return $this->belongsTo(Meal::class);
     }
+
 }

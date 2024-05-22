@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use function App\Http\Helpers\uploadImage;
 
 class AuthController extends Controller
 {
@@ -96,10 +97,18 @@ class AuthController extends Controller
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
+     *     @OA\Parameter(
+     *         name="image",
+     *         in="query",
+     *         description="User's profile image (optional)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="binary")
+     *     ),
      *     @OA\Response(response="201", description="User registered successfully"),
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */
+
     public function register(Request $request): JsonResponse
     {
         // Validate the incoming request data
@@ -107,13 +116,23 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+
+        // Upload the profile picture and get the path
+        if ($request->hasFile('image'))
+            $path = uploadImage($request->file('image'), 'public', 'users');
+        else
+            $path = null;
+
 
         // Create and save the new user
         $user = new User([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'image' => $path,
         ]);
         $user->save();
 

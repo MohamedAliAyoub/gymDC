@@ -49,6 +49,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{plan}', [PlanController::class, 'update']);
             Route::get('/{plan}', [PlanController::class, 'show']);
             Route::delete('/{plan}', [PlanController::class, 'delete']);
+            Route::post('/assignPlanToUsers', [PlanController::class, 'assignPlanToUsers']);
         });
 
         Route::prefix('meal')->group(function () {
@@ -57,6 +58,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{meal}', [MealController::class, 'update']);
             Route::get('/{meal}', [MealController::class, 'show']);
             Route::delete('/{meal}', [MealController::class, 'delete']);
+            Route::post('/assignMealToUser', [MealController::class, 'assignMealToUser']);
         });
         Route::prefix('mealitem')->group(function () {
             Route::get('/', [MealItemController::class, 'index']);

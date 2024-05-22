@@ -8,10 +8,11 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable  implements JWTSubject , CanResetPassword
+class User extends Authenticatable implements JWTSubject, CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -24,7 +25,10 @@ class User extends Authenticatable  implements JWTSubject , CanResetPassword
         'name',
         'email',
         'password',
+        'image'
     ];
+
+    protected $appends = ['image_url'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -76,6 +80,11 @@ class User extends Authenticatable  implements JWTSubject , CanResetPassword
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? url('storage/' . $this->image) : url('storage/users/default.jpg');
     }
 
 }
