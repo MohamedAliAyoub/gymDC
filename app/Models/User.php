@@ -84,7 +84,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function getImageUrlAttribute()
     {
-        return $this->image ? url('storage/' . $this->image) : url('storage/users/default.jpg');
+        return $this->image ? asset('storage/' . $this->image) : url('storage/users/default.jpg');
     }
 
 }
