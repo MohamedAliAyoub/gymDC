@@ -207,4 +207,6 @@ class PlanController extends Controller
             'userPlans' => $userPlans,
         ]);
     }
+
+
 }

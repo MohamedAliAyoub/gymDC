@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $item_id
  * @property int $item_details_id
  * @property bool $status
- *
+ * @property int $standard_type_id
+ * @property string $standard_type_name
  * @package App\Models\Diet
  */
 class Standard extends Model
@@ -29,7 +30,13 @@ class Standard extends Model
         'fat',
         'item_id',
         'item_details_id',
+        'standard_type_id',
         'status',
+    ];
+
+    protected $appends = ['standard_type_name'];
+    protected $hidden = [
+       'created_at' , 'updated_at'
     ];
 
     /**
@@ -47,4 +54,21 @@ class Standard extends Model
     {
         return $this->belongsTo(ItemDetails::class);
     }
+
+    /**
+     * Get the standard type that the standard belongs to.
+     */
+    public function standardType()
+    {
+        return $this->belongsTo(StandardType::class);
+    }
+
+    /**
+     * Get the standard type name attribute.
+     */
+    public function getStandardTypeNameAttribute()
+    {
+        return $this->standardType->name ?? null;
+    }
+
 }

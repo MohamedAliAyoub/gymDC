@@ -14,6 +14,7 @@ use App\Http\Controllers\Diet\ItemDetailsController;
 use App\Http\Controllers\Diet\StandardController;
 use App\Http\Controllers\Diet\StandardTypeController;
 use App\Http\Controllers\Diet\NoteController;
+use App\Http\Controllers\Diet\AppController;
 
 
 /*
@@ -50,7 +51,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/{plan}', [PlanController::class, 'show']);
             Route::delete('/{plan}', [PlanController::class, 'delete']);
             Route::post('/assignPlanToUsers', [PlanController::class, 'assignPlanToUsers']);
+            Route::get('/active/plan', [AppController::class, 'getActivePlan']);
         });
+
 
         Route::prefix('meal')->group(function () {
             Route::get('/', [MealController::class, 'index']);

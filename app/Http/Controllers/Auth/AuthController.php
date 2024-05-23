@@ -15,35 +15,41 @@ use function App\Http\Helpers\uploadImage;
 
 class AuthController extends Controller
 {
-
     /**
      * @OA\Post(
      *     path="/api/login",
      *     summary="Authenticate user and generate JWT token",
-     *     @OA\Parameter(
-     *         name="email",
-     *         in="query",
-     *         description="User's email",
+     *     @OA\RequestBody(
+     *         description="User's credentials",
      *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="password",
-     *         in="query",
-     *         description="User's password",
-     *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="email",
+     *                 description="User's email",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="password",
+     *                 description="User's password",
+     *                 type="string"
+     *             )
+     *         )
      *     ),
      *     @OA\Response(response="200", description="Login successful"),
-     *     @OA\Response(response="401", description="Invalid credentials")
+     *     @OA\Response(response="401", description="Invalid credentials"),
+     *     @OA\Response(response="422", description="Validation errors")
      * )
      */
+
+
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
+
 
         $credentials = $request->only('email', 'password');
 
@@ -183,17 +189,37 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/reset-password",
+     *     path="/api/reset-password",
      *     summary="Reset the user's password",
-     *     @OA\Parameter(
-     *         name="email",
-     *         in="query",
-     *         description="User's email",
+     *     @OA\RequestBody(
+     *         description="User's new password data",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="email",
+     *                 description="User's email",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="password",
+     *                 description="User's new password",
+     *                 type="string"
+     *             ),
+     *          @OA\Property(
+     *                 property="password_confirmation",
+     *                 description="User's password confirmation",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="token",
+     *                 description="Password reset token",
+     *                 type="string"
+     *             )
+     *         )
      *     ),
-     *     @OA\Response(response=200, description="Password reset successfully"),
-     *     @OA\Response(response=400, description="Invalid request or token")
+     *     @OA\Response(response="200", description="Password reset successfully"),
+     *     @OA\Response(response="400", description="Invalid token or email")
      * )
      */
 

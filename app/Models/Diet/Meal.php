@@ -33,8 +33,21 @@ class Meal extends Model
         return $this->belongsTo(Plan::class);
     }
 
+    /**
+     * The items that belong to the meal.
+     */
     public function items()
     {
         return $this->belongsToMany(Item::class , 'meal_items' );
     }
+
+    public static function hasEatenMealToday($mealId)
+    {
+        return UserMeal::query()
+            ->where('user_id', auth()->id())
+            ->where('meal_id', $mealId)
+            ->whereDate('created_at', now()->toDateString())
+            ->exists();
+    }
+
 }

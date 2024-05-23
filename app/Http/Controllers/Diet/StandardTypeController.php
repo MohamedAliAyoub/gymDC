@@ -38,13 +38,6 @@ class StandardTypeController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
-     *         name="standard_id",
-     *         in="query",
-     *         description="Standard id",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
      *         name="status",
      *         in="query",
      *         description="Standard type's status",
@@ -59,7 +52,6 @@ class StandardTypeController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'standard_id' => 'required|integer',
             'status' => 'required|boolean',
         ]);
 
@@ -84,13 +76,6 @@ class StandardTypeController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
-     *         name="standard_id",
-     *         in="query",
-     *         description="Standard id",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
      *         name="status",
      *         in="query",
      *         description="Standard type's status",
@@ -113,7 +98,6 @@ class StandardTypeController extends Controller
         }
         $request->validate([
             'name' => 'required|string',
-            'standard_id' => 'required|integer',
             'status' => 'required|boolean',
         ]);
 

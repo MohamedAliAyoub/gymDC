@@ -5,7 +5,7 @@ namespace App\Http\Resources\Diet;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ItemDetailsResource extends JsonResource
+class PlanResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +16,9 @@ class ItemDetailsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'item_id' => $this->item_id,
-            'item' => $this->item->name,
             'name' => $this->name,
-            'standard_name' => $this->standard->name ?? null,
-            'carbohydrate' => $this->standard->carbohydrate ?? null,
-            'protein' => $this->standard->protein ?? null,
-            'fat' => $this->standard->fat ?? null,
+            'meals' => MealResource::collection($this->meals),
+
 
         ];
     }

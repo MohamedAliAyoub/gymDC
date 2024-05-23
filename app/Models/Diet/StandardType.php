@@ -24,6 +24,10 @@ class StandardType extends Model
         'status',
     ];
 
+    protected $hidden = [
+        'created_at' , 'updated_at'
+    ];
+
     /**
      * Get the standard that the standard type belongs to.
      */

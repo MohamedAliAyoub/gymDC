@@ -34,4 +34,13 @@ class ItemDetails extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    /**
+     * Get the standard that the item detail belongs to.
+     */
+    public function Standard()
+    {
+        return $this->hasOne(Standard::class, 'item_details_id', 'id');
+    }
+
 }
