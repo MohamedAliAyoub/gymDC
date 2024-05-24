@@ -20,6 +20,7 @@ class MealResource extends JsonResource
             'name' => $this->name,
             'items' => ItemResource::collection($this->items),
             'is_eaten' => Meal::hasEatenMealToday($this->id),
+            'note' => $this->note,
         ];
     }
 }

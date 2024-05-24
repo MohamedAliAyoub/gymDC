@@ -29,5 +29,13 @@ class Plan extends Model
         return $this->belongsToMany(Meal::class, 'plan_meals');
     }
 
+    /**
+     * Get the note for the plan.
+     */
+    public function note()
+    {
+        return $this->hasOne(Note::class);
+    }
+
 
 }

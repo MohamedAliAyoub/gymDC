@@ -41,6 +41,14 @@ class Meal extends Model
         return $this->belongsToMany(Item::class , 'meal_items' );
     }
 
+    /**
+     * Get the note for the meal.
+     */
+    public function note()
+    {
+        return $this->hasOne(Note::class);
+    }
+
     public static function hasEatenMealToday($mealId)
     {
         return UserMeal::query()

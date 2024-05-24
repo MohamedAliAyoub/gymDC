@@ -18,6 +18,7 @@ class PlanResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'meals' => MealResource::collection($this->meals),
+            'notes' => $this->note,
 
 
         ];

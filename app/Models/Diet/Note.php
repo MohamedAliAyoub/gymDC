@@ -59,4 +59,5 @@ class Note extends Model
     {
         return $this->belongsTo(Meal::class);
     }
+
 }
