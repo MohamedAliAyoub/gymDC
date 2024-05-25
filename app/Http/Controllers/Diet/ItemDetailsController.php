@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Diet\ItemDetailsResource;
 use App\Models\Diet\Item;
 use App\Models\Diet\ItemDetails;
+use App\Models\Diet\Standard;
 use Illuminate\Http\Request;
 
 class ItemDetailsController extends Controller
@@ -121,17 +122,47 @@ class ItemDetailsController extends Controller
             'status' => 'required|boolean',
             'item_details' => 'required|array',
             'item_details.*.name' => 'required|string',
+            'item_standard' => 'nullable|array',
+            'item_standard.name' => 'nullable|string',
+            'item_standard.carbohydrate' => 'required|numeric',
+            'item_standard.protein' => 'required|numeric',
+            'item_standard.fat' => 'required|numeric',
+            'item_standard.standard_type_id' => 'required|numeric|exists:standard_types,id',
+            'item_details_standard.*.name' => 'nullable|string',
+            'item_details_standard.*.carbohydrate' => 'required|numeric',
+            'item_details_standard.*.protein' => 'required|numeric',
+            'item_details_standard.*.fat' => 'required|numeric',
+            'item_details_standard.*.standard_type_id' => 'required|numeric|exists:standard_types,id',
+
         ]);
+
 
         $item = Item::create([
             'name' => $request->name,
             'status' => $request->status,
+        ]);
+        $standard = Standard::query()->create([
+            'name' => $request->item_standard['name'],
+            'carbohydrate' => $request->item_standard['carbohydrate'],
+            'protein' => $request->item_standard['protein'],
+            'fat' => $request->item_standard['fat'],
+            'standard_type_id' => $request->item_standard['standard_type_id'],
         ]);
 
         $itemDetails = [];
         foreach ($request->item_details as $detail) {
             $detail['item_id'] = $item->id;
             $itemDetails[] = ItemDetails::create($detail);
+
+            //create standard for item details
+            $standard = Standard::query()->create([
+                'name' => $detail['name'],
+                'carbohydrate' => $request->item_details_standard[$detail['name']]['carbohydrate'],
+                'protein' => $request->item_details_standard[$detail['name']]['protein'],
+                'fat' => $request->item_details_standard[$detail['name']]['fat'],
+                'standard_type_id' => $request->item_details_standard[$detail['name']]['standard_type_id'],
+            ]);
+
         }
 
         return response()->json([

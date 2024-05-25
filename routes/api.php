@@ -39,6 +39,8 @@ Route::get('profile', [AuthController::class, 'profile'])->middleware('auth:api'
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+Route::get('auth/apple', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/apple/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 
 Route::middleware('auth:api')->group(function () {
@@ -61,7 +63,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{meal}', [MealController::class, 'update']);
             Route::get('/{meal}', [MealController::class, 'show']);
             Route::delete('/{meal}', [MealController::class, 'delete']);
-            Route::post('/assignMealToUser', [MealController::class, 'assignMealToUser']);
+            Route::post('/assignMealToUser', [AppController::class, 'assignMealToUser']);
         });
         Route::prefix('mealitem')->group(function () {
             Route::get('/', [MealItemController::class, 'index']);
