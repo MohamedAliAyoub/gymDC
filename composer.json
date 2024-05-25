@@ -13,6 +13,7 @@
         "laravel/socialite": "^5.14",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.5",
+        "socialiteproviders/apple": "^5.6",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
@@ -31,7 +32,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Http/Helpers/helpers.php"
+            "app/Http/Helpers/helpers.php",
+            "app/Http/Helpers/AppleClientSecret.php"
         ]
     },
     "autoload-dev": {
