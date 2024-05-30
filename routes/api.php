@@ -15,6 +15,14 @@ use App\Http\Controllers\Diet\StandardController;
 use App\Http\Controllers\Diet\StandardTypeController;
 use App\Http\Controllers\Diet\NoteController;
 use App\Http\Controllers\Diet\AppController;
+use App\Http\Controllers\Exercise\ExerciseController;
+use App\Http\Controllers\Exercise\DoneExerciseController;
+use App\Http\Controllers\Exercise\NoteExerciseCotroller;
+use App\Http\Controllers\Exercise\PlanExerciseController;
+use App\Http\Controllers\Exercise\UserPlanExerciseController;
+use App\Http\Controllers\Exercise\ExerciseDetailsController;
+use App\Http\Controllers\Exercise\ExercisePlanExerciseController;
+
 
 
 /*
@@ -122,5 +130,59 @@ Route::middleware('auth:api')->group(function () {
 
     });
     //end diet apis
+
+    //exercise apis
+    Route::prefix('exercise')->group(function () {
+        Route::group(['prefix' => 'exercise'], function () {
+            Route::get('/', [ExerciseController::class, 'index']);
+            Route::post('/', [ExerciseController::class, 'create']);
+            Route::put('/{exercise}', [ExerciseController::class, 'update']);
+            Route::get('/{exercise}', [ExerciseController::class, 'show']);
+            Route::delete('/{exercise}', [ExerciseController::class, 'delete']);
+       Route::post('/add/assignExercisesToPlan' , [ExercisePlanExerciseController::class , 'assignExercisesToPlan']);
+        });
+        Route::group(['prefix' => 'done'], function () {
+            Route::get('/', [DoneExerciseController::class, 'index']);
+            Route::get('/{id}', [DoneExerciseController::class, 'show']);
+            Route::post('/', [DoneExerciseController::class, 'create']);
+            Route::put('/{id}', [DoneExerciseController::class, 'update']);
+            Route::delete('/{id}', [DoneExerciseController::class, 'delete']);
+        });
+        Route::group(['prefix' => 'note'], function () {
+            Route::get('/', [NoteExerciseCotroller::class, 'index']);
+            Route::get('/{id}', [NoteExerciseCotroller::class, 'show']);
+            Route::post('/', [NoteExerciseCotroller::class, 'create']);
+            Route::put('/{id}', [NoteExerciseCotroller::class, 'update']);
+            Route::delete('/{id}', [NoteExerciseCotroller::class, 'delete']);
+        });
+        Route::group(['prefix' => 'user-plan-exercise'], function () {
+            Route::get('/' , [UserPlanExerciseController::class, 'index']);
+            Route::get('/{id}', [UserPlanExerciseController::class, 'show']);
+            Route::post('/', [UserPlanExerciseController::class, 'create']);
+            Route::put('/{id}', [UserPlanExerciseController::class, 'update']);
+            Route::delete('/{id}', [UserPlanExerciseController::class, 'delete']);
+            Route::get('/get/todayPlan', [UserPlanExerciseController::class, 'getTodayPlan']);
+            Route::get('/get/planByDate', [UserPlanExerciseController::class, 'getPlanByDate']);
+        });
+        Route::group(['prefix' => 'plan'], function () {
+            Route::get('/', [PlanExerciseController::class, 'index']);
+            Route::get('/{id}', [PlanExerciseController::class, 'show']);
+            Route::post('/', [PlanExerciseController::class, 'create']);
+            Route::put('/{id}', [PlanExerciseController::class, 'update']);
+            Route::delete('/{id}', [PlanExerciseController::class, 'delete']);
+
+            Route::get('/get/todayPlan', [PlanExerciseController::class, 'getTodayPlan']);
+            Route::get('/get/planByDate', [PlanExerciseController::class, 'getPlanByDate']);
+        });
+        Route::group(['prefix' => 'exercise-details'], function () {
+           Route::get('/', [ExerciseDetailsController::class, 'index']);
+            Route::get('/{id}', [ExerciseDetailsController::class, 'show']);
+            Route::post('/', [ExerciseDetailsController::class, 'create']);
+            Route::put('/{id}', [ExerciseDetailsController::class, 'update']);
+            Route::delete('/{id}', [ExerciseDetailsController::class, 'delete']);
+        });
+
+    });
+    //end exercise apis
 
 });
