@@ -26,12 +26,26 @@ class UserPlanExercise extends Model
 {
     use HasFactory;
 
+    const SUNDAY = 0;
+    const MONDAY = 1;
+    const TUESDAY = 2;
+    const WEDNESDAY = 3;
+    const THURSDAY = 4;
+    const FRIDAY = 5;
+    const SATURDAY = 6;
+
+    protected $appends = ['day_names'];
+
+
     protected $fillable = [
         'plan_id',
         'user_id',
         'status',
         'is_work',
         'days',
+    ];
+    protected $casts = [
+        'days' => 'array',
     ];
 
     /**
@@ -48,6 +62,51 @@ class UserPlanExercise extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getDayNamesAttribute()
+    {
+        $dayNames = [
+            self::SUNDAY => 'Sunday',
+            self::MONDAY => 'Monday',
+            self::TUESDAY => 'Tuesday',
+            self::WEDNESDAY => 'Wednesday',
+            self::THURSDAY => 'Thursday',
+            self::FRIDAY => 'Friday',
+            self::SATURDAY => 'Saturday',
+        ];
+
+        return array_map(function ($day) use ($dayNames) {
+            return $dayNames[$day];
+        }, $this->days);
+    }
+
+    /**
+     * Get the plan of today
+     *
+     * @return UserPlanExercise|string
+     */
+    public static function getPlanOfToday()
+    {
+        return UserPlanExercise::where('user_id', auth()->id())
+            ->whereJsonContains('days', (string)now()->dayOfWeek)
+            ->where('is_work', true)
+            ->where('status', true)
+            ->first()  ;
+    }
+
+    /**
+     * Get the plan by date
+     *
+     * @return UserPlanExercise|string
+     */
+    public static function getPlanByDate($date)
+    {
+        return UserPlanExercise::where('user_id', auth()->id())
+            ->whereJsonContains('days', (string)$date->dayOfWeek)
+            ->where('is_work', true)
+            ->where('status', true)
+            ->first() ;
     }
 
 }

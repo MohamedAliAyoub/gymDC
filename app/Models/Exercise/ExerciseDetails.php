@@ -2,6 +2,7 @@
 
 namespace App\Models\Exercise;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,6 +48,30 @@ class ExerciseDetails extends Model
     public function exercise(): BelongsTo
     {
         return $this->belongsTo(Exercise::class, 'exercise_id');
+    }
+
+    /**
+     * Get the done exercise that the exercise details belongs to.
+     */
+    public function doneExercise()
+    {
+        return $this->hasMany(DoneExercise::class, 'exercise_details_id', 'id');
+    }
+
+
+    /**
+     * Check if the user has done the exercise details today
+     *
+     * @param $detailsId
+     * @return bool
+     */
+    public static function Done($detailsId): bool
+    {
+        return DoneExercise::query()
+            ->where('exercise_details_id', $detailsId)
+            ->where('user_id', auth()->id())
+            ->whereDate('created_at', Carbon::today())
+            ->exists();
     }
 
 

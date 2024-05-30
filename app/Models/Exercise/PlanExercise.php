@@ -34,7 +34,7 @@ class PlanExercise extends Model
      */
     public function exercises():BelongsToMany
     {
-        return $this->belongsToMany(Exercise::class, 'plan_exercises');
+        return $this->belongsToMany(Exercise::class, ExercisePlanExercise::class);
     }
 
     /**
@@ -44,5 +44,17 @@ class PlanExercise extends Model
     {
         return $this->hasOne(NoteExercise::class);
     }
+
+    public static function hasDoneExerciseToday($exerciseId): bool
+    {
+        return DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exercise_id', $exerciseId)
+            ->whereDate('created_at', now()->toDateString())
+            ->exists();
+    }
+
+
+
 
 }
