@@ -20,6 +20,7 @@ class PlanExerciseResource extends JsonResource
             'status' => $this->status,
             'exercises' => ExerciseResource::collection($this->exercises) ?? [],
             'note' => $this->note,
+            'done' => $this->done,
         ];
     }
 }

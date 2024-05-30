@@ -19,9 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $reps
  * @property bool $status
  * @property int $exercise_id
- * @property bool $is_run
- * @property string $run_duration
- *
  * @package App\Models\Exercise
  */
 class ExerciseDetails extends Model
@@ -38,8 +35,6 @@ class ExerciseDetails extends Model
         'reps',
         'status',
         'exercise_id',
-        'is_run',
-        'run_duration',
     ];
 
     /**

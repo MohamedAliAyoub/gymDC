@@ -19,9 +19,11 @@ class ExerciseResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'status' => $this->status,
+
             'done' => Exercise::hasDoneExerciseToday($this->id),
             'details' => ExerciseDetailsResource::collection($this->details),
             'note' => $this->note,
+
 
         ];
     }

@@ -39,8 +39,6 @@ class ExerciseDetailsController extends Controller
  *     @OA\Property(property="reps", type="integer"),
  *     @OA\Property(property="status", type="boolean"),
  *     @OA\Property(property="exercise_id", type="integer"),
- *     @OA\Property(property="is_run", type="boolean"),
- *     @OA\Property(property="run_duration", type="string"),
  * )
  */
     public function create(Request $request)
@@ -55,13 +53,6 @@ class ExerciseDetailsController extends Controller
             'reps' => 'integer|nullable',
             'status' => 'nullable|boolean',
             'exercise_id' => 'required|exists:exercises,id',
-            'is_run' => 'nullable|boolean',
-            'run_duration' => 'nullable|integer',
-        ]);
-
-        $request->merge([
-            'status' => $request->status ?? true,
-            'is_run' => $request->is_run ?? false,
         ]);
         $exerciseDetails = ExerciseDetails::query()->create($request->all());
 
@@ -139,8 +130,6 @@ class ExerciseDetailsController extends Controller
      *             @OA\Property(property="reps", type="integer"),
      *             @OA\Property(property="status", type="boolean"),
      *             @OA\Property(property="exercise_id", type="integer", description="Must exist in exercises table"),
-     *             @OA\Property(property="is_run", type="boolean"),
-     *             @OA\Property(property="run_duration", type="string"),
      *         )
      *     ),
      *     @OA\Response(
@@ -170,8 +159,6 @@ class ExerciseDetailsController extends Controller
             'reps' => 'integer|nullable',
             'status' => 'nullable|boolean',
             'exercise_id' => 'required|exists:exercises,id',
-            'is_run' => 'nullable|boolean',
-            'run_duration' => 'integer|nullable',
         ]);
 
         $exerciseDetails = ExerciseDetails::query()->find($id);

@@ -22,5 +22,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+
+
+Route::middleware(['web'])->group(function () {
+    Route::get('api/auth/google', [GoogleController::class, 'redirectToGoogle']);
+    Route::get('api/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+});
