@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('exercise_details', function (Blueprint $table) {
-            $table->dropColumn('is_run');
-            $table->dropColumn('run_duration');
+        Schema::table('exercises', function (Blueprint $table) {
+            $table->integer('run_duration')->nullable();
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('exercise_details', function (Blueprint $table) {
-            $table->boolean('is_run')->default(false);
-            $table->integer('run_duration')->nullable();
+        Schema::table('exercises', function (Blueprint $table) {
+            $table->dropColumn('run_duration');
         });
     }
 };
