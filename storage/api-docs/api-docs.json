@@ -267,6 +267,45 @@
                 }
             }
         },
+        "/api/diet/app/active-plan": {
+            "get": {
+                "summary": "Retrieve active plan",
+                "operationId": "afe2f88c2783c57b94bb4c2777277aa7",
+                "responses": {
+                    "200": {
+                        "description": "Active plan retrieved successfully"
+                    },
+                    "404": {
+                        "description": "No active plan found"
+                    }
+                }
+            }
+        },
+        "/api/diet/meal/assign": {
+            "post": {
+                "summary": "Assign a meal to a user",
+                "operationId": "47d72444340912ac861bf62381d85f76",
+                "parameters": [
+                    {
+                        "name": "meal_id",
+                        "in": "query",
+                        "description": "Meal's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal assigned to user successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
         "/api/diet/item": {
             "get": {
                 "summary": "Retrieve all items",
@@ -632,31 +671,6 @@
                     },
                     "404": {
                         "description": "Meal not found"
-                    }
-                }
-            }
-        },
-        "/api/diet/meal/assign": {
-            "post": {
-                "summary": "Assign a meal to a user",
-                "operationId": "87c48f4f1e9b3818ae4f03a723527594",
-                "parameters": [
-                    {
-                        "name": "meal_id",
-                        "in": "query",
-                        "description": "Meal's ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Meal assigned to user successfully"
-                    },
-                    "400": {
-                        "description": "Validation errors"
                     }
                 }
             }
@@ -1387,6 +1401,15 @@
                         }
                     },
                     {
+                        "name": "standard_type_id",
+                        "in": "query",
+                        "description": "standard type id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Standard's status",
@@ -1478,6 +1501,15 @@
                         }
                     },
                     {
+                        "name": "standard_type_id",
+                        "in": "query",
+                        "description": "standard type id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Standard's status",
@@ -1533,15 +1565,6 @@
                         }
                     },
                     {
-                        "name": "standard_id",
-                        "in": "query",
-                        "description": "Standard id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "status",
                         "in": "query",
                         "description": "Standard type's status",
@@ -1588,15 +1611,6 @@
                         }
                     },
                     {
-                        "name": "standard_id",
-                        "in": "query",
-                        "description": "Standard id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "status",
                         "in": "query",
                         "description": "Standard type's status",
@@ -1626,6 +1640,1051 @@
                         "description": "Standard type not found"
                     }
                 }
+            }
+        },
+        "/api/exercise/done": {
+            "get": {
+                "summary": "Retrieve done exercises with pagination 15 items per page",
+                "operationId": "1d744e85ff3aeb54d360c7003989a859",
+                "responses": {
+                    "200": {
+                        "description": "Done exercises retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new done exercise",
+                "operationId": "020f65c0639deee22bb9757528d5f1f4",
+                "parameters": [
+                    {
+                        "name": "exercise_id",
+                        "in": "query",
+                        "description": "Exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "reps",
+                        "in": "query",
+                        "description": "Reps",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "kg",
+                        "in": "query",
+                        "description": "Kg",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "rir",
+                        "in": "query",
+                        "description": "Rir",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "tempo",
+                        "in": "query",
+                        "description": "Tempo",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "rest",
+                        "in": "query",
+                        "description": "Rest",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Done exercise created successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/exercise/done/{id}": {
+            "get": {
+                "summary": "Retrieve a specific done exercise",
+                "operationId": "70c48ef3ab2dfdb3d5c9f97337486c9b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Done exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Done exercise retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Done exercise not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a specific done exercise",
+                "operationId": "a6eda84d5a73d9ada11354ab32eac08f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Done exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "exercise_id",
+                        "in": "query",
+                        "description": "Exercise's id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "plan_id",
+                        "in": "query",
+                        "description": "Plan's id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "reps",
+                        "in": "query",
+                        "description": "Reps",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "kg",
+                        "in": "query",
+                        "description": "Kg",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "rir",
+                        "in": "query",
+                        "description": "Rir",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "tempo",
+                        "in": "query",
+                        "description": "Tempo",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "rest",
+                        "in": "query",
+                        "description": "Rest",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Done exercise updated successfully"
+                    },
+                    "404": {
+                        "description": "Done exercise not found"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a specific done exercise",
+                "operationId": "f585512c96297413c6e3aa2953f9a20e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Done exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Done exercise deleted successfully"
+                    },
+                    "404": {
+                        "description": "Done exercise not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/exercise": {
+            "get": {
+                "summary": "Retrieve exercises with pagination 15 items per page",
+                "operationId": "5653a099a737c4e930ba170681ac5c9d",
+                "responses": {
+                    "200": {
+                        "description": "Exercises retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new exercise",
+                "operationId": "be4373f216acb56889aada04718e7726",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Exercise's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Exercise's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exercise created successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/exercise/exercise/{id}": {
+            "get": {
+                "summary": "Retrieve a specific exercise",
+                "operationId": "6d721f6792398e5920a04316d579148a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exercise retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Exercise not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a specific exercise",
+                "operationId": "5c5a2fb1e78cb2239b14d7c3bf8d553f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Exercise's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Exercise's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exercise updated successfully"
+                    },
+                    "404": {
+                        "description": "Exercise not found"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a specific exercise",
+                "operationId": "939b71064dcdf092e7e29a00e11ff2ad",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exercise deleted successfully"
+                    },
+                    "404": {
+                        "description": "Exercise not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/exercise-details": {
+            "get": {
+                "summary": "Retrieve exercises-details with pagination 15 items per page",
+                "operationId": "0e3f5ce1d39e92c6a77558e115373c6e",
+                "responses": {
+                    "200": {
+                        "description": "Exercises retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/exercise/exercise-details/{id}": {
+            "get": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Retrieve a specific exercise detail",
+                "operationId": "45c56609f0041d741844e84e2e8a565f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise detail's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exercise detail retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExerciseDetails"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Exercise detail not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Update a specific exercise detail",
+                "operationId": "18031058d75de01f526907264d3e8f0a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise detail's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "previous": {
+                                        "type": "integer"
+                                    },
+                                    "rir": {
+                                        "type": "integer"
+                                    },
+                                    "tempo": {
+                                        "type": "string"
+                                    },
+                                    "rest": {
+                                        "type": "integer"
+                                    },
+                                    "kg": {
+                                        "type": "integer"
+                                    },
+                                    "reps": {
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "exercise_id": {
+                                        "description": "Must exist in exercises table",
+                                        "type": "integer"
+                                    },
+                                    "is_run": {
+                                        "type": "boolean"
+                                    },
+                                    "run_duration": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Exercise details updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExerciseDetails"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Exercise details not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Delete a specific exercise detail",
+                "operationId": "4c47cc2545b7fd49f31082793a422e35",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise detail's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exercise details deleted successfully"
+                    },
+                    "404": {
+                        "description": "Exercise details not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/note-exercise": {
+            "get": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Retrieve note exercises with pagination 15 items per page",
+                "operationId": "539a776c858abbe870fd23cfdefacd7e",
+                "responses": {
+                    "200": {
+                        "description": "Note exercises retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/exercise/note-exercise/{id}": {
+            "get": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Retrieve a specific note exercise",
+                "operationId": "59c7b950fb5f154aab0a67833e96ef17",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Note exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note exercise retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteExercise"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Note exercise not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Update a specific note exercise",
+                "operationId": "2e41b15320f5b74de5692fecea3768f7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Note exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "Must exist in users table",
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "exercise_plan_id": {
+                                        "description": "Must exist in exercise plans table",
+                                        "type": "integer"
+                                    },
+                                    "exercise_id": {
+                                        "description": "Must exist in exercises table",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Note exercise updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteExercise"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Note exercise not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Delete a specific note exercise",
+                "operationId": "82406872872b26187dbac7ea668861fc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Note exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note exercise deleted successfully"
+                    },
+                    "404": {
+                        "description": "Note exercise not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/plan": {
+            "get": {
+                "summary": "Retrieve plans with pagination 15 items per page",
+                "operationId": "f38a10abae5c8b231005ebc30b25da43",
+                "responses": {
+                    "200": {
+                        "description": "Plans retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new plan",
+                "operationId": "11e2038cd1eaa02d974a2928ecdc0945",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Plan's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/exercise/plan/{id}": {
+            "get": {
+                "summary": "Retrieve a plan",
+                "operationId": "af5ec66352ae56eb40be2f7acbfff933",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Plan's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Plan not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a plan",
+                "operationId": "ed1125c5eb89b9d061c76a88d0f74cd9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Plan's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Plan's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    },
+                    "404": {
+                        "description": "Plan not found"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a plan",
+                "operationId": "a1d931f7ca4d793538e2d41dc393454f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Plan's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan deleted successfully"
+                    },
+                    "404": {
+                        "description": "Plan not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/user-plan-exercise": {
+            "get": {
+                "summary": "Retrieve user plan exercises with pagination 15 items per page",
+                "description": "tags={\"Exercise\"},",
+                "operationId": "aabb6d6c99afc17150f2bdd119794319",
+                "responses": {
+                    "200": {
+                        "description": "User plan exercises retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Create a new user plan exercise",
+                "operationId": "75c169ef691c7b322487d441e00c5984",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "plan_id": {
+                                        "description": "Must exist in exercise plans table",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "Must exist in users table",
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "is_work": {
+                                        "type": "boolean"
+                                    },
+                                    "days": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Note exercise created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteExercise"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/exercise/user-plan-exercise/{id}": {
+            "get": {
+                "summary": "Retrieve a specific note exercise",
+                "operationId": "924ce65d17eec812550c0040c1c5390d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Note exercise's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note exercise retrieved successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a specific user plan exercise",
+                "operationId": "c8d62d74c3c500eaec796a801cefb3b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User plan exercise's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "plan_id": {
+                                        "description": "Must exist in exercise plans table",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "Must exist in users table",
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "type": "boolean"
+                                    },
+                                    "is_work": {
+                                        "type": "boolean"
+                                    },
+                                    "days": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User plan exercise updated successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a specific user plan exercise",
+                "operationId": "3f23b7a2f9be64a3c8029300dd527ca0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User plan exercise's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User plan exercise deleted successfully"
+                    },
+                    "404": {
+                        "description": "User plan exercise not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ExerciseDetails": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "previous": {
+                        "type": "integer"
+                    },
+                    "rir": {
+                        "type": "integer"
+                    },
+                    "tempo": {
+                        "type": "string"
+                    },
+                    "rest": {
+                        "type": "integer"
+                    },
+                    "kg": {
+                        "type": "integer"
+                    },
+                    "reps": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "boolean"
+                    },
+                    "exercise_id": {
+                        "type": "integer"
+                    },
+                    "is_run": {
+                        "type": "boolean"
+                    },
+                    "run_duration": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "NoteExercise": {
+                "properties": {
+                    "user_id": {
+                        "description": "Must exist in users table",
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "boolean"
+                    },
+                    "exercise_plan_id": {
+                        "description": "Must exist in exercise plans table",
+                        "type": "integer"
+                    },
+                    "exercise_id": {
+                        "description": "Must exist in exercises table",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
             }
         }
     }
