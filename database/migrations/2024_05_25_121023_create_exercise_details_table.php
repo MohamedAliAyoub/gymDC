@@ -23,7 +23,8 @@ return new class extends Migration
             $table->boolean('status')->default(true);
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
             $table->boolean('is_run')->default(false);
-            $table->string('run_duration')->nullable();
+            $table->integer('run_duration')->default(0);
+
             $table->timestamps();
         });
     }

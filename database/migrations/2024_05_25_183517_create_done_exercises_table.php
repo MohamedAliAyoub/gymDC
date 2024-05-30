@@ -17,6 +17,15 @@ return new class extends Migration
             $table->foreignId('exercise_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('exercise_details_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('plan_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->tinyInteger('rir')->nullable();
+            $table->string('tempo')->nullable();
+            $table->tinyInteger('rest')->nullable();
+            $table->tinyInteger('kg')->nullable();
+            $table->tinyInteger('reps')->nullable();
+            $table->boolean('status')->default(false);
+            $table->boolean('is_run')->default(false);
+            $table->integer('run_duration')->default(0);
+
             $table->timestamps();
         });
     }

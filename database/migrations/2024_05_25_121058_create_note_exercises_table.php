@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string("title")->nullable();
             $table->text("content");
             $table->boolean("status")->default(true);
-            $table->foreignId("exercise_plan_id")->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId("exercise_id")->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId("plan_exercise_id")->nullable()->constrained('plan_exercises')->cascadeOnDelete();
+            $table->foreignId("exercise_id")->nullable()->constrained('exercisesphp artisan make:model PlanExercise')->cascadeOnDelete();
             $table->timestamps();
         });
     }
