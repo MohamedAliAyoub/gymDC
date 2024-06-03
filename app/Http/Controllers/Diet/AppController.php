@@ -56,14 +56,25 @@ class AppController extends Controller
         $request->validate([
             'meal_id' => 'required|integer|exists:meals,id',
         ]);
-
-        $userMeal =UserMeal::query()->create([
+        $userMeal = UserMeal::query()->where([
             'user_id' => auth()->id(),
             'meal_id' => $request->meal_id,
-            'status' => true,
-            'is_eaten' => 1,
-        ]);
+        ])->first();
+        $is_eaten = 1;
+        if ($userMeal) {
+            if ($userMeal->is_eaten == 1) {
+                $is_eaten = 0;
+            } else
+                $is_eaten = 1;
+        }
 
+
+        $userMeal = UserMeal::updateOrCreate([
+            'user_id' => auth()->id(),
+            'meal_id' => $request->meal_id,
+        ], [
+            'is_eaten' => $is_eaten,
+        ]);
         return response()->json([
             'status' => 'success',
             'message' => 'Meal assigned to user successfully',
