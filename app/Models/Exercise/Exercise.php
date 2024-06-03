@@ -22,6 +22,7 @@ class Exercise extends Model
 
     protected $fillable = [
         'name',
+        'run_duration',
         'status',
     ];
     protected $hidden = [

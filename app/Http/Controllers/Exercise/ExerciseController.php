@@ -38,6 +38,13 @@ class ExerciseController extends Controller
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
+     *      @OA\Parameter(
+     *         name="run_duration",
+     *         in="query",
+     *         description="run duration in minytes",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
@@ -53,13 +60,11 @@ class ExerciseController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'run_duration' => 'required|integer',
             'status' => 'nullable|boolean',
         ]);
 
-        $exercise = Exercise::query()->create([
-            'name' => $request->name,
-            'status' => $request->status ?? true
-        ]);
+        $exercise = Exercise::query()->create($request->all());
 
         return response()->json([
             'status' => 'success',
@@ -112,6 +117,13 @@ class ExerciseController extends Controller
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
+     * @OA\Parameter(
+     *         name="rub_duration",
+     *         in="query",
+     *         description="Exercise's run duration in minutes",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
      *     @OA\Parameter(
      *         name="name",
      *         in="query",
@@ -143,6 +155,7 @@ class ExerciseController extends Controller
         }
         $request->validate([
             'name' => 'required|string',
+            'run_duration' => 'required|integer',
             'status' => 'nullable|boolean',
         ]);
 
