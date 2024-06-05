@@ -76,6 +76,21 @@ class UserPlanExerciseController extends Controller
             'days.*' => 'required|int|between:0,6',
         ]);
         $userPlan = UserPlanExercise::query()->create($request->all());
+        foreach ($request->days as $day) {
+            $plan = UserPlanExercise::query()->where([
+                'user_id' => $request->user_id,
+            ])->whereJsonContains('days', (string)$day)
+                ->first();
+            if (isset($plan)) {
+                if (count($plan->days) == 1)
+                    $plan->update('is_work', false);
+                else {
+                    $updatedDays = array_diff($plan->days, [$day]);
+                    $plan->update('days', $updatedDays);
+                }
+
+            }
+        }
 
         return response()->json([
             'status' => 'success',
@@ -227,7 +242,7 @@ class UserPlanExerciseController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Today\'s plan retrieved successfully',
-            'todayPlan' =>PlanExerciseResource::make($todayPlan->plan),
+            'todayPlan' => PlanExerciseResource::make($todayPlan->plan),
         ]);
     }
 
@@ -247,7 +262,7 @@ class UserPlanExerciseController extends Controller
      */
     public function getPlanByDate(Request $request): \Illuminate\Http\JsonResponse
     {
-         $request->validate([
+        $request->validate([
             'date' => 'required|date_format:Y-m-d',
         ]);
         $date = Carbon::createFromFormat('Y-m-d', $request->date);
@@ -265,7 +280,7 @@ class UserPlanExerciseController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plan by date retrieved successfully',
-            'plan' =>PlanExerciseResource::make( $plan->plan ),
+            'plan' => PlanExerciseResource::make($plan->plan),
         ]);
     }
 }

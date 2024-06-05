@@ -38,6 +38,14 @@ class PlanExercise extends Model
     }
 
     /**
+     * Get the run for the plan.
+     */
+    public function run()
+    {
+        return $this->belongsToMany(Exercise::class, ExercisePlanExercise::class);
+    }
+
+    /**
      * Get the note for the plan.
      */
     public function note():HasOne

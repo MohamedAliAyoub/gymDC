@@ -18,7 +18,8 @@ class PlanExerciseResource extends JsonResource
             'id' => $this->id,
             'plan_id' => $this->name,
             'status' => $this->status,
-            'exercises' => ExerciseResource::collection($this->exercises) ?? [],
+            'exercises' => ExerciseResource::collection($this->exercises->where('run_duration' , null)) ?? [],
+            'run' =>  $this->run->where('run_duration' , '!=' , null)->first() ?? [],
             'note' => $this->note,
             'done' => $this->done,
         ];
