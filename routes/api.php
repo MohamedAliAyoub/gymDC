@@ -178,6 +178,7 @@ Route::middleware('auth:api')->group(function () {
            Route::get('/', [ExerciseDetailsController::class, 'index']);
             Route::get('/{id}', [ExerciseDetailsController::class, 'show']);
             Route::post('/', [ExerciseDetailsController::class, 'create']);
+            Route::put('/previous/{id}', [ExerciseDetailsController::class, 'updatePrevious']);
             Route::put('/{id}', [ExerciseDetailsController::class, 'update']);
             Route::delete('/{id}', [ExerciseDetailsController::class, 'delete']);
         });

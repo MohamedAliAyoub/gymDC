@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('meals', function (Blueprint $table) {
-            $table->float('calories')->default(0)->after('fat');
+            $table->float('calories')->default(0)->after('name');
         });
     }
 

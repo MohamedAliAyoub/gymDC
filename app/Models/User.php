@@ -25,7 +25,8 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         'name',
         'email',
         'password',
-        'image'
+        'image',
+        'mobile'
     ];
 
     protected $appends = ['image_url'];

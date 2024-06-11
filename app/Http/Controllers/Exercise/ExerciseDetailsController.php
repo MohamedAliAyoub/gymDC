@@ -180,6 +180,63 @@ class ExerciseDetailsController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/api/exercise/exercise-details/previous/{id}",
+     *     summary="Update a specific exercise detail only previous",
+     *     tags={"Exercise"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Exercise detail's id",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="previous", type="integer"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Exercise details updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/ExerciseDetails")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Exercise details not found",
+     *     ),
+     * )
+     */
+    public function updatePrevious(Request $request, int $id)
+    {
+        $request->validate([
+            'previous' => 'required|integer',
+        ]);
+        $exerciseDetails = ExerciseDetails::query()->find($id);
+
+        if (!$exerciseDetails) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Exercise details not found',
+            ], 404);
+        }
+
+        $exerciseDetails->update($request->all());
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Exercise details updated successfully',
+            'exerciseDetails' => $exerciseDetails,
+        ]);
+    }
+
+    /**
      * @OA\Delete(
      *     path="/api/exercise/exercise-details/{id}",
      *     summary="Delete a specific exercise detail",
