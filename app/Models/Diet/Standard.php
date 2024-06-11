@@ -60,7 +60,7 @@ class Standard extends Model
      */
     public function standardType()
     {
-        return $this->belongsTo(StandardType::class);
+        return $this->belongsTo(StandardType::class , 'standard_type_id');
     }
 
     /**
@@ -68,7 +68,7 @@ class Standard extends Model
      */
     public function getStandardTypeNameAttribute()
     {
-        return $this->standardType->name ?? null;
+        return $this->standard_type->name ?? null;
     }
 
 }

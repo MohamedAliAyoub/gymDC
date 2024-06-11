@@ -20,7 +20,18 @@ class AppController extends Controller
      */
     public function getActivePlan()
     {
-        $userPlan = UserPlan::query()->where('user_id', auth()->id())->where('is_work', true)->first();
+        $userPlan = UserPlan::query()
+            ->where('user_id', auth()->id())
+            ->where('is_work', true)
+            ->with(['plan' => function ($q) {
+                $q->with(['meals' => function ($q) {
+                    $q->with(['items' => function ($q) {
+                        $q->with(['standard' => function ($q) {
+                            $q->with('standardType');
+                        }]);
+                    }]);
+                }]);
+            }])->first();
 
         if (!$userPlan) {
             return response()->json([

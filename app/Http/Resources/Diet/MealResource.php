@@ -18,6 +18,7 @@ class MealResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'items_count' => $this->items->count(),
             'items' => ItemResource::collection($this->items),
             'is_eaten' => Meal::hasEatenMealToday($this->id),
             'note' => $this->note,
