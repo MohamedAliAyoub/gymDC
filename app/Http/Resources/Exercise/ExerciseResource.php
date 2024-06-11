@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Exercise;
 
 use App\Models\Exercise\Exercise;
+use App\Models\Exercise\ExerciseDetails;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

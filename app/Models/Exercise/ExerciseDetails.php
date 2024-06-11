@@ -69,5 +69,11 @@ class ExerciseDetails extends Model
             ->exists();
     }
 
+    public static function is_full($rir , $tempo,$rest): bool
+    {
+        if (is_null($rir) || is_null($rest) || is_null($tempo))
+            return false;
+        return true;
+    }
 
 }
