@@ -17,13 +17,20 @@ class Item extends Model
 {
     use HasFactory;
 
+    const CAPSULE = 0;
+    const SINGLE = 1;
+    const COMPOUND = 2;
+
     protected $fillable = [
         'name',
+        'type',
         'status',
     ];
     protected $hidden = [
         'pivot'
     ];
+
+    protected $appends = ['type_label'];
 
     /**
      * Get the standards associated with the item.
@@ -44,5 +51,16 @@ class Item extends Model
     public function Standard()
     {
         return $this->hasOne(Standard::class , 'item_id' , 'id');
+    }
+
+    public function getTypeLabelAttribute()
+    {
+        $labels = [
+            self::CAPSULE => 'Capsule',
+            self::SINGLE => 'Single',
+            self::COMPOUND => 'Compound',
+        ];
+
+        return isset($labels[$this->type]) ? $labels[$this->type] : 'Single';
     }
 }

@@ -36,6 +36,13 @@ class ItemController extends Controller
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
+     *        @OA\Parameter(
+     *         name="type",
+     *         in="query",
+     *         description="Item's tyoe",
+     *         required=true,
+     *         @OA\Schema(type="number")
+     *     ),
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
@@ -51,6 +58,7 @@ class ItemController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'type' => 'nullable|integer|between:0,2',
             'status' => 'nullable|boolean',
         ]);
 
@@ -97,6 +105,7 @@ class ItemController extends Controller
         }
         $request->validate([
             'name' => 'required|string',
+            'type' => 'nullable|integer|between:0,2',
             'status' => 'nullable|boolean',
         ]);
 
