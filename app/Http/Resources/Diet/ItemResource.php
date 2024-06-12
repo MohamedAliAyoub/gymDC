@@ -17,6 +17,7 @@ class ItemResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name ?? null,
+            'calories' => $this->calories,
             'type' => $this->type_label,
             'standard_name' => $this->standard->name .' '.$this->standard->load('standardType')->standardType?->name ,
             'carbohydrate' => $this->standard->carbohydrate?? $this->itemDetails->sum(function ($itemDetail) {

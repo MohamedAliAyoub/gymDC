@@ -65,6 +65,8 @@ class ItemDetailsController extends Controller
             'name' => 'required|string',
             'item_id' => 'required|integer|exists:items,id',
             'status' => 'nullable|boolean',
+            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/']
+
         ]);
 
         $itemDetails = ItemDetails::create($request->all());
@@ -216,6 +218,7 @@ class ItemDetailsController extends Controller
             'name' => 'required|string',
             'item_id' => 'required|integer|exists:items,id',
             'status' => 'nullable|boolean',
+            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/']
         ]);
 
         $itemDetails->update($request->all());

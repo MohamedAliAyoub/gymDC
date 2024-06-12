@@ -54,6 +54,8 @@ class MealController extends Controller
         $request->validate([
             'name' => 'required|string',
             'status' => 'nullable',
+            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/']
+
         ]);
 
         $meal = Meal::query()->create($request->all());
@@ -100,6 +102,8 @@ class MealController extends Controller
         $request->validate([
             'name' => 'required|string',
             'status' => 'required|boolean',
+            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/']
+
         ]);
 
         $meal->update($request->all());

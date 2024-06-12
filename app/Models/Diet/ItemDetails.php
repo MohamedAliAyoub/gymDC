@@ -21,6 +21,7 @@ class ItemDetails extends Model
     protected $fillable = [
         'name',
         'item_id',
+        'calories',
         'status',
     ];
     protected $hidden = [
