@@ -25,6 +25,7 @@ class ItemDetailsResource extends JsonResource
             'protein' => $this->standard->protein ?? null,
             'fat' => $this->standard->fat ?? null,
 
+
         ];
     }
 }
