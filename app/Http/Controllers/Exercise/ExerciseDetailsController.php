@@ -27,20 +27,21 @@ class ExerciseDetailsController extends Controller
     }
 
     /**
- * @OA\Schema(
- *     schema="ExerciseDetails",
- *     type="object",
- *     @OA\Property(property="name", type="string"),
- *     @OA\Property(property="previous", type="integer"),
- *     @OA\Property(property="rir", type="integer"),
- *     @OA\Property(property="tempo", type="string"),
- *     @OA\Property(property="rest", type="integer"),
- *     @OA\Property(property="kg", type="integer"),
- *     @OA\Property(property="reps", type="integer"),
- *     @OA\Property(property="status", type="boolean"),
- *     @OA\Property(property="exercise_id", type="integer"),
- * )
- */
+     * @OA\Schema(
+     *     schema="ExerciseDetails",
+     *     type="object",
+     *     @OA\Property(property="name", type="string"),
+     *     @OA\Property(property="previous", type="integer"),
+     *     @OA\Property(property="rir", type="integer"),
+     *     @OA\Property(property="tempo", type="string"),
+     *     @OA\Property(property="rest", type="integer"),
+     *     @OA\Property(property="kg", type="integer"),
+     *     @OA\Property(property="reps", type="integer"),
+     *     @OA\Property(property="status", type="boolean"),
+     *     @OA\Property(property="exercise_id", type="integer"),
+     *     @OA\Property(property="duration", type="integer"),
+     * )
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -53,6 +54,7 @@ class ExerciseDetailsController extends Controller
             'reps' => 'integer|nullable',
             'status' => 'nullable|boolean',
             'exercise_id' => 'required|exists:exercises,id',
+            'duration' => 'nullable|integer',
         ]);
         $exerciseDetails = ExerciseDetails::query()->create($request->all());
 
@@ -129,6 +131,7 @@ class ExerciseDetailsController extends Controller
      *             @OA\Property(property="kg", type="integer"),
      *             @OA\Property(property="reps", type="integer"),
      *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="duration", type="integer"),
      *             @OA\Property(property="exercise_id", type="integer", description="Must exist in exercises table"),
      *         )
      *     ),
@@ -159,6 +162,7 @@ class ExerciseDetailsController extends Controller
             'reps' => 'integer|nullable',
             'status' => 'nullable|boolean',
             'exercise_id' => 'required|exists:exercises,id',
+            'duration' => 'nullable|integer',
         ]);
 
         $exerciseDetails = ExerciseDetails::query()->find($id);

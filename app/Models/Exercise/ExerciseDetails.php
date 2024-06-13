@@ -35,6 +35,7 @@ class ExerciseDetails extends Model
         'reps',
         'status',
         'exercise_id',
+        'duration',
     ];
 
     /**

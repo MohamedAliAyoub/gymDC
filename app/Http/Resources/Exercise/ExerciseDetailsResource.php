@@ -26,7 +26,8 @@ class ExerciseDetailsResource extends JsonResource
             'unit' => $this->unit,
             'day_names' => $this->day_names,
             'done' => ExerciseDetails::done($this->id),
-            'is_full' => ExerciseDetails::is_full($this->rir , $this->tempo , $this->rest)
+            'is_full' => ExerciseDetails::is_full($this->rir , $this->tempo , $this->rest),
+            'duration' => $this->duration,
 
         ];
     }
