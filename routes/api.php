@@ -44,8 +44,8 @@ Route::post('logout', [AuthController::class, 'logout']);
 Route::post('change-password', [AuthController::class, 'changePassword']);
 Route::get('profile', [AuthController::class, 'profile'])->middleware('auth:api');
 
-//Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
-//Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::get('auth/apple', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/apple/callback', [GoogleController::class, 'handleGoogleCallback']);

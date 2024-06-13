@@ -56,7 +56,7 @@ class Meal extends Model
             ->where('user_id', auth()->id())
             ->where('meal_id', $mealId)
             ->whereDate('created_at', now()->toDateString())
-            ->exists();
+            ->first()->is_eaten ?? false;
     }
 
 }
