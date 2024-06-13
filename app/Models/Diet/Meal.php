@@ -50,7 +50,7 @@ class Meal extends Model
         return $this->hasOne(Note::class);
     }
 
-    public static function hasEatenMealToday($mealId)
+    public static function hasEatenMealToday($mealId) : bool
     {
         return UserMeal::query()
             ->where('user_id', auth()->id())

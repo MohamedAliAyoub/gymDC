@@ -21,7 +21,7 @@ class MealResource extends JsonResource
             'calories' => $this->calories,
             'items_count' => $this->items->count(),
             'items' => ItemResource::collection($this->items),
-            'is_eaten' => Meal::hasEatenMealToday($this->id),
+            'is_eaten' => Meal::hasEatenMealToday($this->id)  ,
             'note' => $this->note,
         ];
     }
