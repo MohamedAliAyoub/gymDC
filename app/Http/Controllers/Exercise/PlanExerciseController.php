@@ -211,6 +211,9 @@ class PlanExerciseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'rest day today',
+                'todayPlan' => [
+                    'rest_day' => true,
+                ]
             ]);
         }
         return response()->json([

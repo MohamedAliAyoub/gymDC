@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Exercise;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Exercise\ExerciseResource;
 use App\Http\Resources\Exercise\PlanExerciseResource;
+use App\Http\Resources\Exercise\RestDayResource;
 use App\Http\Resources\Exercise\UserPlanExerciseResource;
 use App\Models\Exercise\NoteExercise;
 use App\Models\Exercise\UserPlanExercise;
@@ -236,6 +237,9 @@ class UserPlanExerciseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'rest day today',
+                'todayPlan' =>  [
+                    'rest_day' => true,
+                ],
             ]);
         }
 
@@ -273,6 +277,9 @@ class UserPlanExerciseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'rest day today',
+                'plane' =>  [
+                    'rest_day' => true,
+                ],
             ]);
         }
 

@@ -23,6 +23,7 @@ class PlanExerciseResource extends JsonResource
             'run' =>  $this->run->where('run_duration' , '!=' , null)->first() ?? [],
             'note' => $this->note,
             'done' => $this->done,
+            'rest_day' => false,
         ];
     }
 }
