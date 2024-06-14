@@ -23,11 +23,10 @@ class DoneExercise extends Model
     use HasFactory;
 
     protected $fillable = [
-        'plan_id',
         'user_id',
         'exercise_id',
-        'exercise_details_id',
         'rir',
+        'sets',
         'tempo',
         'rest',
         'kg',
@@ -35,7 +34,7 @@ class DoneExercise extends Model
         'status',
         'is_run',
         'run_duration',
-
+        'is_done'
     ];
 
     /**
@@ -79,22 +78,8 @@ class DoneExercise extends Model
     public function doneToday()
     {
         return $this->where('user_id', auth()->id())
+            ->where('is_done', true)
             ->whereDate('created_at', Carbon::today());
-    }
-
-    public function isPlanIdInDoneExercise(int $planId): bool
-    {
-        return $this->doneToday()->where('plan_id', $planId)->exists();
-    }
-
-    public function isExerciseIdInDoneExercise(int $exerciseId): bool
-    {
-        return $this->doneToday()->where('exercise_id', $exerciseId)->exists();
-    }
-
-    public function isExerciseDetailsIdInDoneExercise(int $exerciseDetailsId): bool
-    {
-        return $this->doneToday()->where('exercise_details_id', $exerciseDetailsId)->exists();
     }
 }
 

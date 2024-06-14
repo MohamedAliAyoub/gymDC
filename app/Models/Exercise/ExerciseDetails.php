@@ -32,6 +32,7 @@ class ExerciseDetails extends Model
         'tempo',
         'rest',
         'kg',
+        'sets',
         'reps',
         'status',
         'exercise_id',
@@ -47,28 +48,11 @@ class ExerciseDetails extends Model
     }
 
     /**
-     * Get the done exercise that the exercise details belongs to.
-     */
-    public function doneExercise()
-    {
-        return $this->hasMany(DoneExercise::class, 'exercise_details_id', 'id');
-    }
-
-
-    /**
-     * Check if the user has done the exercise details today
+     * Check if the exercise details is done
      *
-     * @param $detailsId
+     * @param int $id
      * @return bool
      */
-    public static function Done($detailsId): bool
-    {
-        return DoneExercise::query()
-            ->where('exercise_details_id', $detailsId)
-            ->where('user_id', auth()->id())
-            ->whereDate('created_at', Carbon::today())
-            ->exists();
-    }
 
     public static function is_full($rir , $tempo,$rest): bool
     {

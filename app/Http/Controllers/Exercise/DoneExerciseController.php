@@ -93,26 +93,42 @@ class DoneExerciseController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'exercise_id' => 'nullable|exists:exercises,id',
-            'plan_id' => 'nullable|exists:exercise_plans,id',
-            'user_id' => 'nullable|exists:users,id', // Add this line
+            'exercise_id' => 'required|exists:exercises,id',
             'reps' => 'nullable|integer',
             'kg' => 'nullable|integer',
             'rir' => 'nullable|integer',
             'tempo' => 'nullable|string',
             'rest' => 'nullable|integer',
-            'run_duration' => 'nullable|integer', // Add this line
-            'status' => 'nullable|boolean',
+            'run_duration' => 'nullable|integer',
+            'sets' => 'nullable|integer',
         ]);
 
-        if (!$request->has('user_id')) {
-            $request->merge(['user_id' => auth()->id()]);
+        $doneExercise = DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exercise_id', $request->exercise_id)
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
+
+        if ($doneExercise) {
+            $doneExercise->update(['is_done' => !$doneExercise->is_done]);
+        } else {
+            $doneExercise = DoneExercise::create([
+                'user_id' => auth()->id(),
+                'exercise_id' => $request->exercise_id,
+                'reps' => $request->reps,
+                'kg' => $request->kg,
+                'rir' => $request->rir,
+                'tempo' => $request->tempo,
+                'rest' => $request->rest,
+                'run_duration' => $request->run_duration,
+                'sets' => $request->sets,
+                'status' => 1,
+            ]);
         }
-        $doneExercise = DoneExercise::query()->create($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Done exercise created successfully',
+            'message' => 'Done exercise created or updated successfully',
             'doneExercise' => $doneExercise,
         ]);
     }
@@ -232,6 +248,7 @@ class DoneExerciseController extends Controller
             'tempo' => 'nullable|string',
             'rest' => 'nullable|integer',
             'status' => 'nullable|boolean',
+            'sets' => 'nullable|integer',
         ]);
 
         $doneExercise = DoneExercise::query()->find($id);

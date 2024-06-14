@@ -55,6 +55,7 @@ class ExerciseDetailsController extends Controller
             'status' => 'nullable|boolean',
             'exercise_id' => 'required|exists:exercises,id',
             'duration' => 'nullable|integer',
+            'sets' => 'nullable|integer',
         ]);
         $exerciseDetails = ExerciseDetails::query()->create($request->all());
 
@@ -163,6 +164,7 @@ class ExerciseDetailsController extends Controller
             'status' => 'nullable|boolean',
             'exercise_id' => 'required|exists:exercises,id',
             'duration' => 'nullable|integer',
+            'sets' => 'nullable|integer',
         ]);
 
         $exerciseDetails = ExerciseDetails::query()->find($id);

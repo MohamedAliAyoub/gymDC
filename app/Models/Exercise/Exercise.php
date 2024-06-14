@@ -64,6 +64,7 @@ class Exercise extends Model
         return DoneExercise::query()
             ->where('user_id', auth()->id())
             ->where('exercise_id', $exerciseId)
+            ->where('is_done', true)
             ->whereDate('created_at', now()->toDateString())
             ->exists();
     }
