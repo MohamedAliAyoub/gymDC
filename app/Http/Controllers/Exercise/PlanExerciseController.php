@@ -249,7 +249,7 @@ class PlanExerciseController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plan by date retrieved successfully',
-            'plan' => $plan,
+            'plan' => PlanExerciseResource::make($plan),
         ]);
     }
 

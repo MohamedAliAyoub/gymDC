@@ -20,7 +20,7 @@ class PlanExerciseResource extends JsonResource
             'status' => $this->status,
             'exercises_count' => $this->exercises->whereNull('run_duration')->count(),
             'exercises' => ExerciseResource::collection($this->exercises->whereNull('run_duration')) ?? [],
-            'run' =>  $this->run->where('run_duration' , '!=' , null)->first() ?? [],
+            'run' => $this->run->where('run_duration', '!=', null)->first() ? RunExerciseResource::make($this->run->where('run_duration', '!=', null)->first()) : [],
             'note' => $this->note,
             'done' => $this->done,
             'rest_day' => false,
