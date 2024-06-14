@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $status
  * @property int $standard_type_id
  * @property string $standard_type_name
+ * @property int $number
  * @package App\Models\Diet
  */
 class Standard extends Model
@@ -32,6 +33,7 @@ class Standard extends Model
         'item_details_id',
         'standard_type_id',
         'status',
+        'number'
     ];
 
     protected $appends = ['standard_type_name'];

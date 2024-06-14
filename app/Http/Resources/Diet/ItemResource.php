@@ -19,16 +19,17 @@ class ItemResource extends JsonResource
             'name' => $this->name ?? null,
             'calories' => $this->calories,
             'type' => $this->type_label,
-            'standard_name' => $this->standard->name .' '.$this->standard->load('standardType')->standardType?->name ,
-            'carbohydrate' => $this->standard->carbohydrate?? $this->itemDetails->sum(function ($itemDetail) {
-                return $itemDetail->standard->carbohydrate ?? 0;
-            }),
-            'fat' => $this->standard->fat?? $this->itemDetails->sum(function ($itemDetail) {
-                return $itemDetail->standard->fat ?? 0;
-            }),
-            'protein' => $this->standard->protein?? $this->itemDetails->sum(function ($itemDetail) {
-                return $itemDetail->standard->protein ?? 0;
-            }),
+            'standard_name' => $this->standard->number . ' ' . $this->standard->load('standardType')->standardType?->name . ' ' . $this->standard->name,
+            'number' => $this->standard->number,
+            'carbohydrate' => $this->standard->carbohydrate ?? $this->itemDetails->sum(function ($itemDetail) {
+                    return $itemDetail->standard->carbohydrate ?? 0;
+                }),
+            'fat' => $this->standard->fat ?? $this->itemDetails->sum(function ($itemDetail) {
+                    return $itemDetail->standard->fat ?? 0;
+                }),
+            'protein' => $this->standard->protein ?? $this->itemDetails->sum(function ($itemDetail) {
+                    return $itemDetail->standard->protein ?? 0;
+                }),
             'item_details' => ItemDetailsResource::collection($this->itemDetails),
             'has_details' => $this->itemDetails->count() > 0 ? true : false,
 

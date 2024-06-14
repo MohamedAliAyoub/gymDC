@@ -101,6 +101,7 @@ class StandardController extends Controller
             'item_details_id' => 'nullable|integer|exists:item_details,id',
             'standard_type_id' => 'required|integer|exists:standard_types,id',
             'status' => 'required|boolean',
+            'number' => 'nullable|integer'
         ]);
 
         $standard = Standard::create($request->all());
@@ -196,6 +197,7 @@ class StandardController extends Controller
             'item_details_id' => 'required|integer',
             'status' => 'required|boolean',
             'standard_type_id' => 'required|integer|exists:standard_types,id',
+            'number' => 'nullable|integer'
         ]);
 
         $standard->update($request->all());
