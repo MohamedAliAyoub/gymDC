@@ -20,6 +20,7 @@ class RunExerciseResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'done' => Exercise::hasDoneExerciseToday($this->id),
+            'run_duration' => $this->run_duration,
         ];
     }
 }
