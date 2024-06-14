@@ -20,7 +20,10 @@ class Meal extends Model
     protected $fillable = [
         'name',
         'status',
-        'calories'
+        'calories',
+        'fat',
+        'carbohydrate',
+        'protein',
     ];
     protected $hidden = [
         'pivot'

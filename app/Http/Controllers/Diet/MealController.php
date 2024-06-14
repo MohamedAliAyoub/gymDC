@@ -54,7 +54,10 @@ class MealController extends Controller
         $request->validate([
             'name' => 'required|string',
             'status' => 'nullable',
-            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/']
+            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'fat' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'carbohydrate' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'protein' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
 
         ]);
 
@@ -102,7 +105,10 @@ class MealController extends Controller
         $request->validate([
             'name' => 'required|string',
             'status' => 'required|boolean',
-            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/']
+            'calories' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'fat' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'carbohydrate' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'protein' => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
 
         ]);
 
