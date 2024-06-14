@@ -19,6 +19,9 @@ class PlanResource extends JsonResource
             'name' => $this->name,
             'meals' => MealResource::collection($this->meals),
             'total_calories' => $this->meals->sum('calories'),
+            'total_carbohydrate' => $this->meals->sum('carbohydrate'),
+            'total_protein' => $this->meals->sum('protein'),
+            'total_fat' => $this->meals->sum('fat'),
             'notes' => $this->note,
         ];
     }
