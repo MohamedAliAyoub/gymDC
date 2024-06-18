@@ -17,9 +17,11 @@ class Item extends Model
 {
     use HasFactory;
 
-    const CAPSULE = 0;
-    const SINGLE = 1;
-    const COMPOUND = 2;
+    const RECIPE  = 0;
+    const FOOD_ITEM = 1;
+    const SUPPLEMENT = 2;
+
+
 
     protected $fillable = [
         'name',
@@ -57,9 +59,9 @@ class Item extends Model
     public function getTypeLabelAttribute()
     {
         $labels = [
-            self::CAPSULE => 'Capsule',
-            self::SINGLE => 'Single',
-            self::COMPOUND => 'Compound',
+            self::RECIPE => 'recipe',
+            self::FOOD_ITEM => 'food item',
+            self::SUPPLEMENT => 'supplement',
         ];
 
         return isset($labels[$this->type]) ? $labels[$this->type] : 'Single';
