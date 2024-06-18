@@ -29,64 +29,57 @@ class DoneExerciseController extends Controller
     /**
      * @OA\Post(
      *     path="/api/exercise/done",
-     *     summary="Create a new done exercise",
+     *     summary="Create or update a done exercise",
      *     @OA\Parameter(
      *         name="exercise_id",
      *         in="query",
-     *         description="Exercise's id",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="plan_id",
-     *         in="query",
-     *         description="Plan's id",
+     *         description="The ID of the exercise",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="reps",
      *         in="query",
-     *         description="Reps",
-     *         required=true,
+     *         description="The number of repetitions of the exercise",
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="kg",
      *         in="query",
-     *         description="Kg",
-     *         required=true,
+     *         description="The weight used in the exercise, in kilograms",
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="rir",
      *         in="query",
-     *         description="Rir",
-     *         required=true,
+     *         description="The reps in reserve",
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="tempo",
      *         in="query",
-     *         description="Tempo",
-     *         required=true,
+     *         description="The tempo of the exercise",
+     *         required=false,
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         name="rest",
      *         in="query",
-     *         description="Rest",
-     *         required=true,
+     *         description="The rest time in seconds",
+     *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
-     *         description="Status",
+     *         description="The status of the exercise",
      *         required=false,
      *         @OA\Schema(type="boolean")
      *     ),
-     *     @OA\Response(response="200", description="Done exercise created successfully"),
+     *     @OA\Response(response="200", description="Done exercise created or updated successfully"),
      *     @OA\Response(response="422", description="Validation errors")
      * )
      */
@@ -115,6 +108,206 @@ class DoneExerciseController extends Controller
             $doneExercise = DoneExercise::create([
                 'user_id' => auth()->id(),
                 'exercise_id' => $request->exercise_id,
+                'reps' => $request->reps,
+                'kg' => $request->kg,
+                'rir' => $request->rir,
+                'tempo' => $request->tempo,
+                'rest' => $request->rest,
+                'run_duration' => $request->run_duration,
+                'sets' => $request->sets,
+                'status' => 1,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Done exercise created or updated successfully',
+            'doneExercise' => $doneExercise,
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/exercise/done",
+     *     summary="Create or update a done exercise",
+     *     @OA\Parameter(
+     *         name="exercise_details_id",
+     *         in="query",
+     *         description="The ID of the exercise details",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="reps",
+     *         in="query",
+     *         description="The number of repetitions of the exercise",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="kg",
+     *         in="query",
+     *         description="The weight used in the exercise, in kilograms",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="rir",
+     *         in="query",
+     *         description="The reps in reserve",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="tempo",
+     *         in="query",
+     *         description="The tempo of the exercise",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="rest",
+     *         in="query",
+     *         description="The rest time in seconds",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="The status of the exercise",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(response="200", description="Done exercise created or updated successfully"),
+     *     @OA\Response(response="422", description="Validation errors")
+     * )
+     */
+    public function createWithDetails(Request $request)
+    {
+        $request->validate([
+            'exercise_details_id' => 'required|exists:exercise_details,id',
+            'reps' => 'nullable|integer',
+            'kg' => 'nullable|integer',
+            'rir' => 'nullable|integer',
+            'tempo' => 'nullable|string',
+            'rest' => 'nullable|integer',
+            'run_duration' => 'nullable|integer',
+            'sets' => 'nullable|integer',
+        ]);
+
+        $doneExercise = DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exercise_details_id', $request->exercise_details_id)
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
+
+        if ($doneExercise) {
+            $doneExercise->update(['is_done' => !$doneExercise->is_done]);
+        } else {
+            $doneExercise = DoneExercise::create([
+                'user_id' => auth()->id(),
+                'exercise_details_id' => $request->exercise_details_id,
+                'reps' => $request->reps,
+                'kg' => $request->kg,
+                'rir' => $request->rir,
+                'tempo' => $request->tempo,
+                'rest' => $request->rest,
+                'run_duration' => $request->run_duration,
+                'sets' => $request->sets,
+                'status' => 1,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Done exercise created or updated successfully',
+            'doneExercise' => $doneExercise,
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/exercise/done",
+     *     summary="Create or update a done exercise",
+     *     @OA\Parameter(
+     *         name="plan_id",
+     *         in="query",
+     *         description="The ID of the plan",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="reps",
+     *         in="query",
+     *         description="The number of repetitions of the exercise",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="kg",
+     *         in="query",
+     *         description="The weight used in the exercise, in kilograms",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="rir",
+     *         in="query",
+     *         description="The reps in reserve",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="tempo",
+     *         in="query",
+     *         description="The tempo of the exercise",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="rest",
+     *         in="query",
+     *         description="The rest time in seconds",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="The status of the exercise",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(response="200", description="Done exercise created or updated successfully"),
+     *     @OA\Response(response="422", description="Validation errors")
+     * )
+     */
+    public function createWithPlan(Request $request)
+    {
+        $request->validate([
+            'plan_id' => 'required|exists:plans,id',
+            'reps' => 'nullable|integer',
+            'kg' => 'nullable|integer',
+            'rir' => 'nullable|integer',
+            'tempo' => 'nullable|string',
+            'rest' => 'nullable|integer',
+            'run_duration' => 'nullable|integer',
+            'sets' => 'nullable|integer',
+        ]);
+
+        $doneExercise = DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('plan_id', $request->plan_id)
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
+
+        if ($doneExercise) {
+            $doneExercise->update(['is_done' => !$doneExercise->is_done]);
+        } else {
+            $doneExercise = DoneExercise::create([
+                'user_id' => auth()->id(),
+                'plan_id' => $request->plan_id,
                 'reps' => $request->reps,
                 'kg' => $request->kg,
                 'rir' => $request->rir,

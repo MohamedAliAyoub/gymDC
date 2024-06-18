@@ -24,7 +24,6 @@ use App\Http\Controllers\Exercise\ExerciseDetailsController;
 use App\Http\Controllers\Exercise\ExercisePlanExerciseController;
 
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -139,9 +138,13 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{exercise}', [ExerciseController::class, 'update']);
             Route::get('/{exercise}', [ExerciseController::class, 'show']);
             Route::delete('/{exercise}', [ExerciseController::class, 'delete']);
-       Route::post('/add/assignExercisesToPlan' , [ExercisePlanExerciseController::class , 'assignExercisesToPlan']);
+            Route::post('/add/assignExercisesToPlan', [ExercisePlanExerciseController::class, 'assignExercisesToPlan']);
         });
         Route::group(['prefix' => 'done'], function () {
+
+            Route::post('/createWithDetails', [DoneExerciseController::class, 'createWithDetails']);
+            Route::post('/createWithPlan', [DoneExerciseController::class, 'createWithPlan']);
+
             Route::get('/', [DoneExerciseController::class, 'index']);
             Route::get('/{id}', [DoneExerciseController::class, 'show']);
             Route::post('/', [DoneExerciseController::class, 'create']);
@@ -156,7 +159,7 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/{id}', [NoteExerciseCotroller::class, 'delete']);
         });
         Route::group(['prefix' => 'user-plan-exercise'], function () {
-            Route::get('/' , [UserPlanExerciseController::class, 'index']);
+            Route::get('/', [UserPlanExerciseController::class, 'index']);
             Route::get('/{id}', [UserPlanExerciseController::class, 'show']);
             Route::post('/', [UserPlanExerciseController::class, 'create']);
             Route::put('/{id}', [UserPlanExerciseController::class, 'update']);
@@ -175,7 +178,7 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/get/planByDate', [PlanExerciseController::class, 'getPlanByDate']);
         });
         Route::group(['prefix' => 'exercise-details'], function () {
-           Route::get('/', [ExerciseDetailsController::class, 'index']);
+            Route::get('/', [ExerciseDetailsController::class, 'index']);
             Route::get('/{id}', [ExerciseDetailsController::class, 'show']);
             Route::post('/', [ExerciseDetailsController::class, 'create']);
             Route::put('/previous/{id}', [ExerciseDetailsController::class, 'updatePrevious']);
