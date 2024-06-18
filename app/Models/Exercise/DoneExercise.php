@@ -25,6 +25,8 @@ class DoneExercise extends Model
     protected $fillable = [
         'user_id',
         'exercise_id',
+        'exercise_details_id',
+        'plan_id',
         'rir',
         'sets',
         'tempo',
@@ -35,6 +37,10 @@ class DoneExercise extends Model
         'is_run',
         'run_duration',
         'is_done'
+    ];
+    protected $casts = [
+        'is_done' => 'boolean',
+        'is_run' => 'boolean',
     ];
 
     /**
@@ -80,6 +86,54 @@ class DoneExercise extends Model
         return $this->where('user_id', auth()->id())
             ->where('is_done', true)
             ->whereDate('created_at', Carbon::today());
+    }
+
+    /**
+     * Check if the user has done the exercise today
+     *
+     * @param $exerciseDetailsId
+     * @return bool
+     */
+    public static function hasDoneExerciseDetailsToday($exerciseDetailsId): bool
+    {
+        return DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exercise_details_id', $exerciseDetailsId)
+            ->where('is_done', true)
+            ->whereDate('created_at', now()->toDateString())
+            ->exists();
+    }
+
+    /**
+     * Check if the user has done the exercise today
+     *
+     * @param $planId
+     * @return bool
+     */
+    public static  function hasDonePlanToday($planId): bool
+    {
+        return DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('plan_id', $planId)
+            ->where('is_done', true)
+            ->whereDate('created_at', now()->toDateString())
+            ->exists();
+    }
+
+    /**
+     * Check if the user has done the exercise today
+     *
+     * @param $exerciseId
+     * @return bool
+     */
+    public static function hasDoneExerciseToday($exerciseId): bool
+    {
+        return DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exercise_id', $exerciseId)
+            ->where('is_done', true)
+            ->whereDate('created_at', now()->toDateString())
+            ->exists();
     }
 }
 

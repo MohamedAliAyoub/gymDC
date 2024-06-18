@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Exercise;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Exercise\DoneExerciseResource;
 use App\Models\Exercise\DoneExercise;
 use Illuminate\Http\Request;
 
@@ -104,6 +105,7 @@ class DoneExerciseController extends Controller
 
         if ($doneExercise) {
             $doneExercise->update(['is_done' => !$doneExercise->is_done]);
+
         } else {
             $doneExercise = DoneExercise::create([
                 'user_id' => auth()->id(),
@@ -116,13 +118,22 @@ class DoneExerciseController extends Controller
                 'run_duration' => $request->run_duration,
                 'sets' => $request->sets,
                 'status' => 1,
+                'is_done' => 1,
             ]);
         }
 
+        $doneResponse = [
+            'id' => $doneExercise->id,
+            'is_done' => $doneExercise->is_done
+        ];
+        if ($request->run_duration != null) {
+            $doneResponse['run_duration'] = $request->run_duration;
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Done exercise created or updated successfully',
-            'doneExercise' => $doneExercise,
+            'doneExercise' => $doneResponse,
+
         ]);
     }
 
@@ -216,13 +227,18 @@ class DoneExerciseController extends Controller
                 'run_duration' => $request->run_duration,
                 'sets' => $request->sets,
                 'status' => 1,
+                'is_done' => 1,
             ]);
         }
+
 
         return response()->json([
             'status' => 'success',
             'message' => 'Done exercise created or updated successfully',
-            'doneExercise' => $doneExercise,
+            'doneExercise' => [
+                'id' => $doneExercise->id,
+                'is_done' => $doneExercise->is_done
+            ],
         ]);
     }
 
@@ -316,13 +332,17 @@ class DoneExerciseController extends Controller
                 'run_duration' => $request->run_duration,
                 'sets' => $request->sets,
                 'status' => 1,
+                'is_done' => 1,
             ]);
         }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Done exercise created or updated successfully',
-            'doneExercise' => $doneExercise,
+            'doneExercise' => [
+                'id' => $doneExercise->id,
+                'is_done' => $doneExercise->is_done
+            ],
         ]);
     }
 

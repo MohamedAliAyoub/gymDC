@@ -2,13 +2,12 @@
 
 namespace App\Http\Resources\Exercise;
 
-use App\Models\Exercise\DoneExercise;
 use App\Models\Exercise\Exercise;
 use App\Models\Exercise\ExerciseDetails;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ExerciseResource extends JsonResource
+class DoneExerciseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,12 +18,7 @@ class ExerciseResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'is_done' => DoneExercise::hasDoneExerciseToday($this->id),
-            'status' => $this->status,
             'done' => Exercise::hasDoneExerciseToday($this->id),
-            'details' => ExerciseDetailsResource::collection($this->details),
-            'note' => $this->note,
         ];
     }
 }

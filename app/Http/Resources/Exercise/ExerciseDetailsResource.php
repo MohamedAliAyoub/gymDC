@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Exercise;
 
+use App\Models\Exercise\DoneExercise;
 use App\Models\Exercise\ExerciseDetails;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,6 +20,7 @@ class ExerciseDetailsResource extends JsonResource
             'id' => $this->id,
             'exercise_id' => $this->exercise_id,
             'exercise' => $this->exercise->name,
+            'is_done' => DoneExercise::hasDoneExerciseDetailsToday($this->id),
             'sets' => $this->sets,
             'rir' => $this->rir,
             'reps' => $this->reps,

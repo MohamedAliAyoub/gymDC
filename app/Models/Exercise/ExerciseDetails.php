@@ -61,4 +61,20 @@ class ExerciseDetails extends Model
         return true;
     }
 
+    /**
+     * Check if the user has done the exercise today
+     *
+     * @param $exerciseDetailsId
+     * @return bool
+     */
+    public static function hasDoneExerciseToday($exerciseDetailsId): bool
+    {
+        return DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exerciseDetailsId', $exerciseDetailsId)
+            ->where('is_done', true)
+            ->whereDate('created_at', now()->toDateString())
+            ->exists();
+    }
+
 }
