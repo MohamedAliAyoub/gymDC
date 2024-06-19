@@ -65,11 +65,15 @@ class GoogleController extends Controller
             $token = JWTAuth::fromUser($newUser);
         }
 
+
         // Mask the email
         $emailParts = explode("@", $existingUser->email ?? $newUser->email);
-        $emailParts[0] = substr($emailParts[0], 0, 3) . str_repeat('*', strlen($emailParts[0]) - 3);
+        $domainParts = explode(".", $emailParts[1]);
+        $domainParts[0] = substr($domainParts[0], 0, 1) . str_repeat('*', strlen($domainParts[0]) - 1);
+        $emailParts[1] = implode(".", $domainParts);
 
         $maskedEmail = implode("@", $emailParts);
+
 
         return response()->json([
             'status' => 'success',
@@ -77,6 +81,8 @@ class GoogleController extends Controller
             'user' => [
                 'name' => $existingUser->name ?? $newUser->name,
                 'email' => $maskedEmail,
+                'image' => $existingUser->image_url ?? $newUser->image_url,
+
             ],
             'token' => $token,
         ]);
