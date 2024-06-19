@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\FormStatusEnum;
+use App\Enums\SubscriptionStatusEnum;
 use App\Enums\UserTypeEnum;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -12,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable implements JWTSubject, CanResetPassword
 {
@@ -30,6 +33,18 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         'mobile',
         'google_id',
         'type',
+        'subscription_status',
+        'packages',
+        'form_status',
+        'subscription_status',
+        'packages',
+        'form_status',
+        'age',
+        'weight',
+        'height',
+        'vib',
+        'nutrition_coach_id',
+        'work_out_coach_id',
     ];
 
     protected $appends = ['image_url'];
@@ -87,16 +102,58 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         $this->notify(new ResetPasswordNotification($token));
     }
 
-    public function getImageUrlAttribute()
+    public function workoutCoach(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'work_out_coach_id');
+    }
+
+    public function nutritionCoach(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'nutrition_coach_id');
+    }
+
+    public function getImageUrlAttribute(): string
     {
         return $this->image ? Storage::disk('public')->url($this->image) : Storage::disk('public')->url('users/default.jpg');
     }
 
-    public function getTypeAttribute($value) {
+    public function getTypeAttribute($value): UserTypeEnum
+    {
         return UserTypeEnum::fromValue($value);
     }
 
-    public function setTypeAttribute(UserTypeEnum $type) {
+    public function setTypeAttribute(UserTypeEnum $type)
+    {
         $this->attributes['type'] = $type->value;
+    }
+
+    public function getFormStatusAttribute($value): FormStatusEnum
+    {
+        return FormStatusEnum::fromValue($value);
+    }
+
+    public function setFormStatusAttribute(FormStatusEnum $status)
+    {
+        $this->attributes['status'] = $status->value;
+    }
+
+    public function getSubscriptionStatusAttribute($value): SubscriptionStatusEnum
+    {
+        return SubscriptionStatusEnum::fromValue($value);
+    }
+
+    public function setSubscriptionStatusAttribute(SubscriptionStatusEnum $status)
+    {
+        $this->attributes['status'] = $status->value;
+    }
+
+    public function getPackageAttribute($value): SubscriptionStatusEnum
+    {
+        return SubscriptionStatusEnum::fromValue($value);
+    }
+
+    public function setPackageAttribute(SubscriptionStatusEnum $status)
+    {
+        $this->attributes['status'] = $status->value;
     }
 }
