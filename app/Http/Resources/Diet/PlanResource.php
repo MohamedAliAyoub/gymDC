@@ -22,7 +22,7 @@ class PlanResource extends JsonResource
             'total_carbohydrate' => $this->meals->sum('carbohydrate'),
             'total_protein' => $this->meals->sum('protein'),
             'total_fat' => $this->meals->sum('fat'),
-            'notes' => $this->note,
+            'notes' => $this->note?->content,
         ];
     }
 }
