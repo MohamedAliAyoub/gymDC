@@ -82,7 +82,6 @@ class GoogleController extends Controller
                 'name' => $existingUser->name ?? $newUser->name,
                 'email' => $maskedEmail,
                 'image' => $existingUser->image_url ?? $newUser->image_url,
-
             ],
             'token' => $token,
         ]);

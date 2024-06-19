@@ -38,7 +38,7 @@ class Standard extends Model
 
     protected $appends = ['standard_type_name'];
     protected $hidden = [
-       'created_at' , 'updated_at'
+        'created_at', 'updated_at'
     ];
 
     /**
@@ -62,7 +62,7 @@ class Standard extends Model
      */
     public function standardType()
     {
-        return $this->belongsTo(StandardType::class , 'standard_type_id');
+        return $this->belongsTo(StandardType::class, 'standard_type_id');
     }
 
     /**
@@ -71,6 +71,11 @@ class Standard extends Model
     public function getStandardTypeNameAttribute()
     {
         return $this->standard_type->name ?? null;
+    }
+
+    public function getNumberAttribute($value)
+    {
+        return $value ?? 0;
     }
 
 }
