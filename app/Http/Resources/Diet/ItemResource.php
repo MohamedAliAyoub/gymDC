@@ -20,7 +20,7 @@ class ItemResource extends JsonResource
             'calories' => $this->calories,
             'type' => $this->type_label,
             'standard_name' => $this->standard->number . ' ' . $this->standard->load('standardType')->standardType?->name . ' ' . $this->standard->name,
-            'number' => $this->standard->number,
+            'number' => $this->standard->number ?? 0,
             'carbohydrate' => $this->standard->carbohydrate ?? $this->itemDetails->sum(function ($itemDetail) {
                     return $itemDetail->standard->carbohydrate ?? 0;
                 }),
