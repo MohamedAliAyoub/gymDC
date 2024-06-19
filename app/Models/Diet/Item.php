@@ -64,6 +64,6 @@ class Item extends Model
             self::SUPPLEMENT => 'supplement',
         ];
 
-        return isset($labels[$this->type]) ? $labels[$this->type] : 'Single';
+        return $labels[$this->type] ?? 'food item';
     }
 }
