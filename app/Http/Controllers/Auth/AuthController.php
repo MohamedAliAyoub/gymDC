@@ -53,7 +53,9 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
+        User::query()->update([
+            'type' => UserTypeEnum::Client
+        ]);
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
