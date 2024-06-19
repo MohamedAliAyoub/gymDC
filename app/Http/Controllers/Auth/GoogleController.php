@@ -57,7 +57,8 @@ class GoogleController extends Controller
             $newUser = new User;
             $newUser->name = $user->getName();
             $newUser->email = $user->getEmail();
-            $newUser->google_id = $user->getId();
+            $newUser->google_id = $user->id;
+            $newUser->password = bcrypt($user->getGoogleId());
             $newUser->save();
 
             $token = JWTAuth::fromUser($newUser);

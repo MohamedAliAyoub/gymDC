@@ -83,9 +83,17 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         $this->notify(new ResetPasswordNotification($token));
     }
 
-  public function getImageUrlAttribute()
-{
-    return $this->image ? Storage::disk('public')->url($this->image) :  Storage::disk('public')->url('users/default.jpg');
-}
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? Storage::disk('public')->url($this->image) : Storage::disk('public')->url('users/default.jpg');
+    }
 
+    /**
+     * Get the item's name.
+     * @return string
+     */
+    public function getGoogleId(): string
+    {
+        return $this->google_id;
+    }
 }

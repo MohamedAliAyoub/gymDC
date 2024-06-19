@@ -19,11 +19,9 @@ class Item extends Model
 {
     use HasFactory;
 
-    const RECIPE  = 0;
+    const RECIPE = 0;
     const FOOD_ITEM = 1;
     const SUPPLEMENT = 2;
-
-
 
 
     protected $fillable = [
@@ -56,7 +54,7 @@ class Item extends Model
      */
     public function Standard()
     {
-        return $this->hasOne(Standard::class , 'item_id' , 'id');
+        return $this->hasOne(Standard::class, 'item_id', 'id');
     }
 
     public function getTypeLabelAttribute()
@@ -69,4 +67,6 @@ class Item extends Model
 
         return $labels[$this->type] ?? 'food item';
     }
+
+ 
 }
