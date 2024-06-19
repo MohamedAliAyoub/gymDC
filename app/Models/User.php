@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserTypeEnum;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +27,9 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         'email',
         'password',
         'image',
-        'mobile'
+        'mobile',
+        'google_id',
+        'type',
     ];
 
     protected $appends = ['image_url'];
@@ -49,6 +52,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'type' => 'integer',
     ];
 
     /**
@@ -88,12 +92,11 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->image ? Storage::disk('public')->url($this->image) : Storage::disk('public')->url('users/default.jpg');
     }
 
-    /**
-     * Get the item's name.
-     * @return string
-     */
-    public function getGoogleId(): string
-    {
-        return $this->google_id;
+    public function getTypeAttribute($value) {
+        return UserTypeEnum::fromValue($value);
+    }
+
+    public function setTypeAttribute(UserTypeEnum $type) {
+        $this->attributes['type'] = $type->value;
     }
 }

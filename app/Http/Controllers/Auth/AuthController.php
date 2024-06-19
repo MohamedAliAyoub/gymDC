@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\AuthResource;
 use App\Mail\SendForgotPasswordCode;
@@ -52,6 +53,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -151,7 +153,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'image' => $path,
-            'mobile' => $request->mobile
+            'mobile' => $request->mobile,
+            'type' => UserTypeEnum::Client
         ]);
         $user->save();
 
