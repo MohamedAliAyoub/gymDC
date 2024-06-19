@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property string $name
  * @property bool $status
+ * @property int $type
+ * @property int $calories
  *
  * @package App\Models\Diet
  */
