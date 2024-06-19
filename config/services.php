@@ -35,5 +35,4 @@ return [
     'client_secret' => "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",
     'redirect' => env('app_url')."/api/callback/google",
 ],
-
 ];
