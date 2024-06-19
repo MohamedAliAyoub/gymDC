@@ -41,6 +41,7 @@ class GoogleController extends Controller
      *     @OA\Response(response=302, description="Redirect after successful Google authentication")
      * )
      */
+
     public function handleGoogleCallback()
     {
         try {
@@ -64,10 +65,19 @@ class GoogleController extends Controller
             $token = JWTAuth::fromUser($newUser);
         }
 
+        // Mask the email
+        $emailParts = explode("@", $existingUser->email ?? $newUser->email);
+        $emailParts[0] = substr($emailParts[0], 0, 3) . str_repeat('*', strlen($emailParts[0]) - 3);
+
+        $maskedEmail = implode("@", $emailParts);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',
-            'user' => $existingUser ?? $newUser,
+            'user' => [
+                'name' => $existingUser->name ?? $newUser->name,
+                'email' => $maskedEmail,
+            ],
             'token' => $token,
         ]);
     }
