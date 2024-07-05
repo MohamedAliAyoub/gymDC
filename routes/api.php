@@ -22,7 +22,7 @@ use App\Http\Controllers\Exercise\PlanExerciseController;
 use App\Http\Controllers\Exercise\UserPlanExerciseController;
 use App\Http\Controllers\Exercise\ExerciseDetailsController;
 use App\Http\Controllers\Exercise\ExercisePlanExerciseController;
-
+use App\Http\Controllers\Dashboard\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -173,7 +173,6 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/', [PlanExerciseController::class, 'create']);
             Route::put('/{id}', [PlanExerciseController::class, 'update']);
             Route::delete('/{id}', [PlanExerciseController::class, 'delete']);
-
             Route::get('/get/todayPlan', [PlanExerciseController::class, 'getTodayPlan']);
             Route::get('/get/planByDate', [PlanExerciseController::class, 'getPlanByDate']);
         });
@@ -186,7 +185,21 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/{id}', [ExerciseDetailsController::class, 'delete']);
         });
 
+        //end exercise apis
+
     });
-    //end exercise apis
+    Route::prefix('dashboard')->group(function () {
+        Route::group(['prefix' => 'subscriptions'], function () {
+            Route::get('/', [SubscriptionController::class, 'index']);
+            Route::get('/{id}', [SubscriptionController::class, 'show']);
+            Route::post('/', [SubscriptionController::class, 'store']);
+            Route::put('/{id}', [SubscriptionController::class, 'update']);
+            Route::delete('/{id}', [SubscriptionController::class, 'destroy']);
+            Route::get('/client/{id}', [SubscriptionController::class, 'get_client_subscriptions']);
+        });
+        Route::prefix('user-details')->group(function () {
+            Route::get('/{id}', [User::class, 'index']);
+        });
+    });
 
 });
