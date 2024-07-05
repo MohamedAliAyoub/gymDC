@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Diet;
 use App\Http\Controllers\Controller;
 use App\Models\Diet\Item;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\JsonResponse;
 class ItemController extends Controller
 {
     /**
@@ -22,6 +22,24 @@ class ItemController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Items retrieved successfully',
+            'items' => $items,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/diet/default-item",
+     *     summary="Retrieve all items",
+     *     @OA\Response(response="200", description="Items retrieved successfully")
+     * )
+     */
+    public function default_items():JsonResponse
+    {
+        $items = Item::query()->whereNotNull('default_id')->paginate(15);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Default Items retrieved successfully',
             'items' => $items,
         ]);
     }

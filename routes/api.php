@@ -82,6 +82,7 @@ Route::middleware('auth:api')->group(function () {
         });
         Route::prefix('item')->group(function () {
             Route::get('/', [ItemController::class, 'index']);
+            Route::get('/default-item', [ItemController::class, 'default_items']);
             Route::post('/', [ItemController::class, 'create']);
             Route::put('/{item}', [ItemController::class, 'update']);
             Route::get('/{item}', [ItemController::class, 'show']);

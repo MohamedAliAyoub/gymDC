@@ -29,6 +29,7 @@ class Item extends Model
         'type',
         'calories',
         'status',
+        'default_id'
     ];
     protected $hidden = [
         'pivot'
@@ -68,5 +69,5 @@ class Item extends Model
         return $labels[$this->type] ?? 'food item';
     }
 
- 
+
 }
