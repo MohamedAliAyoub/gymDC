@@ -9,14 +9,25 @@ enum SubscriptionStatusEnum: int {
     case Freezed = 3;
     case Refunded = 4;
 
-    public static function fromValue(int $value): self {
+    public static function fromValue(int $value): SubscriptionStatusEnum
+    {
         return match($value) {
             0 => self::NotStarted,
             1 => self::Active,
             2 => self::Expired,
             3 => self::Freezed,
             4 => self::Refunded,
-            default => throw new \UnexpectedValueException("Invalid subscription status value: $value"),
+        };
+    }
+
+    public static function fromKey($value)
+    {
+        return match($value) {
+            'NotStarted' => self::NotStarted,
+            'Active' => self::Active,
+            'Expired' => self::Expired,
+            'Freezed' => self::Freezed,
+            'Refunded' => self::Refunded,
         };
     }
 }

@@ -6,9 +6,12 @@ namespace App\Models;
 use App\Enums\FormStatusEnum;
 use App\Enums\SubscriptionStatusEnum;
 use App\Enums\UserTypeEnum;
+use App\Models\Dashboard\Subscription;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -75,7 +78,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
      *
      * @return mixed
      */
-    public function getJWTIdentifier()
+    public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
     }
@@ -86,7 +89,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
      *
      * @return array
      */
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims(): array
     {
         return [];
     }
@@ -97,7 +100,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
      * @param string $token
      * @return void
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
     }
@@ -155,5 +158,20 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     public function setPackageAttribute(SubscriptionStatusEnum $status)
     {
         $this->attributes['status'] = $status->value;
+    }
+
+    public function userDetails(): BelongsTo
+    {
+        return $this->belongsTo(UserDetails::class);
+    }
+
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'client_id')->where('status', SubscriptionStatusEnum::Active);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'client_id');
     }
 }
