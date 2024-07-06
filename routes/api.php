@@ -61,6 +61,7 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/{plan}', [PlanController::class, 'delete']);
             Route::post('/assignPlanToUsers', [PlanController::class, 'assignPlanToUsers']);
             Route::get('/active/plan', [AppController::class, 'getActivePlan']);
+            Route::post('/create-full-plan', [PlanController::class, 'createFullPlan']);
         });
 
 

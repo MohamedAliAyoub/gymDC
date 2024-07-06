@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\FullplanRequest;
+use App\Http\Resources\Diet\PlanResource;
 use App\Models\Diet\Plan;
 use App\Models\Diet\UserPlan;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class PlanController extends Controller
 {
@@ -190,7 +193,7 @@ class PlanController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function assignPlanToUsers(Request $request)
+    public function assignPlanToUsers(Request $request): JsonResponse
     {
         $request->validate([
             'user_ids' => 'required|array',
@@ -205,6 +208,107 @@ class PlanController extends Controller
             'status' => 'success',
             'message' => 'Plan assigned to users successfully',
             'userPlans' => $userPlans,
+        ]);
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/plan/createFullPlan",
+     *     summary="Create a full plan with meals, items, and item details",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="Plan Name"),
+     *             @OA\Property(property="note", type="string", example="This is a note"),
+     *             @OA\Property(property="user_ids", type="array", @OA\Items(type="integer"), example="[1, 2, 3]"),
+     *             @OA\Property(property="meals", type="array", @OA\Items(
+     *                 @OA\Property(property="name", type="string", example="Meal 1"),
+     *                 @OA\Property(property="note", type="string", example="This is a note for the meal"),
+     *                 @OA\Property(property="carbohydrate", type="numeric", example=30),
+     *                 @OA\Property(property="protein", type="numeric", example=20),
+     *                 @OA\Property(property="fat", type="numeric", example=10),
+     *                 @OA\Property(property="calories", type="numeric", example=250),
+     *                 @OA\Property(property="items", type="array", @OA\Items(
+     *                     @OA\Property(property="name", type="string", example="Item 1"),
+     *                     @OA\Property(property="type", type="integer", example=0),
+     *                     @OA\Property(property="details", type="array", @OA\Items(
+     *                         @OA\Property(property="name", type="string", example="item details name 1"),
+     *                         @OA\Property(property="number", type="integer", example=1),
+     *                         @OA\Property(property="standard_type", type="integer", example=1),
+     *                         @OA\Property(property="carbohydrate", type="numeric", example=30),
+     *                         @OA\Property(property="protein", type="numeric", example=20),
+     *                         @OA\Property(property="fat", type="numeric", example=10),
+     *                         @OA\Property(property="calories", type="numeric", example=250)
+     *                     ))
+     *                 ))
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Plan created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Plan created successfully"),
+     *             @OA\Property(property="plan", ref="#/components/schemas/Plan")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Validation errors"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function createFullPlan(FullplanRequest $request): JsonResponse
+    {
+        $plan = Plan::query()->create($request->only(['name']));
+        if ($request->note)
+            $plan->note()->create(['content' => $request->note, "user_id" => auth()->id()]);
+
+        foreach ($request->meals as $meal) {
+            $new_meal = $plan->meals()->create($meal);
+
+            if (isset($meal['note']) && $meal['note']) {
+                $new_meal->note()->create(['content' => $meal['note'], "user_id" => auth()->id()]);
+            }
+
+            foreach ($meal['items'] as $item) {
+                $new_item = $new_meal->items()->create($item);
+                foreach ($item['details'] as $detail) {
+                    $new_item_details = $new_item->itemDetails()->create(['name' => $detail['name']]);
+                    $id_column = $item['type'] == 0 ? 'item_details_id' : 'item_id';
+                    $id_value = $item['type'] == 0 ? $new_item_details->id : $new_item->id;
+                    $new_item->standards()->create([
+                        'number' => $detail['number'],
+                        'standard_type' => $detail['standard_type'],
+                        'carbohydrate' => $detail['carbohydrate'],
+                        'protein' => $detail['protein'],
+                        'fat' => $detail['fat'],
+                        'calories' => $detail['calories'],
+                        'type' => $item['type'],
+                        $id_column => $id_value,
+                    ]);
+                }
+            }
+        }
+
+        if ($request->user_ids)
+            $this->assignPlanToUsers(new Request([
+                'user_ids' => $request->user_ids,
+                'plan_id' => $plan->id,
+            ]));
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Plan created successfully',
+            'plan' => PlanResource::make($plan),
         ]);
     }
 
