@@ -199,10 +199,14 @@ class PlanController extends Controller
             'user_ids' => 'required|array',
             'user_ids.*' => 'required|integer|exists:users,id',
             'plan_id' => 'required|integer|exists:plans,id',
+            'is_work' => 'boolean',
         ]);
 
-        UserPlan::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
-        $userPlans = UserPlan::assignPlanToUsers($request->user_ids, $request->plan_id);
+        $is_work = $request->is_work == 1  ? 1 : 0 ;
+
+        if ($is_work == 1)
+            UserPlan::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
+        $userPlans = UserPlan::assignPlanToUsers($request->user_ids, $request->plan_id , $is_work);
 
         return response()->json([
             'status' => 'success',
@@ -302,6 +306,7 @@ class PlanController extends Controller
             $this->assignPlanToUsers(new Request([
                 'user_ids' => $request->user_ids,
                 'plan_id' => $plan->id,
+                'is_work' => $request->is_work ?? false,
             ]));
 
 
