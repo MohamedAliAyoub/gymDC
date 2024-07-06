@@ -9,6 +9,37 @@ use Illuminate\Http\JsonResponse;
 
 class ExercisePlanExerciseController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/exercise/plan/assignExercisesToPlan",
+     *     summary="Assign exercises to a plan",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="plan_exercise_id", type="integer", example=1),
+     *             @OA\Property(property="exercise_ids", type="array", @OA\Items(type="integer"), example="[1, 2, 3]"),
+     *             @OA\Property(property="status", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Exercises assigned to plan successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Exercises assigned to plan successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Validation errors"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function assignExercisesToPlan(Request $request): JsonResponse
     {
         $request->validate([
