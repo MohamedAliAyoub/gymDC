@@ -119,6 +119,18 @@ class SubscriptionController extends Controller
         $user = $subscriptions->first()->client;
         $userDetails = $user?->userDetails?->first();
 
+    $firstSubscription = $subscriptions->first();
+
+    if ($firstSubscription == null) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No subscriptions found for the given client_id',
+        ], 404);
+    }
+
+    $user = $firstSubscription->client;
+    $userDetails = $user?->userDetails?->first();
+
 
         return response()->json([
             'status' => 'success',
