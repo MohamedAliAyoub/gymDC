@@ -109,15 +109,31 @@ class SubscriptionController extends Controller
 
     public function get_client_subscriptions(Request $request): JsonResponse
     {
+
         $subscriptions = Subscription::query()->where([
             ['client_id', $request->id]
-        ])->paginate(15);
+        ])->with(['client' => function ($q) {
+            $q->with('userDetails')->latest();
+        }])->paginate(15);
+
+        $user = $subscriptions->first()->client;
+        $userDetails = $user->userDetails->first();
+
 
         return response()->json([
             'status' => 'success',
             'message' => 'client subscriptions  successfully',
             'count' => $subscriptions->count(),
             'data' => ClientSubscriptionsResource::collection($subscriptions),
+            'user_details' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'age' =>$userDetails?->age,
+                'weight' =>$userDetails?->weight,
+                'height' => $userDetails?->height,
+            ],
         ]);
     }
 
@@ -279,5 +295,6 @@ class SubscriptionController extends Controller
         $subscription->delete();
         return response()->json(['message' => 'Subscription deleted successfully']);
     }
+
 
 }

@@ -160,9 +160,9 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         $this->attributes['status'] = $status->value;
     }
 
-    public function userDetails(): BelongsTo
+    public function userDetails(): HasMany
     {
-        return $this->belongsTo(UserDetails::class);
+        return $this->hasMany(UserDetails::class);
     }
 
     public function activeSubscription(): HasOne

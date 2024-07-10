@@ -9,6 +9,7 @@ class ClientSubscriptionsResource extends JsonResource
 
     public function toArray($request): array
     {
+        $user = auth()->user();
         return [
             'id' => $this->id,
             'duration' => $this->duration,
@@ -17,6 +18,7 @@ class ClientSubscriptionsResource extends JsonResource
             'package' => $this->packages_name,
             'started_at' => $this->started_at,
             'created_at' => $this->created_at,
+
         ];
     }
 }
