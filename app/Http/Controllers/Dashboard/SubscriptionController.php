@@ -117,7 +117,7 @@ class SubscriptionController extends Controller
         }])->paginate(15);
 
         $user = $subscriptions->first()->client;
-        $userDetails = $user->userDetails->first();
+        $userDetails = $user?->userDetails?->first();
 
 
         return response()->json([
@@ -130,9 +130,9 @@ class SubscriptionController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'age' =>$userDetails?->age,
-                'weight' =>$userDetails?->weight,
-                'height' => $userDetails?->height,
+                'age' =>$userDetails->age ?? null,
+                'weight' =>$userDetails->weight?? null,
+                'height' => $userDetails->height ?? null,
             ],
         ]);
     }
