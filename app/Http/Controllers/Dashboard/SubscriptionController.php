@@ -14,40 +14,26 @@ class SubscriptionController extends Controller
 {
 
 
-    /**
-     * @OA\Get(
-     *     path="/api/dashboard/subscription",
-     *     summary="Retrieve paginated list of subscriptions",
-     *     tags={"Dashboard"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Subscriptions retrieved successfully",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="subscriptions fetched successfully"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Subscription")),
-     *                 @OA\Property(property="first_page_url", type="string", example="http://example.com/api/dashboard/subscription?page=1"),
-     *                 @OA\Property(property="from", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10),
-     *                 @OA\Property(property="last_page_url", type="string", example="http://example.com/api/dashboard/subscription?page=10"),
-     *                 @OA\Property(property="next_page_url", type="string", example="http://example.com/api/dashboard/subscription?page=2"),
-     *                 @OA\Property(property="path", type="string", example="http://example.com/api/dashboard/subscription"),
-     *                 @OA\Property(property="per_page", type="integer", example=15),
-     *                 @OA\Property(property="prev_page_url", type="string", example=null),
-     *                 @OA\Property(property="to", type="integer", example=15),
-     *                 @OA\Property(property="total", type="integer", example=100)
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Server error",
-     *     ),
-     * )
-     */
-
+   /**
+ * @OA\Schema(
+ *     schema="Subscription",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="nutrition_coach_id", type="integer", example=1),
+ *     @OA\Property(property="workout_coach_id", type="integer", example=1),
+ *     @OA\Property(property="client_id", type="integer", example=1),
+ *     @OA\Property(property="sale_id", type="integer", example=1),
+ *     @OA\Property(property="duration", type="integer", example=30),
+ *     @OA\Property(property="status", type="boolean", example=true),
+ *     @OA\Property(property="package", type="string", example="Basic"),
+ *     @OA\Property(property="started_at", type="string", format="date", example="2022-01-01"),
+ *     @OA\Property(property="paid_amount", type="number", format="float", example=100.00),
+ *     @OA\Property(property="freeze_start_at", type="string", format="date", example="2022-01-01"),
+ *     @OA\Property(property="freeze_duration", type="integer", example=7),
+ *     @OA\Property(property="paid_at", type="string", format="date", example="2022-01-01"),
+ *     @OA\Property(property="created_at", type="string", format="date", example="2022-01-01"),
+ * )
+ */
     public function index(): JsonResponse
     {
         $subscriptions = Subscription::query()->with(
@@ -64,6 +50,7 @@ class SubscriptionController extends Controller
             'data' => SubscriptionResource::collection($subscriptions),
         ]);
     }
+
 
     /**
      * @OA\Get(
@@ -82,22 +69,26 @@ class SubscriptionController extends Controller
      *         description="Client subscriptions retrieved successfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="client subscriptions successfully"),
+     *             @OA\Property(property="message", type="string", example="client subscriptions fetched successfully"),
      *             @OA\Property(property="count", type="integer", example=10),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Subscription")),
-     *                 @OA\Property(property="first_page_url", type="string", example="http://example.com/api/dashboard/subscription/client/1?page=1"),
-     *                 @OA\Property(property="from", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10),
-     *                 @OA\Property(property="last_page_url", type="string", example="http://example.com/api/dashboard/subscription/client/1?page=10"),
-     *                 @OA\Property(property="next_page_url", type="string", example="http://example.com/api/dashboard/subscription/client/1?page=2"),
-     *                 @OA\Property(property="path", type="string", example="http://example.com/api/dashboard/subscription/client/1"),
-     *                 @OA\Property(property="per_page", type="integer", example=15),
-     *                 @OA\Property(property="prev_page_url", type="string", example=null),
-     *                 @OA\Property(property="to", type="integer", example=15),
-     *                 @OA\Property(property="total", type="integer", example=100)
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Subscription")),
+     *             @OA\Property(property="user_details", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john.doe@example.com"),
+     *                 @OA\Property(property="phone", type="string", example="1234567890"),
+     *                 @OA\Property(property="age", type="integer", example=30),
+     *                 @OA\Property(property="weight", type="integer", example=70),
+     *                 @OA\Property(property="height", type="integer", example=180)
      *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No subscriptions found for the given client_id",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No subscriptions found for the given client_id")
      *         )
      *     ),
      *     @OA\Response(
@@ -106,9 +97,9 @@ class SubscriptionController extends Controller
      *     ),
      * )
      */
-
     public function get_client_subscriptions(Request $request): JsonResponse
     {
+        //TODO solve error of client not found
 
         $subscriptions = Subscription::query()->where([
             ['client_id', $request->id]
@@ -119,17 +110,17 @@ class SubscriptionController extends Controller
         $user = $subscriptions->first()->client;
         $userDetails = $user?->userDetails?->first();
 
-    $firstSubscription = $subscriptions->first();
+        $firstSubscription = $subscriptions->first();
 
-    if ($firstSubscription == null) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'No subscriptions found for the given client_id',
-        ], 404);
-    }
+        if ($firstSubscription == null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No subscriptions found for the given client_id',
+            ], 404);
+        }
 
-    $user = $firstSubscription->client;
-    $userDetails = $user?->userDetails?->first();
+        $user = $firstSubscription->client;
+        $userDetails = $user?->userDetails?->first();
 
 
         return response()->json([
@@ -142,8 +133,8 @@ class SubscriptionController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'age' =>$userDetails->age ?? null,
-                'weight' =>$userDetails->weight?? null,
+                'age' => $userDetails->age ?? null,
+                'weight' => $userDetails->weight ?? null,
                 'height' => $userDetails->height ?? null,
             ],
         ]);

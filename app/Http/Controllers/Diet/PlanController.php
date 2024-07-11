@@ -202,11 +202,11 @@ class PlanController extends Controller
             'is_work' => 'boolean',
         ]);
 
-        $is_work = $request->is_work == 1  ? 1 : 0 ;
+        $is_work = $request->is_work == 1 ? 1 : 0;
 
         if ($is_work == 1)
             UserPlan::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
-        $userPlans = UserPlan::assignPlanToUsers($request->user_ids, $request->plan_id , $is_work);
+        $userPlans = UserPlan::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work);
 
         return response()->json([
             'status' => 'success',
@@ -214,59 +214,68 @@ class PlanController extends Controller
             'userPlans' => $userPlans,
         ]);
     }
-
-
     /**
      * @OA\Post(
-     *     path="/api/diet/plan/createFullPlan",
-     *     summary="Create a full plan with meals, items, and item details",
+     *     path="/api/plans",
+     *     operationId="createFullPlan",
+     *     tags={"Plans"},
+     *     summary="Create a new full plan",
+     *     description="Create a new full plan with meals and items",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="name", type="string", example="Plan Name"),
-     *             @OA\Property(property="note", type="string", example="This is a note"),
-     *             @OA\Property(property="user_ids", type="array", @OA\Items(type="integer"), example="[1, 2, 3]"),
-     *             @OA\Property(property="meals", type="array", @OA\Items(
-     *                 @OA\Property(property="name", type="string", example="Meal 1"),
-     *                 @OA\Property(property="note", type="string", example="This is a note for the meal"),
-     *                 @OA\Property(property="carbohydrate", type="numeric", example=30),
-     *                 @OA\Property(property="protein", type="numeric", example=20),
-     *                 @OA\Property(property="fat", type="numeric", example=10),
-     *                 @OA\Property(property="calories", type="numeric", example=250),
-     *                 @OA\Property(property="items", type="array", @OA\Items(
-     *                     @OA\Property(property="name", type="string", example="Item 1"),
-     *                     @OA\Property(property="type", type="integer", example=0),
-     *                     @OA\Property(property="details", type="array", @OA\Items(
-     *                         @OA\Property(property="name", type="string", example="item details name 1"),
-     *                         @OA\Property(property="number", type="integer", example=1),
-     *                         @OA\Property(property="standard_type", type="integer", example=1),
-     *                         @OA\Property(property="carbohydrate", type="numeric", example=30),
-     *                         @OA\Property(property="protein", type="numeric", example=20),
-     *                         @OA\Property(property="fat", type="numeric", example=10),
-     *                         @OA\Property(property="calories", type="numeric", example=250)
-     *                     ))
-     *                 ))
-     *             ))
+     *             @OA\Property(property="note", type="string", example="This is a plan note"),
+     *             @OA\Property(
+     *                 property="meals",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="name", type="string", example="Meal 1"),
+     *                     @OA\Property(property="note", type="string", example="This is a meal note"),
+     *                     @OA\Property(
+     *                         property="items",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="name", type="string", example="Item 1"),
+     *                             @OA\Property(property="type", type="integer", example=0),
+     *                             @OA\Property(
+     *                                 property="details",
+     *                                 type="array",
+     *                                 @OA\Items(
+     *                                     type="object",
+     *                                     @OA\Property(property="name", type="string", example="Detail Name"),
+     *                                     @OA\Property(property="number", type="integer", example=1),
+     *                                     @OA\Property(property="standard_type", type="integer", example=1),
+     *                                     @OA\Property(property="carbohydrate", type="number", format="float", example=30),
+     *                                     @OA\Property(property="protein", type="number", format="float", example=20),
+     *                                     @OA\Property(property="fat", type="number", format="float", example=10),
+     *                                     @OA\Property(property="calories", type="number", format="float", example=100)
+     *                                 )
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             ),
+     *             @OA\Property(property="user_ids", type="array", @OA\Items(type="integer"), example={1, 2, 3}),
+     *             @OA\Property(property="is_work", type="boolean", example=true)
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Plan created successfully",
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Plan created successfully"),
-     *             @OA\Property(property="plan", ref="#/components/schemas/Plan")
+     *             @OA\Property(property="plan", ref="#/components/schemas/PlanResource")
      *         )
      *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Validation errors",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Validation errors"),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     )
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Internal Server Error")
      * )
      */
     public function createFullPlan(FullplanRequest $request): JsonResponse

@@ -267,6 +267,379 @@
                 }
             }
         },
+        "/api/dashboard/sales": {
+            "get": {
+                "summary": "Retrieve all clients",
+                "operationId": "5adc5994255f59beddf0810541e4547a",
+                "responses": {
+                    "200": {
+                        "description": "Clients retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/dashboard/subscription/client/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Retrieve paginated list of subscriptions for a specific client",
+                "operationId": "4d9f271c14f031ccfeb740a67374ed7f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Client's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client subscriptions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "client subscriptions fetched successfully"
+                                        },
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Subscription"
+                                            }
+                                        },
+                                        "user_details": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john.doe@example.com"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "1234567890"
+                                                },
+                                                "age": {
+                                                    "type": "integer",
+                                                    "example": 30
+                                                },
+                                                "weight": {
+                                                    "type": "integer",
+                                                    "example": 70
+                                                },
+                                                "height": {
+                                                    "type": "integer",
+                                                    "example": 180
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No subscriptions found for the given client_id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No subscriptions found for the given client_id"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/dashboard/subscription": {
+            "post": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Create a new subscription",
+                "operationId": "6fd0892566864b63c9e2fb80866e6030",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nutrition_coach_id": {
+                                        "description": "Must exist in nutrition coaches table",
+                                        "type": "integer"
+                                    },
+                                    "workout_coach_id": {
+                                        "description": "Must exist in workout coaches table",
+                                        "type": "integer"
+                                    },
+                                    "client_id": {
+                                        "description": "Must exist in clients table",
+                                        "type": "integer"
+                                    },
+                                    "sale_id": {
+                                        "description": "Must exist in sales table",
+                                        "type": "integer"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2022-01-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2022-12-31"
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Subscription created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation errors"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/dashboard/subscription/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Retrieve a specific subscription",
+                "operationId": "0de8e00940b4bd73dee675b09cfe9d30",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Subscription's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subscription retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Subscription not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subscription not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Update a specific subscription",
+                "operationId": "d16aadbc9a3bb9b705b6aaf0be5bc048",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Subscription's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nutrition_coach_id": {
+                                        "description": "Must exist in nutrition coaches table",
+                                        "type": "integer"
+                                    },
+                                    "workout_coach_id": {
+                                        "description": "Must exist in workout coaches table",
+                                        "type": "integer"
+                                    },
+                                    "client_id": {
+                                        "description": "Must exist in clients table",
+                                        "type": "integer"
+                                    },
+                                    "sale_id": {
+                                        "description": "Must exist in sales table",
+                                        "type": "integer"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2022-01-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2022-12-31"
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subscription updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation errors"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Subscription not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subscription not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
         "/api/diet/app/active-plan": {
             "get": {
                 "summary": "Retrieve active plan",
@@ -330,6 +703,15 @@
                         }
                     },
                     {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Item's tyoe",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Item's status",
@@ -345,6 +727,17 @@
                     },
                     "400": {
                         "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/diet/default-item": {
+            "get": {
+                "summary": "Retrieve all items",
+                "operationId": "93adc5686eb27fca0939b5e5e1fc0146",
+                "responses": {
+                    "200": {
+                        "description": "Items retrieved successfully"
                     }
                 }
             }
@@ -1167,6 +1560,157 @@
                 }
             }
         },
+        "/api/plans": {
+            "post": {
+                "tags": [
+                    "Plans"
+                ],
+                "summary": "Create a new full plan",
+                "description": "Create a new full plan with meals and items",
+                "operationId": "createFullPlan",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Plan Name"
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "This is a plan note"
+                                    },
+                                    "meals": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Meal 1"
+                                                },
+                                                "note": {
+                                                    "type": "string",
+                                                    "example": "This is a meal note"
+                                                },
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Item 1"
+                                                            },
+                                                            "type": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            },
+                                                            "details": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "type": "string",
+                                                                            "example": "Detail Name"
+                                                                        },
+                                                                        "number": {
+                                                                            "type": "integer",
+                                                                            "example": 1
+                                                                        },
+                                                                        "standard_type": {
+                                                                            "type": "integer",
+                                                                            "example": 1
+                                                                        },
+                                                                        "carbohydrate": {
+                                                                            "type": "number",
+                                                                            "format": "float",
+                                                                            "example": 30
+                                                                        },
+                                                                        "protein": {
+                                                                            "type": "number",
+                                                                            "format": "float",
+                                                                            "example": 20
+                                                                        },
+                                                                        "fat": {
+                                                                            "type": "number",
+                                                                            "format": "float",
+                                                                            "example": 10
+                                                                        },
+                                                                        "calories": {
+                                                                            "type": "number",
+                                                                            "format": "float",
+                                                                            "example": 100
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "user_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    },
+                                    "is_work": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plan created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Plan created successfully"
+                                        },
+                                        "plan": {
+                                            "$ref": "#/components/schemas/PlanResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/diet/planmeal": {
             "get": {
                 "summary": "Retrieve all plan meals",
@@ -1653,22 +2197,13 @@
                 }
             },
             "post": {
-                "summary": "Create a new done exercise",
+                "summary": "Create or update a done exercise",
                 "operationId": "020f65c0639deee22bb9757528d5f1f4",
                 "parameters": [
                     {
                         "name": "exercise_id",
                         "in": "query",
-                        "description": "Exercise's id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "plan_id",
-                        "in": "query",
-                        "description": "Plan's id",
+                        "description": "The ID of the exercise",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1677,8 +2212,8 @@
                     {
                         "name": "reps",
                         "in": "query",
-                        "description": "Reps",
-                        "required": true,
+                        "description": "The number of repetitions of the exercise",
+                        "required": false,
                         "schema": {
                             "type": "integer"
                         }
@@ -1686,8 +2221,8 @@
                     {
                         "name": "kg",
                         "in": "query",
-                        "description": "Kg",
-                        "required": true,
+                        "description": "The weight used in the exercise, in kilograms",
+                        "required": false,
                         "schema": {
                             "type": "integer"
                         }
@@ -1695,8 +2230,8 @@
                     {
                         "name": "rir",
                         "in": "query",
-                        "description": "Rir",
-                        "required": true,
+                        "description": "The reps in reserve",
+                        "required": false,
                         "schema": {
                             "type": "integer"
                         }
@@ -1704,8 +2239,8 @@
                     {
                         "name": "tempo",
                         "in": "query",
-                        "description": "Tempo",
-                        "required": true,
+                        "description": "The tempo of the exercise",
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -1713,8 +2248,8 @@
                     {
                         "name": "rest",
                         "in": "query",
-                        "description": "Rest",
-                        "required": true,
+                        "description": "The rest time in seconds",
+                        "required": false,
                         "schema": {
                             "type": "integer"
                         }
@@ -1722,7 +2257,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Status",
+                        "description": "The status of the exercise",
                         "required": false,
                         "schema": {
                             "type": "boolean"
@@ -1731,10 +2266,96 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Done exercise created successfully"
+                        "description": "Done exercise created or updated successfully"
                     },
                     "422": {
                         "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/exercise/createWithPlan": {
+            "post": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Create an exercise with a plan",
+                "description": "Create a new exercise entry associated with a plan",
+                "operationId": "createWithPlan",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "exercise_name": {
+                                        "type": "string",
+                                        "example": "Push Up"
+                                    },
+                                    "duration": {
+                                        "type": "integer",
+                                        "example": 30
+                                    },
+                                    "plan_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Exercise created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Exercise created successfully"
+                                        },
+                                        "exercise": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "exercise_name": {
+                                                    "type": "string",
+                                                    "example": "Push Up"
+                                                },
+                                                "duration": {
+                                                    "type": "integer",
+                                                    "example": 30
+                                                },
+                                                "plan_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -1906,6 +2527,15 @@
                         }
                     },
                     {
+                        "name": "run_duration",
+                        "in": "query",
+                        "description": "run duration in minytes",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Exercise's status",
@@ -1957,6 +2587,15 @@
                         "name": "id",
                         "in": "path",
                         "description": "Exercise's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "rub_duration",
+                        "in": "query",
+                        "description": "Exercise's run duration in minutes",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -2109,15 +2748,12 @@
                                     "status": {
                                         "type": "boolean"
                                     },
+                                    "duration": {
+                                        "type": "integer"
+                                    },
                                     "exercise_id": {
                                         "description": "Must exist in exercises table",
                                         "type": "integer"
-                                    },
-                                    "is_run": {
-                                        "type": "boolean"
-                                    },
-                                    "run_duration": {
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -2167,6 +2803,137 @@
                     },
                     "404": {
                         "description": "Exercise details not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/exercise-details/previous/{id}": {
+            "put": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Update a specific exercise detail only previous",
+                "operationId": "bb65cf895f9f0bcfee9abaa22b3f112b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Exercise detail's id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "previous": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Exercise details updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExerciseDetails"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Exercise details not found"
+                    }
+                }
+            }
+        },
+        "/api/exercise/plan/assignExercisesToPlan": {
+            "post": {
+                "summary": "Assign exercises to a plan",
+                "operationId": "e2b750d0bf72b37037c948dead8b0a22",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "plan_exercise_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "exercise_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": "[1, 2, 3]"
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Exercises assigned to plan successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Exercises assigned to plan successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation errors"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2453,6 +3220,39 @@
                 }
             }
         },
+        "/api/exercise/user-plan-exercise/today-plan": {
+            "get": {
+                "summary": "Retrieve today's plan",
+                "operationId": "89fec3ee636e8c22a408fc364a8d2733",
+                "responses": {
+                    "200": {
+                        "description": "Today's plan retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/exercise/user-plan-exercise/plan-by-date": {
+            "get": {
+                "summary": "Retrieve plan by date",
+                "operationId": "8fec657f92886cc5f692104aa27a0e39",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Date in format Y-m-d",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan by date retrieved successfully"
+                    }
+                }
+            }
+        },
         "/api/exercise/user-plan-exercise": {
             "get": {
                 "summary": "Retrieve user plan exercises with pagination 15 items per page",
@@ -2618,10 +3418,206 @@
                     }
                 }
             }
+        },
+        "/api/exercise/user-plan-exercise/plan-of-today": {
+            "get": {
+                "summary": "Retrieve plan of today",
+                "operationId": "4d20c919f391e24aa8e7bbab0a0e24dc",
+                "responses": {
+                    "200": {
+                        "description": "Today's plan retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/exercise/user-plan-exercise/date": {
+            "get": {
+                "tags": [
+                    "Exercise"
+                ],
+                "summary": "Retrieve a plan by a specific date",
+                "operationId": "3bc1ef2ae61638eb7999d58eb2a5ea4e",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "The date to retrieve the plan for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2022-01-01"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan by date retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Plan by date retrieved successfully"
+                                        },
+                                        "plan": {
+                                            "$ref": "#/components/schemas/PlanExercise"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200-rest": {
+                        "description": "Rest day",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rest day today"
+                                        },
+                                        "plan": {
+                                            "properties": {
+                                                "rest_day": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation errors"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "Subscription": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nutrition_coach_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "workout_coach_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "client_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sale_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "example": 30
+                    },
+                    "status": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "package": {
+                        "type": "string",
+                        "example": "Basic"
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2022-01-01"
+                    },
+                    "paid_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100
+                    },
+                    "freeze_start_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2022-01-01"
+                    },
+                    "freeze_duration": {
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "paid_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2022-01-01"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2022-01-01"
+                    }
+                },
+                "type": "object"
+            },
             "ExerciseDetails": {
                 "properties": {
                     "name": {
@@ -2651,11 +3647,8 @@
                     "exercise_id": {
                         "type": "integer"
                     },
-                    "is_run": {
-                        "type": "boolean"
-                    },
-                    "run_duration": {
-                        "type": "string"
+                    "duration": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -2682,6 +3675,332 @@
                     "exercise_id": {
                         "description": "Must exist in exercises table",
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ItemDetailResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "item_id": {
+                        "type": "integer",
+                        "example": 40
+                    },
+                    "item": {
+                        "type": "string",
+                        "example": "Item Name"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Detail Name"
+                    },
+                    "calories": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 0
+                    },
+                    "standard_name": {
+                        "type": "string",
+                        "example": "Standard Name"
+                    },
+                    "carbohydrate": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 30
+                    },
+                    "protein": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 20
+                    },
+                    "fat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    }
+                },
+                "type": "object"
+            },
+            "ItemResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 40
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Item 1"
+                    },
+                    "calories": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 0
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "recipe"
+                    },
+                    "standard_name": {
+                        "type": "string",
+                        "example": "1"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "carbohydrate": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 30
+                    },
+                    "fat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "protein": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 20
+                    },
+                    "item_details": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemDetailResource"
+                        }
+                    },
+                    "has_details": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "MealResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 37
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Meal 1"
+                    },
+                    "calories": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 250
+                    },
+                    "fat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "carbohydrate": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 30
+                    },
+                    "protein": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 20
+                    },
+                    "items_count": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "note": {
+                        "type": "string",
+                        "example": "this note is optional called meal note"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemResource"
+                        }
+                    },
+                    "is_eaten": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "PlanResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 27
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Plan Name"
+                    },
+                    "total_calories": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "total_carbohydrate": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 60
+                    },
+                    "total_protein": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 40
+                    },
+                    "total_fat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 20
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "this note is optional called plan note"
+                    },
+                    "meals": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MealResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PlanExercise": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "plan_id": {
+                        "type": "string",
+                        "example": "bulk_plan"
+                    },
+                    "is_done": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "exercises_count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "exercises": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Exercise"
+                        }
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "done": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "rest_day": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "Exercise": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "shoulder"
+                    },
+                    "is_done": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "details": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExerciseDetail"
+                        }
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ExerciseDetail": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "exercise_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "exercise": {
+                        "type": "string",
+                        "example": "shoulder"
+                    },
+                    "is_done": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "sets": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "rir": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "reps": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "rest": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "weight": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "unit": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "day_names": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_full": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "example": 10
                     }
                 },
                 "type": "object"

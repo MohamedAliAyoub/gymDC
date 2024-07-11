@@ -8,9 +8,22 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class PlanResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+     * @OA\Schema(
+     *     schema="PlanResource",
+     *     type="object",
+     *     @OA\Property(property="id", type="integer", example=27),
+     *     @OA\Property(property="name", type="string", example="Plan Name"),
+     *     @OA\Property(property="total_calories", type="number", format="float", example=500),
+     *     @OA\Property(property="total_carbohydrate", type="number", format="float", example=60),
+     *     @OA\Property(property="total_protein", type="number", format="float", example=40),
+     *     @OA\Property(property="total_fat", type="number", format="float", example=20),
+     *     @OA\Property(property="notes", type="string", example="this note is optional called plan note"),
+     *     @OA\Property(
+     *         property="meals",
+     *         type="array",
+     *         @OA\Items(ref="#/components/schemas/MealResource")
+     *     )
+     * )
      */
     public function toArray(Request $request): array
     {

@@ -224,12 +224,12 @@ class UserPlanExerciseController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/exercise/user-plan-exercise/today-plan",
-     *     summary="Retrieve today's plan",
-     *     @OA\Response(response="200", description="Today's plan retrieved successfully")
-     * )
-     */
+        * @OA\Get(
+        *     path="/api/exercise/user-plan-exercise/plan-of-today",
+        *     summary="Retrieve plan of today",
+        *     @OA\Response(response="200", description="Today's plan retrieved successfully")
+        * )
+        */
     public function getTodayPlan(): \Illuminate\Http\JsonResponse
     {
         $todayPlan = UserPlanExercise::getPlanOfToday();
@@ -237,7 +237,7 @@ class UserPlanExerciseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'rest day today',
-                'todayPlan' =>  [
+                'todayPlan' => [
                     'rest_day' => true,
                 ],
             ]);
@@ -250,18 +250,56 @@ class UserPlanExerciseController extends Controller
         ]);
     }
 
+
     /**
      * @OA\Get(
-     *     path="/api/exercise/user-plan-exercise/plan-by-date",
-     *     summary="Retrieve plan by date",
+     *     path="/api/exercise/user-plan-exercise/date",
+     *     summary="Retrieve a plan by a specific date",
+     *     tags={"Exercise"},
      *     @OA\Parameter(
      *         name="date",
      *         in="query",
-     *         description="Date in format Y-m-d",
+     *         description="The date to retrieve the plan for",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="date", example="2022-01-01")
      *     ),
-     *     @OA\Response(response="200", description="Plan by date retrieved successfully")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Plan by date retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Plan by date retrieved successfully"),
+     *             @OA\Property(property="plan", ref="#/components/schemas/PlanExercise")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200-rest",
+     *         description="Rest day",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Rest day today"),
+     *             @OA\Property(property="plan", type="object",
+     *                 @OA\Property(property="rest_day", type="boolean", example=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Validation errors"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Server error")
+     *         )
+     *     )
      * )
      */
     public function getPlanByDate(Request $request): \Illuminate\Http\JsonResponse
@@ -277,7 +315,7 @@ class UserPlanExerciseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'rest day today',
-                'plane' =>  [
+                'plane' => [
                     'rest_day' => true,
                 ],
             ]);

@@ -8,9 +8,25 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ItemResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+     * @OA\Schema(
+     *     schema="ItemResource",
+     *     type="object",
+     *     @OA\Property(property="id", type="integer", example=40),
+     *     @OA\Property(property="name", type="string", example="Item 1"),
+     *     @OA\Property(property="calories", type="number", format="float", example=0),
+     *     @OA\Property(property="type", type="string", example="recipe"),
+     *     @OA\Property(property="standard_name", type="string", example="1"),
+     *     @OA\Property(property="number", type="integer", example=1),
+     *     @OA\Property(property="carbohydrate", type="number", format="float", example=30),
+     *     @OA\Property(property="fat", type="number", format="float", example=10),
+     *     @OA\Property(property="protein", type="number", format="float", example=20),
+     *     @OA\Property(
+     *         property="item_details",
+     *         type="array",
+     *         @OA\Items(ref="#/components/schemas/ItemDetailResource")
+     *     ),
+     *     @OA\Property(property="has_details", type="boolean", example=true)
+     * )
      */
     public function toArray(Request $request): array
     {
