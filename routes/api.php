@@ -62,6 +62,7 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/assignPlanToUsers', [PlanController::class, 'assignPlanToUsers']);
             Route::get('/active/plan', [AppController::class, 'getActivePlan']);
             Route::post('/create-full-plan', [PlanController::class, 'createFullPlan']);
+            Route::get('/get-client-plan/{user_id}', [PlanController::class, 'getClientPlans']);
         });
 
 

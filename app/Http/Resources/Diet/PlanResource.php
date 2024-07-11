@@ -34,6 +34,7 @@ class PlanResource extends JsonResource
             'total_carbohydrate' => $this->meals->sum('carbohydrate'),
             'total_protein' => $this->meals->sum('protein'),
             'total_fat' => $this->meals->sum('fat'),
+            'is_work' => $this->is_work != null ? $this->is_work : false,
             'notes' => $this->note?->content,
             'meals' => MealResource::collection($this->meals),
 

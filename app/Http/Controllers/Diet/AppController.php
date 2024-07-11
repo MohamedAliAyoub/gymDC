@@ -7,18 +7,44 @@ use App\Http\Resources\Diet\PlanResource;
 use App\Models\Diet\UserMeal;
 use App\Models\Diet\UserPlan;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class AppController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/diet/app/active-plan",
-     *     summary="Retrieve active plan",
-     *     @OA\Response(response="200", description="Active plan retrieved successfully"),
-     *     @OA\Response(response="404", description="No active plan found")
+     *     path="/api/diet/plan",
+     *     summary="Retrieve all plans",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Plans retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Active plan retrieved successfully"),
+     *             @OA\Property(
+     *                 property="plan",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=76),
+     *                 @OA\Property(property="name", type="string", example="Plan Name"),
+     *                 @OA\Property(property="total_calories", type="number", format="float", example=500),
+     *                 @OA\Property(property="total_carbohydrate", type="number", format="float", example=60),
+     *                 @OA\Property(property="total_protein", type="number", format="float", example=40),
+     *                 @OA\Property(property="total_fat", type="number", format="float", example=20),
+     *                 @OA\Property(property="is_work", type="boolean", example=true),
+     *                 @OA\Property(property="notes", type="string", example="this note is optional called plan note"),
+     *                 @OA\Property(
+     *                     property="meals",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/MealResource")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="404", description="Plans not found")
      * )
      */
-    public function getActivePlan()
+    public function getActivePlan(): JsonResponse
     {
         $userPlan = UserPlan::query()
             ->where('user_id', auth()->id())
@@ -40,6 +66,8 @@ class AppController extends Controller
             ], 404);
         }
 
+        $plan = $userPlan->plan;
+        $plan->is_work = $userPlan->is_work;
         return response()->json([
             'status' => 'success',
             'message' => 'Active plan retrieved successfully',
@@ -62,7 +90,7 @@ class AppController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function assignMealToUser(Request $request)
+    public function assignMealToUser(Request $request): JsonResponse
     {
         $request->validate([
             'meal_id' => 'required|integer|exists:meals,id',

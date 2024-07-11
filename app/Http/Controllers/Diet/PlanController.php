@@ -12,14 +12,8 @@ use Illuminate\Http\JsonResponse;
 
 class PlanController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/diet/plan",
-     *     summary="Retrieve all plans",
-     *     @OA\Response(response="200", description="Plans retrieved successfully")
-     * )
-     */
-    public function index()
+
+    public function index(): JsonResponse
     {
         $plans = Plan::query()->paginate(15);
 
@@ -53,7 +47,6 @@ class PlanController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-
     public function create(Request $request)
     {
         $request->validate([
@@ -94,7 +87,6 @@ class PlanController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-
     public function update(Request $request, $id)
     {
         try {
@@ -214,6 +206,7 @@ class PlanController extends Controller
             'userPlans' => $userPlans,
         ]);
     }
+
     /**
      * @OA\Post(
      *     path="/api/plans",
@@ -326,5 +319,61 @@ class PlanController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/diet/plan/user/{user_id}",
+     *     summary="Retrieve all plans for a specific user",
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         description="User's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Plans retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Plans retrieved successfully"),
+     *             @OA\Property(
+     *                 property="plan",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/PlanResource")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="404", description="Plans not found")
+     * )
+     */
+    public function getClientPlans($user_id): JsonResponse
+    {
+        $userPlans = UserPlan::query()
+            ->where('user_id', $user_id)
+            ->orderByDesc('id')
+            ->get();
 
+        if ($userPlans->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No plans founded',
+            ], 404);
+        }
+
+        $userPlans->load(['plan.meals.items.standard.standardType']);
+
+        $plans = $userPlans->map(function ($userPlan) {
+            $plan = $userPlan->plan;
+            $plan->is_work = $userPlan->is_work;
+            return $plan;
+        });
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'plans retrieved successfully',
+            'plan' => PlanResource::collection($plans),
+        ]);
+    }
 }

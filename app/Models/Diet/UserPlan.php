@@ -16,6 +16,10 @@ class UserPlan extends Model
         'status',
         'is_work',
     ];
+    protected $casts = [
+        'status' => 'boolean',
+        'is_work' => 'boolean',
+    ];
 
     public function user()
     {
