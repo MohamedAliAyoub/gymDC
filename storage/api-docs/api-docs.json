@@ -640,16 +640,112 @@
                 }
             }
         },
-        "/api/diet/app/active-plan": {
+        "/api/diet/plan": {
             "get": {
-                "summary": "Retrieve active plan",
-                "operationId": "afe2f88c2783c57b94bb4c2777277aa7",
+                "summary": "Retrieve all plans",
+                "operationId": "6cb4f5219642a0b5f669fa7906baba5a",
                 "responses": {
                     "200": {
-                        "description": "Active plan retrieved successfully"
+                        "description": "Plans retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Active plan retrieved successfully"
+                                        },
+                                        "plan": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 76
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Plan Name"
+                                                },
+                                                "total_calories": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 500
+                                                },
+                                                "total_carbohydrate": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 60
+                                                },
+                                                "total_protein": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 40
+                                                },
+                                                "total_fat": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 20
+                                                },
+                                                "is_work": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "notes": {
+                                                    "type": "string",
+                                                    "example": "this note is optional called plan note"
+                                                },
+                                                "meals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/MealResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "No active plan found"
+                        "description": "Plans not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new plan",
+                "operationId": "5365fcaff3d5ab04c374599246c70ad7",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Plan's name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Plan's status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan created successfully"
+                    },
+                    "400": {
+                        "description": "Validation errors"
                     }
                 }
             }
@@ -1422,49 +1518,6 @@
                 }
             }
         },
-        "/api/diet/plan": {
-            "get": {
-                "summary": "Retrieve all plans",
-                "operationId": "f02cb4b6702cddb539382c49397a9d8c",
-                "responses": {
-                    "200": {
-                        "description": "Plans retrieved successfully"
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create a new plan",
-                "operationId": "5365fcaff3d5ab04c374599246c70ad7",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "Plan's name",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "description": "Plan's status",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Plan created successfully"
-                    },
-                    "400": {
-                        "description": "Validation errors"
-                    }
-                }
-            }
-        },
         "/api/diet/plan/{plan}": {
             "get": {
                 "summary": "Retrieve a plan",
@@ -1707,6 +1760,54 @@
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/diet/plan/user/{user_id}": {
+            "get": {
+                "summary": "Retrieve all plans for a specific user",
+                "operationId": "f54d4dd3bd7f9aaf3e38468e04129e63",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plans retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Plans retrieved successfully"
+                                        },
+                                        "plan": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlanResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Plans not found"
                     }
                 }
             }
