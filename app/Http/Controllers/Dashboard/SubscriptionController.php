@@ -105,7 +105,8 @@ class SubscriptionController extends Controller
             ['client_id', $request->id]
         ])->with(['client' => function ($q) {
             $q->with('userDetails')->latest();
-        }])->paginate(15);
+        }])->orderByDesc('id')
+            ->paginate(15);
 
         $user = $subscriptions->first()->client;
         $userDetails = $user?->userDetails?->first();

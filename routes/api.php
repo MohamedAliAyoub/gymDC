@@ -1,29 +1,40 @@
 <?php
 
-use App\Http\Resources\Auth\AuthResource;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+// Auth Controllers
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\Diet\PlanController;
+
+// Diet Controllers
+use App\Http\Controllers\Diet\AppController;
+use App\Http\Controllers\Diet\ItemController;
+use App\Http\Controllers\Diet\ItemDetailsController;
 use App\Http\Controllers\Diet\MealController;
 use App\Http\Controllers\Diet\MealItemController;
-use App\Http\Controllers\Diet\ItemController;
+use App\Http\Controllers\Diet\NoteController;
+use App\Http\Controllers\Diet\PlanController;
 use App\Http\Controllers\Diet\PlanMealController;
-use App\Http\Controllers\Diet\ItemDetailsController;
 use App\Http\Controllers\Diet\StandardController;
 use App\Http\Controllers\Diet\StandardTypeController;
-use App\Http\Controllers\Diet\NoteController;
-use App\Http\Controllers\Diet\AppController;
-use App\Http\Controllers\Exercise\ExerciseController;
+
+// Exercise Controllers
 use App\Http\Controllers\Exercise\DoneExerciseController;
+use App\Http\Controllers\Exercise\ExerciseController;
+use App\Http\Controllers\Exercise\ExerciseDetailsController;
+use App\Http\Controllers\Exercise\ExercisePlanExerciseController;
 use App\Http\Controllers\Exercise\NoteExerciseCotroller;
 use App\Http\Controllers\Exercise\PlanExerciseController;
 use App\Http\Controllers\Exercise\UserPlanExerciseController;
-use App\Http\Controllers\Exercise\ExerciseDetailsController;
-use App\Http\Controllers\Exercise\ExercisePlanExerciseController;
+
+// Dashboard Controllers
 use App\Http\Controllers\Dashboard\SubscriptionController;
 
+// Other Controllers
+use App\Http\Controllers\UserController;
+
+// Other Imports
+use App\Http\Resources\Auth\AuthResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -201,7 +212,7 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/client/{id}', [SubscriptionController::class, 'get_client_subscriptions']);
         });
         Route::prefix('user-details')->group(function () {
-            Route::get('/{id}', [User::class, 'index']);
+            Route::post('/assignUserDetailsOfClient', [UserController::class, 'assignUserDetailsOfClient']);
         });
     });
 
