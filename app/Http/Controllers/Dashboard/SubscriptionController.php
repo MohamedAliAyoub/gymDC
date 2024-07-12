@@ -144,6 +144,7 @@ class SubscriptionController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
+                'image' => $user->image_url,
                 'age' => $userDetails->age ?? null,
                 'weight' => $userDetails->weight ?? null,
                 'height' => $userDetails->height ?? null,
