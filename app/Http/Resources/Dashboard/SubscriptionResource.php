@@ -14,6 +14,7 @@ class SubscriptionResource extends JsonResource
             'nutrition_coach_id' => $this->nutritionCoach?->name,
             'workout_coach_id' => $this->workoutCoach?->name,
             'client_id' => $this->client?->name,
+            'type' => $this->packages_name,
             'sale_id' => $this->sale?->name,
             'duration' => $this->duration,
             'status' => $this->status_name,

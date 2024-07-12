@@ -192,7 +192,7 @@ class SubscriptionController extends Controller
      */
     public function store(SubscriptionRequest $request): JsonResponse
     {
-        $subscription = Subscription::create($request->validated());
+        $subscription = Subscription::query()->create($request->validated());
         return response()->json(SubscriptionResource::make(
             $subscription->load('nutritionCoach', 'workoutCoach', 'client', 'sale')),
             201);

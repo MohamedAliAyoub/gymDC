@@ -15,7 +15,7 @@ class ClientSubscriptionsResource extends JsonResource
             'id' => $this->id,
             'nutrition_coach' => $this->nutritionCoach->name,
             'workout_coach' => $this->workoutCoach->name,
-            'type' => $this->type_name,
+            'type' => $this->packages_name,
             'package' => $this->packages_name,
             'duration' => $this->duration,
             'current_duration' => 6,
