@@ -16,12 +16,13 @@ class PlanController extends Controller
     public function index(): JsonResponse
     {
         $plans = Plan::query()->paginate(15);
+        $plans->load(['meals.items.standard.standardType']);
 
 
         return response()->json([
             'status' => 'success',
             'message' => 'Plans retrieved successfully',
-            'plans' => $plans,
+            'plans' => PlanResource::collection($plans),
         ]);
     }
 

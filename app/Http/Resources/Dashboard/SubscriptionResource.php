@@ -17,7 +17,7 @@ class SubscriptionResource extends JsonResource
             'sale_id' => $this->sale?->name,
             'duration' => $this->duration,
             'status' => $this->status_name,
-            'is_active' => $this->status == 1 ? true : false,
+            'is_active' => $this->status == 1,
             'package' => $this->packages_name,
             'started_at' => $this->started_at,
             'paid_amount' => $this->paid_amount,
