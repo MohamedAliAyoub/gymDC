@@ -104,7 +104,9 @@ class SubscriptionController extends Controller
         $subscriptions = Subscription::query()->where([
             ['client_id', $request->id]
         ])->with(['client' => function ($q) {
-            $q->with('userDetails')->latest();
+            $q->with('userDetails', function ($q) {
+                $q->latest();
+            });
         }])->orderByDesc('id')
             ->paginate(15);
 
@@ -137,6 +139,7 @@ class SubscriptionController extends Controller
                 'age' => $userDetails->age ?? null,
                 'weight' => $userDetails->weight ?? null,
                 'height' => $userDetails->height ?? null,
+                'in_body_image' => $userDetails->in_body_url ?? 'No in body image found',
             ],
         ]);
     }
