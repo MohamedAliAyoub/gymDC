@@ -10,7 +10,43 @@ use function App\Http\Helpers\uploadImage;
 
 class UserController extends Controller
 {
-    public function assignUserDetailsOfClient(Request $request):JsonResponse
+    /**
+     * @OA\Post(
+     *     path="/api/user/details",
+     *     summary="Assign user details to a client",
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         description="User details to assign to the client",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="height", type="number", format="float", example=1.75),
+     *             @OA\Property(property="weight", type="number", format="float", example=70),
+     *             @OA\Property(property="age", type="integer", example=30),
+     *             @OA\Property(property="activity_level", type="number", format="float", example=1.2),
+     *             @OA\Property(property="in_body_image", type="string", format="binary")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User details assigned successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="User details assigned successfully"),
+     *             @OA\Property(property="code", type="integer", example=200)
+     *         )
+     *     ),
+     *     @OA\Response(response="400", description="Bad Request")
+     * )
+     */
+    public function assignUserDetailsOfClient(Request $request): JsonResponse
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',

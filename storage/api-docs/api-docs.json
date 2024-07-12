@@ -3649,6 +3649,88 @@
                     }
                 }
             }
+        },
+        "/api/user/details": {
+            "post": {
+                "summary": "Assign user details to a client",
+                "operationId": "6fc377122baaa4b8eb6eb9aee6abdafe",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "User details to assign to the client",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "height": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1.75
+                                    },
+                                    "weight": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 70
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "example": 30
+                                    },
+                                    "activity_level": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1.1999999999999999555910790149937383830547332763671875
+                                    },
+                                    "in_body_image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User details assigned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User details assigned successfully"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "components": {

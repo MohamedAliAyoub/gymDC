@@ -101,15 +101,22 @@ class SubscriptionController extends Controller
     {
         //TODO solve error of client not found
 
-        $subscriptions = Subscription::query()->where([
-            ['client_id', $request->id]
-        ])->with(['client' => function ($q) {
-            $q->with('userDetails', function ($q) {
-                $q->latest();
-            });
-        }])->orderByDesc('id')
-            ->paginate(15);
+     $query = Subscription::query()
+    ->where('client_id', $request->id)
+    ->with(['client' => function ($q) {
+        $q->with('userDetails', function ($q) {
+            $q->latest();
+        });
+    }])
+    ->orderByDesc('id');
 
+     $subscriptions = $query->paginate(15);
+
+
+
+        $activeSubscription = $query->where('status', 1)
+            ->orderByDesc('id')
+            ->first();
         $user = $subscriptions->first()->client;
         $userDetails = $user?->userDetails?->first();
 
@@ -131,6 +138,7 @@ class SubscriptionController extends Controller
             'message' => 'client subscriptions  successfully',
             'count' => $subscriptions->count(),
             'data' => ClientSubscriptionsResource::collection($subscriptions),
+            'active_subscription' => ClientSubscriptionsResource::make($activeSubscription) ?? [],
             'user_details' => [
                 'id' => $user->id,
                 'name' => $user->name,
