@@ -321,6 +321,9 @@
                                                 "$ref": "#/components/schemas/Subscription"
                                             }
                                         },
+                                        "active_subscription": {
+                                            "type": "object"
+                                        },
                                         "user_details": {
                                             "properties": {
                                                 "id": {
@@ -350,6 +353,10 @@
                                                 "height": {
                                                     "type": "integer",
                                                     "example": 180
+                                                },
+                                                "in_body_image": {
+                                                    "type": "string",
+                                                    "example": "image_url"
                                                 }
                                             },
                                             "type": "object"
