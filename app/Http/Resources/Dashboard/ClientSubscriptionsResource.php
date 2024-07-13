@@ -21,12 +21,12 @@ class ClientSubscriptionsResource extends JsonResource
             'current_duration' => 6,
             'status' => $this->status_name,
             'is_active' => $this->status == 1,
-            'started_at' => $this->started_at ?? 'the coach will specify the start date',
+            'started_at' => $this->started_at?->format('Y-m-d') ?? 'the coach will specify the start date',
             'paid_amount' => $this->paid_amount,
-            'paid_at' => $this->paid_at,
-            'freeze_start_at' => $this->freeze_start_at,
+            'paid_at' => $this->paid_at?->format('Y-m-d'),
+            'freeze_start_at' => $this->freeze_start_at?->format('Y-m-d'),
             'freeze_duration' => $this->freeze_duration,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at?->format('Y-m-d'),
 
         ];
     }
