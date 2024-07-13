@@ -156,6 +156,7 @@ class SubscriptionController extends Controller
                 'weight' => $userDetails->weight ?? null,
                 'height' => $userDetails->height ?? null,
                 'in_body_image' => $userDetails->in_body_url ?? 'No in body image found',
+                'created_at' => $userDetails->created_at
             ],
         ]);
     }
