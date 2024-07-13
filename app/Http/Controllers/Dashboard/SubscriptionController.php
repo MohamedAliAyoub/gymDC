@@ -111,8 +111,15 @@ class SubscriptionController extends Controller
             }])
             ->orderByDesc('id');
 
+
         $subscriptions = $query->paginate(15);
 
+        if($subscriptions->isEmpty()){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No subscriptions found for the given client_id',
+            ], 404);
+        }
 
         $activeSubscription = $query->where('status', 1)
             ->orderByDesc('id')
