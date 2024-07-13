@@ -4,6 +4,7 @@ namespace App\Models\Diet;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Plan
@@ -24,7 +25,8 @@ class Plan extends Model
     protected $hidden = [
         'pivot'
     ];
-    public  function meals()
+
+    public function meals(): BelongsToMany
     {
         return $this->belongsToMany(Meal::class, 'plan_meals');
     }
@@ -35,6 +37,18 @@ class Plan extends Model
     public function note()
     {
         return $this->hasOne(Note::class);
+    }
+
+
+    public function loadPlanDetails(): Plan
+    {
+        return $this->load(['meals' => function ($q) {
+            $q->with(['items' => function ($q) {
+                $q->with(['standard' => function ($q) {
+                    $q->with('standardType');
+                }]);
+            }]);
+        }]);
     }
 
 

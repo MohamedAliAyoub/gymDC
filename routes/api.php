@@ -32,9 +32,9 @@ use App\Http\Controllers\Dashboard\SubscriptionController;
 use App\Http\Controllers\UserController;
 
 // Other Imports
-use App\Http\Resources\Auth\AuthResource;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -73,6 +73,8 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/assignPlanToUsers', [PlanController::class, 'assignPlanToUsers']);
             Route::get('/active/plan', [AppController::class, 'getActivePlan']);
             Route::post('/create-full-plan', [PlanController::class, 'createFullPlan']);
+            Route::post('/create-edit-full-plan', [PlanController::class, 'createOrEditFullPlan']);
+            Route::post('duplicate-plan/{id}', [PlanController::class, 'duplicatePlan']);
             Route::get('/get-client-plan/{user_id}', [PlanController::class, 'getClientPlans']);
         });
 

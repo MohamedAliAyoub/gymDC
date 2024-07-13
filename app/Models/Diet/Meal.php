@@ -32,7 +32,7 @@ class Meal extends Model
     /**
      * Get the plan that the meal belongs to.
      */
-    public function plan()
+    public function plan(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
@@ -40,7 +40,7 @@ class Meal extends Model
     /**
      * The items that belong to the meal.
      */
-    public function items()
+    public function items(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Item::class , 'meal_items' );
     }
@@ -48,7 +48,7 @@ class Meal extends Model
     /**
      * Get the note for the meal.
      */
-    public function note()
+    public function note(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Note::class);
     }

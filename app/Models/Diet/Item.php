@@ -40,12 +40,12 @@ class Item extends Model
     /**
      * Get the standards associated with the item.
      */
-    public function standards()
+    public function standards(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Standard::class);
     }
 
-    public function itemDetails()
+    public function itemDetails(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ItemDetails::class);
     }
@@ -53,12 +53,12 @@ class Item extends Model
     /**
      * Get the standard that the item detail belongs to.
      */
-    public function Standard()
+    public function Standard(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Standard::class, 'item_id', 'id');
     }
 
-    public function getTypeLabelAttribute()
+    public function getTypeLabelAttribute(): string
     {
         $labels = [
             self::RECIPE => 'recipe',

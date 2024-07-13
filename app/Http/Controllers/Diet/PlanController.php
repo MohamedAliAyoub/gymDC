@@ -13,10 +13,71 @@ use Illuminate\Http\JsonResponse;
 class PlanController extends Controller
 {
 
+    /**
+     * @OA\Get(
+     *     path="/api/diet/plans",
+     *     summary="Retrieve all plans",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Plans retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Plans retrieved successfully"),
+     *             @OA\Property(
+     *                 property="plans",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Plan Name"),
+     *                     @OA\Property(property="note", type="string", example="This is a plan note"),
+     *                     @OA\Property(
+     *                         property="meals",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="name", type="string", example="Meal 1"),
+     *                             @OA\Property(property="note", type="string", example="This is a meal note"),
+     *                             @OA\Property(
+     *                                 property="items",
+     *                                 type="array",
+     *                                 @OA\Items(
+     *                                     type="object",
+     *                                     @OA\Property(property="name", type="string", example="Item 1"),
+     *                                     @OA\Property(property="type", type="integer", example=0),
+     *                                     @OA\Property(
+     *                                         property="details",
+     *                                         type="array",
+     *                                         @OA\Items(
+     *                                             type="object",
+     *                                             @OA\Property(property="name", type="string", example="Detail Name"),
+     *                                             @OA\Property(property="number", type="integer", example=1),
+     *                                             @OA\Property(property="standard_type", type="integer", example=1),
+     *                                             @OA\Property(property="carbohydrate", type="number", format="float", example=30),
+     *                                             @OA\Property(property="protein", type="number", format="float", example=20),
+     *                                             @OA\Property(property="fat", type="number", format="float", example=10),
+     *                                             @OA\Property(property="calories", type="number", format="float", example=100)
+     *                                         )
+     *                                     )
+     *                                 )
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="404", description="Plans not found")
+     * )
+     */
+
     public function index(): JsonResponse
     {
         $plans = Plan::query()->paginate(15);
-        $plans->load(['meals.items.standard.standardType']);
+        $plans->each(function ($plan) {
+            $plan->loadPlanDetails();
+        });
 
 
         return response()->json([
@@ -48,7 +109,7 @@ class PlanController extends Controller
      *     @OA\Response(response="400", description="Validation errors")
      * )
      */
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $request->validate([
             'name' => 'required|string',
@@ -124,6 +185,8 @@ class PlanController extends Controller
     {
         try {
             $plan = Plan::query()->findOrFail($id);
+            $plan->loadPlanDetails();
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -133,7 +196,7 @@ class PlanController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plan retrieved successfully',
-            'plan' => $plan,
+            'plan' => PlanResource::make($plan),
         ]);
     }
 
@@ -320,6 +383,83 @@ class PlanController extends Controller
         ]);
     }
 
+    public function createOrEditFullPlan(FullplanRequest $request): JsonResponse
+    {
+        $plan = $request->id ? Plan::query()->findOrFail($request->id) : new Plan;
+        $plan->fill($request->only(['name']))->save();
+
+        if ($request->note)
+            $plan->note()->updateOrCreate(['plan_id' => $plan->id], ['content' => $request->note, "user_id" => auth()->id()]);
+
+        $plan->note()->update(['content' => $request->note, "user_id" => auth()->id()]);
+
+        foreach ($request->meals as $meal) {
+            $existing_meal = isset($meal['id']) ? $plan->meals()->where('meals.id', $meal['id'])->first() : null;
+
+            if ($existing_meal) {
+                $existing_meal->update($meal);
+            } else {
+                $existing_meal = $plan->meals()->create($meal);
+            }
+
+            if (isset($meal['note']) && $meal['note']) {
+                $existing_meal->note()->update(['content' => $meal['note'], "user_id" => auth()->id()]);
+            }
+
+            foreach ($meal['items'] as $item) {
+                if (isset($item['id'])) {
+                    $existing_item = $existing_meal->items()->where('items.id', $item['id'])->first();
+                    $existing_item->update($item);
+
+                } else {
+                    $existing_item = $existing_meal->items()->create($item);
+
+                }
+
+                foreach ($item['details'] as $detail) {
+                    $existing_item_details =isset($detail['id']) ?  $existing_item->itemDetails()->where('item_details.id', $detail['id'])->first():null;
+
+
+                    if ($existing_item_details) {
+                        $existing_item_details->update($detail);
+                    } else {
+                        $existing_item_details = $existing_item->itemDetails()->create(['name' => $detail['name']]);
+                    }
+
+                    $id_column = $item['type'] == 0 ? 'item_details_id' : 'item_id';
+                    $id_value = $item['type'] == 0 ? $existing_item_details->id : $existing_item->id;
+
+//                    dd($id_column, $id_value, $detail['number'], $detail['standard_type'], $detail['carbohydrate'], $detail['protein'], $detail['fat'], $detail['calories'], $item['type']);
+                    $standard = $existing_item->standards()->updateOrCreate(
+                        [$id_column => $id_value],
+                        [
+                            'number' => $detail['number'],
+                            'standard_type' => $detail['standard_type'],
+                            'carbohydrate' => $detail['carbohydrate'],
+                            'protein' => $detail['protein'],
+                            'fat' => $detail['fat'],
+                            'calories' => $detail['calories'],
+                            'type' => $item['type'],
+                        ]
+                    );
+                }
+            }
+        }
+
+        if ($request->user_ids)
+            $this->assignPlanToUsers(new Request([
+                'user_ids' => $request->user_ids,
+                'plan_id' => $plan->id,
+                'is_work' => $request->is_work ?? false,
+            ]));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Plan updated successfully',
+            'plan' => PlanResource::make($plan),
+        ]);
+    }
+
     /**
      * @OA\Get(
      *     path="/api/diet/plan/user/{user_id}",
@@ -377,4 +517,72 @@ class PlanController extends Controller
             'plan' => PlanResource::collection($plans),
         ]);
     }
+
+    public function duplicatePlan($id): JsonResponse
+    {
+        // Retrieve the original plan
+        $originalPlan = Plan::query()->findOrFail($id);
+        $originalPlan->loadPlanDetails();
+
+
+        // Create a copy of the plan
+        $copiedPlan = $originalPlan->replicate();
+        $copiedPlan->save();
+
+        // Retrieve the meals of the original plan
+        $meals = $originalPlan->meals;
+
+        foreach ($meals as $meal) {
+            // Create a copy of the meal
+            $copiedMeal = $meal->replicate();
+            $copiedMeal->save();
+
+
+            // Retrieve the items of the meal
+            $items = $meal->load('items')->items;
+
+
+            foreach ($items as $item) {
+                // Create a copy of the item
+                $copiedItem = $item->replicate();
+                $copiedItem->save();
+
+                // Attach the copied item to the copied meal
+                $copiedMeal->items()->attach($copiedItem->id);
+
+
+                // Retrieve the standard of the item
+                $standard = $item->standard;
+
+                // Create a copy of the standard
+                $copiedStandard = $standard->replicate();
+                $copiedStandard->item_id = $copiedItem->id;
+                $copiedStandard->save();
+
+                // Retrieve the meal_items of the meal
+                $mealItems = $meal->items;
+
+
+                foreach ($mealItems as $mealItem) {
+                    // Create a copy of the meal_item
+                    $copiedMealItem = $mealItem->replicate();
+                    $copiedMealItem->save();
+
+                    // Replicate the pivot data
+                    $copiedMealItem->pivot->meal_id = $copiedMeal->id;
+                    $copiedMealItem->pivot->item_id = $copiedMealItem->id;
+                    $copiedMealItem->pivot->save();
+                }
+            }
+
+
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Plan duplicated successfully',
+            'plan' => PlanResource::make($copiedPlan),
+        ]);
+    }
+
 }

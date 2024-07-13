@@ -22,9 +22,11 @@ class FullplanRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => 'nullable|integer|exists:plans,id',
             'name' => 'required|string',
             'note' => 'nullable|string',
             'meals' => 'required|array',
+            'meals.*.id' => 'nullable|integer|exists:meals,id',
             'meals.*.name' => 'required|string',
             'meals.*.note' => 'nullable|string',
             'meals.*.carbohydrate' => 'required|numeric',
@@ -32,8 +34,11 @@ class FullplanRequest extends FormRequest
             'meals.*.fat' => 'required|numeric',
             'meals.*.calories' => 'required|numeric',
             'meals.*.items' => 'required|array',
+            'meals.*.items.*.id' => 'nullable|integer|exists:items,id',
             'meals.*.items.*.name' => 'required|string',
             'meals.*.items.*.type' => 'required|integer',
+            'meals.*.items.*.details' => 'required|array',
+            'meals.*.items.*.details.*.id' => 'nullable|integer|exists:item_details,id',
             'meals.*.items.*.details.*.name' => 'required|string',
             'meals.*.items.*.details.*.number' => 'required|integer',
             'meals.*.items.*.details.*.standard_type' => 'required|integer|exists:standard_types,id',

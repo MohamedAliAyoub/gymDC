@@ -31,7 +31,7 @@ class UserPlan extends Model
         return $this->belongsTo(Plan::class);
     }
 
-    public static function assignPlanToUsers($userIds, $planId , $isWork = 1)
+    public static function assignPlanToUsers($userIds, $planId, $isWork = 1)
     {
         $userPlans = [];
         foreach ($userIds as $userId) {
@@ -44,5 +44,19 @@ class UserPlan extends Model
         }
 
         return $userPlans;
+    }
+
+    // In your UserPlan model
+    public function loadUserPlanDetails(): \Illuminate\Database\Eloquent\Builder
+    {
+        return $this->with(['plan' => function ($q) {
+            $q->with(['meals' => function ($q) {
+                $q->with(['items' => function ($q) {
+                    $q->with(['standard' => function ($q) {
+                        $q->with('standardType');
+                    }]);
+                }]);
+            }]);
+        }]);
     }
 }

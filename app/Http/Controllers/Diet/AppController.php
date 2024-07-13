@@ -48,16 +48,8 @@ class AppController extends Controller
     {
         $userPlan = UserPlan::query()
             ->where('user_id', auth()->id())
-            ->where('is_work', true)
-            ->with(['plan' => function ($q) {
-                $q->with(['meals' => function ($q) {
-                    $q->with(['items' => function ($q) {
-                        $q->with(['standard' => function ($q) {
-                            $q->with('standardType');
-                        }]);
-                    }]);
-                }]);
-            }])->first();
+            ->where('is_work', true)->first();
+        $userPlan->loadUserPlanDetails();
 
         if (!$userPlan) {
             return response()->json([
