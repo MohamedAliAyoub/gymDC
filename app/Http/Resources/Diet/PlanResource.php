@@ -30,6 +30,7 @@ class PlanResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'created_at' => $this->created_at->format('Y-m-d'),
             'total_calories' => $this->meals->sum('calories'),
             'total_carbohydrate' => $this->meals->sum('carbohydrate'),
             'total_protein' => $this->meals->sum('protein'),

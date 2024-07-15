@@ -493,7 +493,7 @@ class PlanController extends Controller
         $userPlans = UserPlan::query()
             ->where('user_id', $user_id)
             ->orderByDesc('id')
-            ->get();
+            ->paginate(15);
 
         if ($userPlans->isEmpty()) {
             return response()->json([
