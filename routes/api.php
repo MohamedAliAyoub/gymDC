@@ -76,6 +76,7 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/create-edit-full-plan', [PlanController::class, 'createOrEditFullPlan']);
             Route::post('duplicate-plan/{id}', [PlanController::class, 'duplicatePlan']);
             Route::get('/get-client-plan/{user_id}', [PlanController::class, 'getClientPlans']);
+            Route::delete('/delete-item-plan/{plan_id}/{meal_id}/{item_id}', [PlanController::class, 'deleteItemFromPlan']);
         });
 
 

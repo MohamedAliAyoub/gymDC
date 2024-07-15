@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Diet;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\FullplanRequest;
 use App\Http\Resources\Diet\PlanResource;
+use App\Models\Diet\Item;
+use App\Models\Diet\Meal;
+use App\Models\Diet\MealItem;
 use App\Models\Diet\Plan;
 use App\Models\Diet\UserPlan;
 use Illuminate\Http\Request;
@@ -417,7 +420,7 @@ class PlanController extends Controller
                 }
 
                 foreach ($item['details'] as $detail) {
-                    $existing_item_details =isset($detail['id']) ?  $existing_item->itemDetails()->where('item_details.id', $detail['id'])->first():null;
+                    $existing_item_details = isset($detail['id']) ? $existing_item->itemDetails()->where('item_details.id', $detail['id'])->first() : null;
 
 
                     if ($existing_item_details) {
@@ -582,6 +585,39 @@ class PlanController extends Controller
             'status' => 'success',
             'message' => 'Plan duplicated successfully',
             'plan' => PlanResource::make($copiedPlan),
+        ]);
+    }
+
+
+    public function deleteItemFromPlan($plan_id, $meal_id, $item_id): JsonResponse
+    {
+
+        $plan = Plan::query()->findOrFail($plan_id);
+        $plan_meals = $plan->meals();
+        $planMeal = $plan_meals->where('meal_id', $meal_id)->first();
+        if ($planMeal) {
+            $item = $planMeal->items()->where('item_id', $item_id)->first();
+            if ($item) {
+                $pivotData = $item->pivot->where('meal_id', $meal_id)->where('item_id', $item_id)->delete();
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Item not found',
+
+                ], 404);
+            }
+        } else {
+           return response()->json([
+                'status' => 'failed',
+                'message' => 'Meal not found',
+
+            ], 404);
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Item deleted successfully',
         ]);
     }
 
