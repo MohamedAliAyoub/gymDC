@@ -588,37 +588,106 @@ class PlanController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/diet/plan/{plan_id}/meal/{meal_id}/item/{item_id}",
+     *     summary="Delete an item from a meal in a plan",
+     *     @OA\Parameter(
+     *         name="plan_id",
+     *         in="path",
+     *         description="Plan's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="meal_id",
+     *         in="path",
+     *         description="Meal's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="item_id",
+     *         in="path",
+     *         description="Item's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Item deleted successfully"),
+     *     @OA\Response(response="404", description="Meal or Item not found")
+     * )
+     */
 
     public function deleteItemFromPlan($plan_id, $meal_id, $item_id): JsonResponse
     {
-
         $plan = Plan::query()->findOrFail($plan_id);
-        $plan_meals = $plan->meals();
-        $planMeal = $plan_meals->where('meal_id', $meal_id)->first();
-        if ($planMeal) {
-            $item = $planMeal->items()->where('item_id', $item_id)->first();
+        $meal = $plan->meals()->where('meal_id', $meal_id)->first();
+
+        if ($meal) {
+            $item = $meal->items()->where('item_id', $item_id)->first();
             if ($item) {
-                $pivotData = $item->pivot->where('meal_id', $meal_id)->where('item_id', $item_id)->delete();
+                $meal->items()->detach($item_id);
             } else {
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Item not found',
-
                 ], 404);
             }
         } else {
-           return response()->json([
+            return response()->json([
                 'status' => 'failed',
                 'message' => 'Meal not found',
-
             ], 404);
         }
 
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pivot record deleted successfully',
+        ]);
+    }
+
+
+    /**
+     * @OA\Delete(
+     *     path="/api/diet/plan/{plan_id}/meal/{meal_id}",
+     *     summary="Delete a meal from a plan",
+     *     @OA\Parameter(
+     *         name="plan_id",
+     *         in="path",
+     *         description="Plan's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="meal_id",
+     *         in="path",
+     *         description="Meal's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Pivot record deleted successfully"),
+     *     @OA\Response(response="404", description="Meal not found")
+     * )
+     */
+    public function deleteMealFromPlan($plan_id, $meal_id): JsonResponse
+    {
+        $plan = Plan::query()->findOrFail($plan_id);
+        $meal = $plan->meals()->where('meal_id', $meal_id)->first();
+
+        if ($meal) {
+            $plan->meals()->detach($meal_id);
+        } else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Meal not found',
+            ], 404);
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Item deleted successfully',
+            'message' => 'Pivot record deleted successfully',
         ]);
     }
+
 
 }

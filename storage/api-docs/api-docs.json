@@ -1525,6 +1525,129 @@
                 }
             }
         },
+        "/api/diet/plans": {
+            "get": {
+                "summary": "Retrieve all plans",
+                "operationId": "bf02eb02c9ca0b96bdd8e33b24ed853e",
+                "responses": {
+                    "200": {
+                        "description": "Plans retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Plans retrieved successfully"
+                                        },
+                                        "plans": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Plan Name"
+                                                    },
+                                                    "note": {
+                                                        "type": "string",
+                                                        "example": "This is a plan note"
+                                                    },
+                                                    "meals": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "Meal 1"
+                                                                },
+                                                                "note": {
+                                                                    "type": "string",
+                                                                    "example": "This is a meal note"
+                                                                },
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "name": {
+                                                                                "type": "string",
+                                                                                "example": "Item 1"
+                                                                            },
+                                                                            "type": {
+                                                                                "type": "integer",
+                                                                                "example": 0
+                                                                            },
+                                                                            "details": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "properties": {
+                                                                                        "name": {
+                                                                                            "type": "string",
+                                                                                            "example": "Detail Name"
+                                                                                        },
+                                                                                        "number": {
+                                                                                            "type": "integer",
+                                                                                            "example": 1
+                                                                                        },
+                                                                                        "standard_type": {
+                                                                                            "type": "integer",
+                                                                                            "example": 1
+                                                                                        },
+                                                                                        "carbohydrate": {
+                                                                                            "type": "number",
+                                                                                            "format": "float",
+                                                                                            "example": 30
+                                                                                        },
+                                                                                        "protein": {
+                                                                                            "type": "number",
+                                                                                            "format": "float",
+                                                                                            "example": 20
+                                                                                        },
+                                                                                        "fat": {
+                                                                                            "type": "number",
+                                                                                            "format": "float",
+                                                                                            "example": 10
+                                                                                        },
+                                                                                        "calories": {
+                                                                                            "type": "number",
+                                                                                            "format": "float",
+                                                                                            "example": 100
+                                                                                        }
+                                                                                    },
+                                                                                    "type": "object"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Plans not found"
+                    }
+                }
+            }
+        },
         "/api/diet/plan/{plan}": {
             "get": {
                 "summary": "Retrieve a plan",
@@ -1815,6 +1938,83 @@
                     },
                     "404": {
                         "description": "Plans not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/plan/{plan_id}/meal/{meal_id}/item/{item_id}": {
+            "delete": {
+                "summary": "Delete an item from a meal in a plan",
+                "operationId": "71d2be1f42bd8f0d623d06ce45ef6126",
+                "parameters": [
+                    {
+                        "name": "plan_id",
+                        "in": "path",
+                        "description": "Plan's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "path",
+                        "description": "Meal's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item deleted successfully"
+                    },
+                    "404": {
+                        "description": "Meal or Item not found"
+                    }
+                }
+            }
+        },
+        "/api/diet/plan/{plan_id}/meal/{meal_id}": {
+            "delete": {
+                "summary": "Delete a meal from a plan",
+                "operationId": "3679ed6e72f5fb048482009095882b40",
+                "parameters": [
+                    {
+                        "name": "plan_id",
+                        "in": "path",
+                        "description": "Plan's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "meal_id",
+                        "in": "path",
+                        "description": "Meal's ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pivot record deleted successfully"
+                    },
+                    "404": {
+                        "description": "Meal not found"
                     }
                 }
             }
