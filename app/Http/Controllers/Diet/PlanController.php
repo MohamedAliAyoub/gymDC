@@ -203,30 +203,48 @@ class PlanController extends Controller
         ]);
     }
 
+
     /**
      * @OA\Delete(
-     *     path="/api/diet/plan/{plan}",
-     *     summary="Delete a plan",
-     *     @OA\Response(response="200", description="Plan deleted successfully"),
+     *     path="/api/diet/plan/{plan_id}",
+     *     summary="Delete a plan and its associated meals and items",
+     *     @OA\Parameter(
+     *         name="plan_id",
+     *         in="path",
+     *         description="Plan's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Plan and its associated meals and items deleted successfully"),
      *     @OA\Response(response="404", description="Plan not found")
      * )
      */
-    public function delete($id)
+    public function delete($plan_id): JsonResponse
     {
-
-        try {
-            $plan = Plan::query()->findOrFail($id);
-        } catch (\Exception $e) {
+        $plan = Plan::query()->find($plan_id);
+        if (!$plan) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Plan not found',
             ], 404);
         }
+
+        // Detach all items from all meals in the plan
+        foreach ($plan->meals as $meal) {
+            foreach ($meal->items as $item) {
+                $meal->items()->detach($item->id);
+            }
+        }
+
+        // Detach all meals from the plan
+        $plan->meals()->detach();
+
+        // Delete the plan
         $plan->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Plan deleted successfully',
+            'message' => 'Plan and its associated meals and items deleted successfully',
         ]);
     }
 
