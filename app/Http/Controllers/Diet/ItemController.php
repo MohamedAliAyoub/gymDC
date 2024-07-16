@@ -26,23 +26,7 @@ class ItemController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/diet/default-item",
-     *     summary="Retrieve all items",
-     *     @OA\Response(response="200", description="Items retrieved successfully")
-     * )
-     */
-    public function default_items():JsonResponse
-    {
-        $items = Item::query()->whereNotNull('default_id')->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Default Items retrieved successfully',
-            'items' => $items,
-        ]);
-    }
     /**
      * @OA\Post(
      *     path="/api/diet/item",

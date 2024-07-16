@@ -74,7 +74,6 @@ class PlanController extends Controller
      *     @OA\Response(response="404", description="Plans not found")
      * )
      */
-
     public function index(): JsonResponse
     {
         $plans = Plan::query()->paginate(15);
