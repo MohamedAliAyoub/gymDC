@@ -237,6 +237,8 @@ class PlanController extends Controller
         // Detach all meals from the plan
         $plan->meals()->detach();
 
+        // Detach the plan from all users
+        $plan->userPlans()->delete();
         // Delete the plan
         $plan->delete();
 
@@ -524,6 +526,9 @@ class PlanController extends Controller
         $userPlans->load(['plan.meals.items.standard.standardType']);
 
         $plans = $userPlans->map(function ($userPlan) {
+            if (is_null($userPlan->plan)) {
+                $userPlan->delete();
+            }
             if ($userPlan->plan) {
                 $plan = $userPlan->plan;
                 $plan->is_work = $userPlan->is_work;

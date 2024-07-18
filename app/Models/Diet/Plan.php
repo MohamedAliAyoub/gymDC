@@ -5,6 +5,7 @@ namespace App\Models\Diet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Plan
@@ -39,6 +40,11 @@ class Plan extends Model
         return $this->hasOne(Note::class);
     }
 
+    public function userPlans():HasMany
+    {
+        return $this->hasMany(UserPlan::class);
+    }
+
 
     public function loadPlanDetails(): Plan
     {
@@ -50,6 +56,7 @@ class Plan extends Model
             }]);
         }]);
     }
+
 
 
 }

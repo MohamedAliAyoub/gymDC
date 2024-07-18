@@ -27,18 +27,21 @@ class PlanResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'created_at' => $this->created_at->format('Y-m-d'),
-            'total_calories' => $this->meals->sum('calories'),
-            'total_carbohydrate' => $this->meals->sum('carbohydrate'),
-            'total_protein' => $this->meals->sum('protein'),
-            'total_fat' => $this->meals->sum('fat'),
-            'is_work' => $this->is_work != null ? $this->is_work : false,
-            'notes' => $this->note?->content,
-            'meals' => MealResource::collection($this->meals),
+        if ($this->resource) {
+            return [
+                'id' => $this->id,
+                'name' => $this->name,
+                'created_at' => $this->created_at->format('Y-m-d'),
+                'total_calories' => $this->meals->sum('calories'),
+                'total_carbohydrate' => $this->meals->sum('carbohydrate'),
+                'total_protein' => $this->meals->sum('protein'),
+                'total_fat' => $this->meals->sum('fat'),
+                'is_work' => $this->is_work != null ? $this->is_work : false,
+                'notes' => $this->note?->content,
+                'meals' => MealResource::collection($this->meals),
+            ];
+        }
 
-        ];
+        return [];
     }
 }
