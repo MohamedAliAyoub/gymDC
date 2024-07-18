@@ -76,16 +76,15 @@ class PlanController extends Controller
      */
     public function index(): JsonResponse
     {
-        $plans = Plan::query()->paginate(15);
+        $plans = Plan::query()->orderByDesc('id');
         $plans->each(function ($plan) {
             $plan->loadPlanDetails();
         });
 
-
         return response()->json([
             'status' => 'success',
             'message' => 'Plans retrieved successfully',
-            'plans' => PlanResource::collection($plans),
+            'plans' => $plans->paginate(5),
         ]);
     }
 
@@ -525,11 +524,12 @@ class PlanController extends Controller
         $userPlans->load(['plan.meals.items.standard.standardType']);
 
         $plans = $userPlans->map(function ($userPlan) {
-            $plan = $userPlan->plan;
-            $plan->is_work = $userPlan->is_work;
-            return $plan;
+            if ($userPlan->plan) {
+                $plan = $userPlan->plan;
+                $plan->is_work = $userPlan->is_work;
+                return $plan;
+            }
         });
-
 
         return response()->json([
             'status' => 'success',
