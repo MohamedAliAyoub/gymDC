@@ -74,9 +74,26 @@ class PlanController extends Controller
      *     @OA\Response(response="404", description="Plans not found")
      * )
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $plans = Plan::query()->orderByDesc('id');
+        $request->validate([
+            'total_calories' => 'nullable|numeric',
+            'total_carbohydrate' => 'nullable|numeric',
+            'total_protein' => 'nullable|numeric',
+            'total_fat' => 'nullable|numeric',
+        ]);
+        $attributes = [
+            'total_calories' => $request->total_calories,
+            'total_carbohydrate' => $request->total_carbohydrate,
+            'total_protein' => $request->total_protein,
+            'total_fat' => $request->total_fat,
+        ];
+        $attributes = array_filter($attributes, function ($value) {
+            return $value !== null;
+        });
+
+        $plans = Plan::filterByAttributes($attributes)->orderByDesc('id')->get();
+
         $plans->each(function ($plan) {
             $plan->loadPlanDetails();
         });
@@ -84,7 +101,7 @@ class PlanController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plans retrieved successfully',
-            'plans' => $plans->paginate(5),
+            'plans' => PlanResource::collection($plans),
         ]);
     }
 

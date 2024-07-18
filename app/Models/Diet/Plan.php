@@ -26,6 +26,34 @@ class Plan extends Model
     protected $hidden = [
         'pivot'
     ];
+    protected $appends = [
+        'total_calories',
+        'total_carbohydrate',
+        'total_protein',
+        'total_fat'
+    ];
+
+
+    public function getTotalCaloriesAttribute()
+    {
+        return $this->meals->sum('calories');
+    }
+
+    public function getTotalCarbohydrateAttribute()
+    {
+        return $this->meals->sum('carbohydrate');
+    }
+
+    public function getTotalProteinAttribute()
+    {
+        return $this->meals->sum('protein');
+    }
+
+    public function getTotalFatAttribute()
+    {
+        return $this->meals->sum('fat');
+    }
+
 
     public function meals(): BelongsToMany
     {
@@ -40,7 +68,7 @@ class Plan extends Model
         return $this->hasOne(Note::class);
     }
 
-    public function userPlans():HasMany
+    public function userPlans(): HasMany
     {
         return $this->hasMany(UserPlan::class);
     }
@@ -58,5 +86,17 @@ class Plan extends Model
     }
 
 
+    public function scopeFilterByAttributes($query, $attributes)
+    {
+        $filteredPlans = $query->get()->filter(function ($plan) use ($attributes) {
+            foreach ($attributes as $attribute => $value) {
+                if ($plan->$attribute != $value) {
+                    return false;
+                }
+            }
+            return true;
+        });
 
+        return self::query()->whereIn('id', $filteredPlans->pluck('id'));
+    }
 }
