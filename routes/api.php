@@ -156,6 +156,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/{exercise}', [ExerciseController::class, 'show']);
             Route::delete('/{exercise}', [ExerciseController::class, 'delete']);
             Route::post('/add/assignExercisesToPlan', [ExercisePlanExerciseController::class, 'assignExercisesToPlan']);
+            Route::post('/store-exercise-plan', [PlanExerciseController::class, 'storeExercisePlan']);
+            Route::post('/assignPlanToUsers', [ExerciseController::class, 'assignPlanToUsers']);
+
         });
         Route::group(['prefix' => 'done'], function () {
 

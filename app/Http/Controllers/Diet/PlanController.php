@@ -92,7 +92,7 @@ class PlanController extends Controller
             return $value !== null;
         });
 
-        $plans = Plan::filterByAttributes($attributes)->orderByDesc('id')->get();
+        $plans = Plan::filterByAttributes($attributes)->orderByDesc('id')->paginate(10);
 
         $plans->each(function ($plan) {
             $plan->loadPlanDetails();
@@ -102,6 +102,14 @@ class PlanController extends Controller
             'status' => 'success',
             'message' => 'Plans retrieved successfully',
             'plans' => PlanResource::collection($plans),
+            'pagination' => [
+                'total' => $plans->total(),
+                'per_page' => $plans->perPage(),
+                'current_page' => $plans->currentPage(),
+                'last_page' => $plans->lastPage(),
+                'from' => $plans->firstItem(),
+                'to' => $plans->lastItem(),
+            ]
         ]);
     }
 
