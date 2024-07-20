@@ -109,4 +109,19 @@ class UserPlanExercise extends Model
             ->first() ;
     }
 
+    public static function assignPlanToUsers($userIds, $planId, $isWork = 1): array
+    {
+        $userPlans = [];
+        foreach ($userIds as $userId) {
+            $userPlans[] = self::create([
+                'user_id' => $userId,
+                'plan_id' => $planId,
+                'status' => true,
+                'is_work' => $isWork,
+            ]);
+        }
+
+        return $userPlans;
+    }
+
 }

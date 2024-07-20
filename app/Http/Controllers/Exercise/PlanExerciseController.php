@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Exercise;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\FullEsxercisePlanRequest;
 use App\Http\Resources\Exercise\PlanExerciseResource;
+use App\Models\Diet\Plan;
+use App\Models\Diet\UserPlan;
+use App\Models\Exercise\Exercise;
+use App\Models\Exercise\ExerciseDetails;
 use App\Models\Exercise\PlanExercise;
 use App\Models\Exercise\UserPlanExercise;
+use App\Models\Exercise\WeeklyPlan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -108,36 +114,36 @@ class PlanExerciseController extends Controller
         ]);
     }
 
-   /**
- * @OA\Put(
- *     path="/api/exercise/plan/{id}",
- *     summary="Update a plan",
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         description="Plan's ID",
- *         required=true,
- *         @OA\Schema(type="integer")
- *     ),
- *     @OA\Parameter(
- *         name="name",
- *         in="query",
- *         description="Plan's name",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         name="status",
- *         in="query",
- *         description="Plan's status",
- *         required=false,
- *         @OA\Schema(type="boolean")
- *     ),
- *     @OA\Response(response="200", description="Plan updated successfully"),
- *     @OA\Response(response="422", description="Validation errors"),
- *     @OA\Response(response="404", description="Plan not found")
- * )
- */
+    /**
+     * @OA\Put(
+     *     path="/api/exercise/plan/{id}",
+     *     summary="Update a plan",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Plan's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Plan's name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Plan's status",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(response="200", description="Plan updated successfully"),
+     *     @OA\Response(response="422", description="Validation errors"),
+     *     @OA\Response(response="404", description="Plan not found")
+     * )
+     */
     public function update(Request $request, int $id): JsonResponse
     {
         try {
@@ -219,7 +225,7 @@ class PlanExerciseController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Today\'s plan retrieved successfully',
-            'todayPlan' =>PlanExerciseResource::make($todayPlan->plan),
+            'todayPlan' => PlanExerciseResource::make($todayPlan->plan),
         ]);
     }
 
@@ -250,6 +256,212 @@ class PlanExerciseController extends Controller
             'status' => 'success',
             'message' => 'Plan by date retrieved successfully',
             'plan' => PlanExerciseResource::make($plan),
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/exercise/plan/store",
+     *     operationId="storeExercisePlan",
+     *     tags={"Exercise Plans"},
+     *     summary="Create or update a full exercise plan",
+     *     description="Create or update a full exercise plan with weekly plans, plans, exercises and exercise details",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="weekly_plan_id", type="integer", example=1),
+     *             @OA\Property(property="weekly_plan_name", type="string", example="Weekly Plan 1"),
+     *             @OA\Property(
+     *                 property="plans",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Plan 1"),
+     *                     @OA\Property(property="note", type="string", example="This is a plan note"),
+     *                     @OA\Property(
+     *                         property="exercises",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=1),
+     *                             @OA\Property(property="name", type="string", example="Exercise 1"),
+     *                             @OA\Property(property="note", type="string", example="This is an exercise note"),
+     *                             @OA\Property(property="run_duration", type="integer", example=30),
+     *                             @OA\Property(
+     *                                 property="exercise_details",
+     *                                 type="array",
+     *                                 @OA\Items(
+     *                                     type="object",
+     *                                     @OA\Property(property="id", type="integer", example=1),
+     *                                     @OA\Property(property="name", type="string", example="Detail Name"),
+     *                                     @OA\Property(property="previous", type="string", example="Previous Detail"),
+     *                                     @OA\Property(property="rir", type="string", example="RIR Detail"),
+     *                                     @OA\Property(property="tempo", type="string", example="Tempo Detail"),
+     *                                     @OA\Property(property="rest", type="string", example="Rest Detail"),
+     *                                     @OA\Property(property="kg", type="integer", example=10),
+     *                                     @OA\Property(property="sets", type="integer", example=3),
+     *                                     @OA\Property(property="reps", type="integer", example=10),
+     *                                     @OA\Property(property="status", type="boolean", example=true),
+     *                                     @OA\Property(property="duration", type="integer", example=30)
+     *                                 )
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Exercise plan created or updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Exercise plan created or updated successfully")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    public function storeExercisePlan(FullEsxercisePlanRequest $request): JsonResponse
+    {
+
+        $weeklyPlan = WeeklyPlan::find($request->weekly_plan_id);
+
+        if (!$weeklyPlan) {
+            $weeklyPlan = WeeklyPlan::create(['name' => $request->weekly_plan_name]);
+        } else {
+            $weeklyPlan->update(['name' => $request->weekly_plan_name]);
+        }
+
+        foreach ($request->plans as $planData) {
+
+            if (isset($planData['id'])) {
+                $plan = Plan::query()->find($planData['id']);
+                $plan->update(['name' => $planData['name'], 'weekly_plan_id' => $weeklyPlan->id]);
+            } else
+                $plan = PlanExercise::create(['name' => $planData['name'], 'weekly_plan_id' => $weeklyPlan->id]);
+
+            if (isset($planData['note'])) {
+                $plan->note()->updateOrCreate(
+                    ['plan_exercise_id' => $plan->id],
+                    ['content' => $planData['note'] ,  'user_id' => auth()->id() ] ,
+                );
+            }
+            foreach ($planData['exercises'] as $exerciseData) {
+                $exercise = null;
+
+                if (isset($exerciseData['id'])) {
+                    $exercise = Exercise::find($exerciseData['id']);
+                }
+
+                if (!$exercise) {
+                    $exercise = Exercise::create([
+                        'name' => $exerciseData['name'],
+                        'run_duration' => $exerciseData['run_duration']??0,
+                        'plan_id' => $plan->id
+                    ]);
+                } else {
+                    $exercise->update([
+                        'name' => $exerciseData['name'],
+                        'run_duration' => $exerciseData['run_duration'],
+                        'plan_id' => $plan->id
+                    ]);
+                }
+
+                if (isset($exerciseData['note'])) {
+                    $exercise->note()->updateOrCreate(
+                        ['exercise_id' => $plan->id],
+                        ['content' => $exerciseData['note'] ,  'user_id' => auth()->id()]
+                    );
+                }
+                foreach ($exerciseData['exercise_details'] as $detail) {
+                    $exerciseDetails = ExerciseDetails::find($detail['id']??null);
+
+                    if (!$exerciseDetails) {
+                        $exerciseDetails = ExerciseDetails::create([
+                            'name' => $detail['name'],
+                            'previous' => $detail['previous'],
+                            'rir' => $detail['rir'],
+                            'tempo' => $detail['tempo'],
+                            'rest' => $detail['rest'],
+                            'kg' => $detail['kg'],
+                            'sets' => $detail['sets'],
+                            'reps' => $detail['reps'],
+                            'status' => $detail['status'],
+                            'exercise_id' => $exercise->id,
+                            'duration' => $detail['duration'],
+                        ]);
+                    } else {
+                        $exerciseDetails->update([
+                            'name' => $detail['name'],
+                            'previous' => $detail['previous'],
+                            'rir' => $detail['rir'],
+                            'tempo' => $detail['tempo'],
+                            'rest' => $detail['rest'],
+                            'kg' => $detail['kg'],
+                            'sets' => $detail['sets'],
+                            'reps' => $detail['reps'],
+                            'status' => $detail['status'],
+                            'exercise_id' => $exercise->id,
+                            'duration' => $detail['duration'],
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Exercise plan created or updated successfully',
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/diet/plan/assign",
+     *     summary="Assign a plan to multiple users",
+     *     @OA\Parameter(
+     *         name="user_ids",
+     *         in="query",
+     *         description="Array of User IDs",
+     *         required=true,
+     *         @OA\Schema(type="array", @OA\Items(type="integer"))
+     *     ),
+     *     @OA\Parameter(
+     *         name="plan_id",
+     *         in="query",
+     *         description="Plan's ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Plan assigned to users successfully"),
+     *     @OA\Response(response="400", description="Validation errors")
+     * )
+     */
+    public function assignPlanToUsers(Request $request): JsonResponse
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'required|integer|exists:users,id',
+            'plan_id' => 'required|integer|exists:plans,id',
+            'is_work' => 'boolean',
+        ]);
+
+        $is_work = $request->is_work == 1 ? 1 : 0;
+
+        if ($is_work == 1)
+            UserPlanExercise::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
+        $userPlans = UserPlanExercise::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Plan assigned to users successfully',
+            'userPlans' => $userPlans,
         ]);
     }
 

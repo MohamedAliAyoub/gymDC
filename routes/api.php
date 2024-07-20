@@ -24,6 +24,7 @@ use App\Http\Controllers\Exercise\ExercisePlanExerciseController;
 use App\Http\Controllers\Exercise\NoteExerciseCotroller;
 use App\Http\Controllers\Exercise\PlanExerciseController;
 use App\Http\Controllers\Exercise\UserPlanExerciseController;
+use App\Http\Controllers\Exercise\WeeklyPlanExerciseController;
 
 // Dashboard Controllers
 use App\Http\Controllers\Dashboard\SubscriptionController;
@@ -160,6 +161,17 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/assignPlanToUsers', [ExerciseController::class, 'assignPlanToUsers']);
 
         });
+        Route::prefix('weekly-plan')->group(function () {
+            Route::get('/', [WeeklyPlanExerciseController::class, 'index']);
+//            Route::post('/', [ExerciseController::class, 'create']);
+//            Route::put('/{exercise}', [ExerciseController::class, 'update']);
+//            Route::get('/{exercise}', [ExerciseController::class, 'show']);
+//            Route::delete('/{exercise}', [ExerciseController::class, 'delete']);
+//            Route::post('/add/assignExercisesToPlan', [ExercisePlanExerciseController::class, 'assignExercisesToPlan']);
+//            Route::post('/store-exercise-plan', [PlanExerciseController::class, 'storeExercisePlan']);
+//            Route::post('/assignPlanToUsers', [ExerciseController::class, 'assignPlanToUsers']);
+
+            });
         Route::group(['prefix' => 'done'], function () {
 
             Route::post('/createWithDetails', [DoneExerciseController::class, 'createWithDetails']);

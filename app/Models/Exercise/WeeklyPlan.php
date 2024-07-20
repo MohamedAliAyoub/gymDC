@@ -13,7 +13,20 @@ class WeeklyPlan extends Model
 
     public function planExercises(): HasMany
     {
-        return $this->hasMany(PlanExercise::class);
+        return $this->hasMany(PlanExercise::class , 'weekly_plan_id' , 'id');
     }
 
+    public function userPlanExercises(): HasMany
+    {
+        return $this->hasMany(UserPlanExercise::class , 'plan_id' , 'id');
+    }
+
+
+    public function loadPlanExercisesDetails()
+    {
+        return $this->planExercises->map(function ($planExercise) {
+            $planExercise->load('exercises.details');
+            return $planExercise;
+        });
+    }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -43,7 +44,7 @@ class PlanExercise extends Model
      */
     public function weeklyPlan():belongsTo
     {
-        return $this->belongsTo(WeeklyPlan::class);
+        return $this->belongsTo(WeeklyPlan::class , 'weekly_plan_id' , 'id');
     }
     /**
      * Get the exercises for the plan.
@@ -69,6 +70,11 @@ class PlanExercise extends Model
         return $this->hasOne(NoteExercise::class);
     }
 
+    public function userPlanExercises(): HasMany
+    {
+        return $this->hasMany(UserPlanExercise::class , 'plan_id' , 'id')->orderByDesc('id');
+    }
+
     public static function hasDoneExerciseToday($exerciseId): bool
     {
         return DoneExercise::query()
@@ -77,6 +83,8 @@ class PlanExercise extends Model
             ->whereDate('created_at', now()->toDateString())
             ->exists();
     }
+
+
 
 
 
