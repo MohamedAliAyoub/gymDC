@@ -25,6 +25,9 @@ class ExercisePlanExercise extends Model
         'exercise_id',
         'status',
     ];
+    protected $casts = [
+        'status' => 'boolean',
+    ];
 
     /**
      * Get the exercise that owns the ExercisePlanExercise

@@ -43,9 +43,12 @@ class UserPlanExercise extends Model
         'status',
         'is_work',
         'days',
+        'weekly_plan_id'
     ];
     protected $casts = [
         'days' => 'array',
+        'is_work' => 'boolean',
+        'status' => 'boolean',
     ];
 
     /**
@@ -92,7 +95,7 @@ class UserPlanExercise extends Model
             ->whereJsonContains('days', (string)now()->dayOfWeek)
             ->where('is_work', true)
             ->where('status', true)
-            ->first()  ;
+            ->first();
     }
 
     /**
@@ -106,19 +109,26 @@ class UserPlanExercise extends Model
             ->whereJsonContains('days', (string)$date->dayOfWeek)
             ->where('is_work', true)
             ->where('status', true)
-            ->first() ;
+            ->first();
     }
 
-    public static function assignPlanToUsers($userIds, $planId, $isWork = 1): array
+    public static function assignPlanToUsers($userIds, $planId, $isWork = 1 , $weekly_plan_id , $days): array
     {
         $userPlans = [];
         foreach ($userIds as $userId) {
-            $userPlans[] = self::create([
-                'user_id' => $userId,
-                'plan_id' => $planId,
-                'status' => true,
-                'is_work' => $isWork,
-            ]);
+            $userPlans[] = self::query()->updateOrCreate(
+                [
+                    'user_id' => $userId,
+                    'plan_id' => $planId
+                ],
+                [
+                    'user_id' => $userId,
+                    'plan_id' => $planId,
+                    'status' => true,
+                    'is_work' => $isWork,
+                    'weekly_plan_id' => $weekly_plan_id,
+                    'days' => $days,
+                ]);
         }
 
         return $userPlans;

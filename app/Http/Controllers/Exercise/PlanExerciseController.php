@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Exercise;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\FullEsxercisePlanRequest;
 use App\Http\Resources\Exercise\PlanExerciseResource;
+use App\Http\Resources\Exercise\WeeklyPlanExerciseResource;
 use App\Models\Diet\Plan;
 use App\Models\Diet\UserPlan;
 use App\Models\Exercise\Exercise;
 use App\Models\Exercise\ExerciseDetails;
+use App\Models\Exercise\ExercisePlanExercise;
 use App\Models\Exercise\PlanExercise;
 use App\Models\Exercise\UserPlanExercise;
 use App\Models\Exercise\WeeklyPlan;
@@ -341,7 +343,7 @@ class PlanExerciseController extends Controller
         foreach ($request->plans as $planData) {
 
             if (isset($planData['id'])) {
-                $plan = Plan::query()->find($planData['id']);
+                $plan = PlanExercise::query()->find($planData['id']);
                 $plan->update(['name' => $planData['name'], 'weekly_plan_id' => $weeklyPlan->id]);
             } else
                 $plan = PlanExercise::create(['name' => $planData['name'], 'weekly_plan_id' => $weeklyPlan->id]);
@@ -349,38 +351,46 @@ class PlanExerciseController extends Controller
             if (isset($planData['note'])) {
                 $plan->note()->updateOrCreate(
                     ['plan_exercise_id' => $plan->id],
-                    ['content' => $planData['note'] ,  'user_id' => auth()->id() ] ,
+                    [
+                        'content' => $planData['note'],
+                        'user_id' => auth()->id()
+                    ],
                 );
             }
             foreach ($planData['exercises'] as $exerciseData) {
                 $exercise = null;
 
                 if (isset($exerciseData['id'])) {
+
                     $exercise = Exercise::find($exerciseData['id']);
+
                 }
 
                 if (!$exercise) {
                     $exercise = Exercise::create([
                         'name' => $exerciseData['name'],
-                        'run_duration' => $exerciseData['run_duration']??0,
+                        'run_duration' => $exerciseData['run_duration'] ?? 0,
                         'plan_id' => $plan->id
                     ]);
                 } else {
                     $exercise->update([
                         'name' => $exerciseData['name'],
                         'run_duration' => $exerciseData['run_duration'],
-                        'plan_id' => $plan->id
                     ]);
                 }
 
+                ExercisePlanExercise::query()->create([
+                    'exercise_id' => $exercise->id,
+                    'plan_exercise_id' => $plan->id,
+                ]);
                 if (isset($exerciseData['note'])) {
                     $exercise->note()->updateOrCreate(
                         ['exercise_id' => $plan->id],
-                        ['content' => $exerciseData['note'] ,  'user_id' => auth()->id()]
+                        ['content' => $exerciseData['note'], 'user_id' => auth()->id()]
                     );
                 }
                 foreach ($exerciseData['exercise_details'] as $detail) {
-                    $exerciseDetails = ExerciseDetails::find($detail['id']??null);
+                    $exerciseDetails = ExerciseDetails::query()->find($detail['id'] ?? null);
 
                     if (!$exerciseDetails) {
                         $exerciseDetails = ExerciseDetails::create([
@@ -397,27 +407,31 @@ class PlanExerciseController extends Controller
                             'duration' => $detail['duration'],
                         ]);
                     } else {
-                        $exerciseDetails->update([
-                            'name' => $detail['name'],
-                            'previous' => $detail['previous'],
-                            'rir' => $detail['rir'],
-                            'tempo' => $detail['tempo'],
-                            'rest' => $detail['rest'],
-                            'kg' => $detail['kg'],
-                            'sets' => $detail['sets'],
-                            'reps' => $detail['reps'],
-                            'status' => $detail['status'],
-                            'exercise_id' => $exercise->id,
-                            'duration' => $detail['duration'],
-                        ]);
+
+                        $exerciseDetails->update($detail);
                     }
                 }
             }
+
+            //assign plan to UserPlanExercise
+            $data = [
+                'plan_id' => $plan->id,
+                'user_ids' => $request->user_ids,
+                'is_work' => $planData['is_work'] ?? true,
+                'weekly_plan_id' => $weeklyPlan->id,
+                'days' => $planData['days'] ,
+            ];
+
+            $requestData = new \Illuminate\Http\Request();
+            $requestData->replace($data);
+
+            $this->assignPlanToUsers($requestData);
         }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Exercise plan created or updated successfully',
+            'plan' => WeeklyPlanExerciseResource::make($weeklyPlan),
         ]);
     }
 
@@ -450,13 +464,16 @@ class PlanExerciseController extends Controller
             'user_ids.*' => 'required|integer|exists:users,id',
             'plan_id' => 'required|integer|exists:plans,id',
             'is_work' => 'boolean',
+            'weekly_plan_id' => 'nullable|integer|exists:weekly_plans,id',
+            'days' => 'required|array',
+            'days.*' => 'required|integer',
         ]);
 
         $is_work = $request->is_work == 1 ? 1 : 0;
 
         if ($is_work == 1)
             UserPlanExercise::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
-        $userPlans = UserPlanExercise::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work);
+        $userPlans = UserPlanExercise::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work, $request->weekly_plan_id , $request->days);
 
         return response()->json([
             'status' => 'success',

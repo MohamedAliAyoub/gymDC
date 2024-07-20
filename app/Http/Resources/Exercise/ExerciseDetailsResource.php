@@ -16,9 +16,11 @@ class ExerciseDetailsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+//        TODO  change datatypes to float
         return [
             'id' => $this->id,
             'exercise_id' => $this->exercise_id,
+            'name' => $this->name,
             'exercise' => $this->exercise->name,
             'is_done' => DoneExercise::hasDoneExerciseDetailsToday($this->id),
             'sets' => $this->sets,
@@ -28,7 +30,7 @@ class ExerciseDetailsResource extends JsonResource
             'weight' => $this->weight,
             'unit' => $this->unit,
             'day_names' => $this->day_names,
-            'is_full' => ExerciseDetails::is_full($this->rir , $this->tempo , $this->rest),
+            'is_full' => ExerciseDetails::is_full($this->rir, $this->tempo, $this->rest),
             'duration' => $this->duration,
 
         ];

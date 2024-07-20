@@ -163,13 +163,11 @@ Route::middleware('auth:api')->group(function () {
         });
         Route::prefix('weekly-plan')->group(function () {
             Route::get('/', [WeeklyPlanExerciseController::class, 'index']);
-//            Route::post('/', [ExerciseController::class, 'create']);
-//            Route::put('/{exercise}', [ExerciseController::class, 'update']);
-//            Route::get('/{exercise}', [ExerciseController::class, 'show']);
-//            Route::delete('/{exercise}', [ExerciseController::class, 'delete']);
-//            Route::post('/add/assignExercisesToPlan', [ExercisePlanExerciseController::class, 'assignExercisesToPlan']);
-//            Route::post('/store-exercise-plan', [PlanExerciseController::class, 'storeExercisePlan']);
-//            Route::post('/assignPlanToUsers', [ExerciseController::class, 'assignPlanToUsers']);
+            Route::get('/get-client-plans/{id}', [WeeklyPlanExerciseController::class, 'getClientPlan']);
+            Route::get('/{id}', [WeeklyPlanExerciseController::class, 'show']);
+            Route::delete('/{id}', [WeeklyPlanExerciseController::class, 'deleteWeeklyPlan']);
+            Route::delete('/plan/{id}', [WeeklyPlanExerciseController::class, 'deletePlanExercises']);
+            Route::delete('/exercise/{id}', [WeeklyPlanExerciseController::class, 'deleteExercise']);
 
             });
         Route::group(['prefix' => 'done'], function () {
