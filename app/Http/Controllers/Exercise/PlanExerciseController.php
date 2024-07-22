@@ -342,8 +342,9 @@ class PlanExerciseController extends Controller
 
         foreach ($request->plans as $planData) {
 
-            if (isset($planData['id'])) {
+            if (isset($planData['id']))
                 $plan = PlanExercise::query()->find($planData['id']);
+            if ($plan) {
                 $plan->update(['name' => $planData['name'], 'weekly_plan_id' => $weeklyPlan->id]);
             } else
                 $plan = PlanExercise::create(['name' => $planData['name'], 'weekly_plan_id' => $weeklyPlan->id]);
