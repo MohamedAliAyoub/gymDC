@@ -342,6 +342,7 @@ class PlanExerciseController extends Controller
 
         foreach ($request->plans as $planData) {
 
+            $plan = null ;
             if (isset($planData['id']))
                 $plan = PlanExercise::query()->find($planData['id']);
             if ($plan) {

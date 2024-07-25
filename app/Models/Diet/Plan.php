@@ -86,6 +86,8 @@ class Plan extends Model
     }
 
 
+    //scope search by name
+
     public function scopeFilterByAttributes($query, $attributes)
     {
         $filteredPlans = $query->get()->filter(function ($plan) use ($attributes) {
