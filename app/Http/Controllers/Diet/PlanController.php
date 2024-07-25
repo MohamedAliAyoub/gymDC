@@ -81,6 +81,7 @@ class PlanController extends Controller
             'total_carbohydrate' => 'nullable|numeric',
             'total_protein' => 'nullable|numeric',
             'total_fat' => 'nullable|numeric',
+            'name' => 'nullable|string',
         ]);
         $attributes = [
             'total_calories' => $request->total_calories,
@@ -92,7 +93,10 @@ class PlanController extends Controller
             return $value !== null;
         });
 
-        $plans = Plan::filterByAttributes($attributes)->orderByDesc('id')->paginate(10);
+        $plans = Plan::filterByAttributes($attributes)
+            ->searchByName($request->name)
+            ->orderByDesc('id')
+            ->paginate(10);
 
         $plans->each(function ($plan) {
             $plan->loadPlanDetails();

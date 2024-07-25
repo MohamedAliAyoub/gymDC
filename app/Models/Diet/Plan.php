@@ -87,6 +87,10 @@ class Plan extends Model
 
 
     //scope search by name
+    public function scopeSearchByName($query, $name)
+    {
+        return $query->where('name', 'like', '%' . $name . '%');
+    }
 
     public function scopeFilterByAttributes($query, $attributes)
     {
