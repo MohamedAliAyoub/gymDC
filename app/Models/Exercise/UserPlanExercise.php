@@ -34,7 +34,7 @@ class UserPlanExercise extends Model
     const FRIDAY = 5;
     const SATURDAY = 6;
 
-    protected $appends = ['day_names'];
+    protected $appends = ['day_names' , 'day_key'];
 
 
     protected $fillable = [
@@ -67,22 +67,43 @@ class UserPlanExercise extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getDayNamesAttribute()
-    {
-        $dayNames = [
-            self::SUNDAY => 'Sunday',
-            self::MONDAY => 'Monday',
-            self::TUESDAY => 'Tuesday',
-            self::WEDNESDAY => 'Wednesday',
-            self::THURSDAY => 'Thursday',
-            self::FRIDAY => 'Friday',
-            self::SATURDAY => 'Saturday',
-        ];
+  public function getDayNamesAttribute()
+{
+    $dayNames = [
+        self::SUNDAY => 'Sunday',
+        self::MONDAY => 'Monday',
+        self::TUESDAY => 'Tuesday',
+        self::WEDNESDAY => 'Wednesday',
+        self::THURSDAY => 'Thursday',
+        self::FRIDAY => 'Friday',
+        self::SATURDAY => 'Saturday',
+    ];
 
-        return array_map(function ($day) use ($dayNames) {
-            return $dayNames[$day];
-        }, $this->days);
+    $result = array_map(function ($day) use ($dayNames) {
+        return $dayNames[$day];
+    }, $this->days);
+
+    // If there's only one item in the array, return it as a string
+    if (count($result) === 1) {
+        return $result[0];
     }
+
+    // Otherwise, return the array
+    return $result;
+}
+
+ public function getDayKeyAttribute()
+{
+    $result = $this->days;
+
+    // If there's only one item in the array, return it as a string
+    if (count($result) === 1) {
+        return $result[0];
+    }
+
+    // Otherwise, return the array
+    return $result;
+}
 
     /**
      * Get the plan of today

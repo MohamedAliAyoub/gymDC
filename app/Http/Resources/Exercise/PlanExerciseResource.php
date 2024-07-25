@@ -64,10 +64,12 @@ class PlanExerciseResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+
         return [
             'id' => $this->id,
             'plan_id' => $this->name,
             'days' => $this->userPlanExercises->first()->day_names ?? null,
+            'day_key' => $this->userPlanExercises->first()->day_key ?? null,
             'is_done' => DoneExercise::hasDonePlanToday($this->id),
             'status' => $this->status,
             'exercises_count' => $this->exercises->whereIn('run_duration',[0 , null])->count(),
