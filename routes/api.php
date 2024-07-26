@@ -28,6 +28,7 @@ use App\Http\Controllers\Exercise\WeeklyPlanExerciseController;
 
 // Dashboard Controllers
 use App\Http\Controllers\Dashboard\SubscriptionController;
+use App\Http\Controllers\FirstCheckInFormController;
 
 // Other Controllers
 use App\Http\Controllers\UserController;
@@ -230,6 +231,7 @@ Route::middleware('auth:api')->group(function () {
         Route::prefix('user-details')->group(function () {
             Route::post('/assignUserDetailsOfClient', [UserController::class, 'assignUserDetailsOfClient']);
         });
+        Route::post('/first-check-in-form', [FirstCheckInFormController::class, 'store']);
     });
 
 });

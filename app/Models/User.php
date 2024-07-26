@@ -174,4 +174,9 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     {
         return $this->hasMany(Subscription::class, 'client_id');
     }
+
+    public function firstCheckInForm(): HasOne
+    {
+        return $this->hasOne(FirstCheckInForm::class);
+    }
 }
