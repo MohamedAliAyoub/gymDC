@@ -24,7 +24,7 @@ class UserPlanExerciseResource extends JsonResource
             'plan' => $this->plan->name,
             'user' => $this->user->name,
             'day_names' => $this->day_names,
-            'notes' => $this->notes,
+            'notes' => $this->notes->content,
         ];
     }
 }

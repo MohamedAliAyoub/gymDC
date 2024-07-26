@@ -66,6 +66,7 @@ class WeeklyPlanExerciseResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'created_at' => $this->created_at->format('Y-M-d'),
             'plans' => PlanExerciseResource::collection($this->planExercises),
         ];
     }

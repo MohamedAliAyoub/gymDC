@@ -75,7 +75,7 @@ class PlanExerciseResource extends JsonResource
             'exercises_count' => $this->exercises->whereIn('run_duration',[0 , null])->count(),
             'exercises' => ExerciseResource::collection($this->exercises->whereIn('run_duration',[0 , null])) ?? [],
             'run' => $this->run->where('run_duration', '!=', null)->first() ? RunExerciseResource::make($this->run->where('run_duration', '!=', null)->first()) : [],
-            'note' => $this->note?->content,
+            'note' => $this->note?->content ?? null,
             'done' => $this->done,
             'rest_day' => false,
         ];

@@ -130,7 +130,7 @@ class WeeklyPlanExerciseController extends Controller
                 $q->where('user_id', $id);
             })
             ->orderByDesc('id')
-            ->paginate(10);
+            ->get();
 
         if ($weeklyPlans->isEmpty()) {
             return response()->json([
@@ -142,15 +142,7 @@ class WeeklyPlanExerciseController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plan by date retrieved successfully',
-            'plan' => WeeklyPlanExerciseResource::collection($weeklyPlans),
-            'pagination' => [
-                'total' => $weeklyPlans->total(),
-                'per_page' => $weeklyPlans->perPage(),
-                'current_page' => $weeklyPlans->currentPage(),
-                'last_page' => $weeklyPlans->lastPage(),
-                'from' => $weeklyPlans->firstItem(),
-                'to' => $weeklyPlans->lastItem(),
-            ],
+            'plan' => WeeklyPlanExerciseResource::collection($weeklyPlans)
         ]);
     }
 }
