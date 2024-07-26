@@ -11,6 +11,8 @@ class WeeklyPlan extends Model
     use HasFactory;
     protected $fillable = ['name', 'status'];
 
+    protected $appends = ['is_work'];
+
     public function planExercises(): HasMany
     {
         return $this->hasMany(PlanExercise::class , 'weekly_plan_id' , 'id');
@@ -29,4 +31,16 @@ class WeeklyPlan extends Model
             return $planExercise;
         });
     }
+
+  public function userPlanExercise(): HasMany
+  {
+    return $this->hasMany(UserPlanExercise::class , 'weekly_plan_id' , 'id');
+  }
+
+public function getIsWorkAttribute(): bool
+{
+    return $this->userPlanExercise->contains(function ($userPlanExercise) {
+        return $userPlanExercise->is_work;
+    });
+}
 }
