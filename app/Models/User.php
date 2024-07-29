@@ -6,10 +6,14 @@ namespace App\Models;
 use App\Enums\FormStatusEnum;
 use App\Enums\SubscriptionStatusEnum;
 use App\Enums\UserTypeEnum;
+use App\Models\CheckIn\CheckIn;
+use App\Models\CheckIn\CheckInWorkout;
+use App\Models\CheckIn\FirstCheckInForm;
 use App\Models\Dashboard\Subscription;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,7 +21,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable implements JWTSubject, CanResetPassword
 {
@@ -178,5 +181,15 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     public function firstCheckInForm(): HasOne
     {
         return $this->hasOne(FirstCheckInForm::class);
+    }
+
+    public function checkIn(): HasMany
+    {
+        return $this->hasMany(CheckIn::class);
+    }
+
+    public function checkInWorkout(): HasMany
+    {
+        return $this->hasMany(CheckInWorkout::class);
     }
 }

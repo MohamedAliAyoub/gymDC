@@ -3,8 +3,8 @@
 // Auth Controllers
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
-
-// Diet Controllers
+use App\Http\Controllers\ChechIn\FirstCheckInFormController;
+use App\Http\Controllers\Dashboard\SubscriptionController;
 use App\Http\Controllers\Diet\AppController;
 use App\Http\Controllers\Diet\ItemController;
 use App\Http\Controllers\Diet\ItemDetailsController;
@@ -15,8 +15,6 @@ use App\Http\Controllers\Diet\PlanController;
 use App\Http\Controllers\Diet\PlanMealController;
 use App\Http\Controllers\Diet\StandardController;
 use App\Http\Controllers\Diet\StandardTypeController;
-
-// Exercise Controllers
 use App\Http\Controllers\Exercise\DoneExerciseController;
 use App\Http\Controllers\Exercise\ExerciseController;
 use App\Http\Controllers\Exercise\ExerciseDetailsController;
@@ -25,17 +23,20 @@ use App\Http\Controllers\Exercise\NoteExerciseCotroller;
 use App\Http\Controllers\Exercise\PlanExerciseController;
 use App\Http\Controllers\Exercise\UserPlanExerciseController;
 use App\Http\Controllers\Exercise\WeeklyPlanExerciseController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
+// Diet Controllers
+
+// Exercise Controllers
 
 // Dashboard Controllers
-use App\Http\Controllers\Dashboard\SubscriptionController;
-use App\Http\Controllers\FirstCheckInFormController;
+use App\Http\Controllers\Dashboard\CheckIn\CheckInWorkoutController;
+use App\Http\Controllers\Dashboard\CheckIn\CheckInController;
 
 // Other Controllers
-use App\Http\Controllers\UserController;
 
 // Other Imports
-
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -232,6 +233,10 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/assignUserDetailsOfClient', [UserController::class, 'assignUserDetailsOfClient']);
         });
         Route::post('/first-check-in-form', [FirstCheckInFormController::class, 'store']);
+        Route::post('/check-in-workout', [\App\Http\Controllers\ChechIn\CheckInWorkoutController::class, 'store']);
+        Route::post('/check-in-diet', [\App\Http\Controllers\ChechIn\CheckInController::class, 'store']);
+        Route::get('/get-all-client-check-in-forms', [FirstCheckInFormController::class, 'getAllClientCheckInForms']);
     });
+
 
 });

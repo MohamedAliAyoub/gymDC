@@ -39,7 +39,7 @@ return new class extends Migration
             $table->boolean('use_vitamins_or_minerals')->nullable();
             $table->boolean('use_nutritional_supplements')->nullable();
             $table->boolean('have_injuries')->nullable();
-            $table->boolean('injuries_image')->nullable();
+            $table->string('injuries_image')->nullable();
             $table->boolean('resistance_training')->nullable();
             $table->boolean('where_do_workout')->nullable();
             $table->text('available_tool_in_home')->nullable();
