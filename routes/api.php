@@ -35,6 +35,7 @@ use App\Http\Controllers\Dashboard\CheckIn\CheckInController;
 use App\Http\Controllers\Dashboard\CheckIn\CheckInWorkoutController;
 
 use App\Http\Controllers\Dashboard\SalesController;
+use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\UserSubscriptionController;
 use App\Http\Controllers\Dashboard\SubscriptionLogsController;
 
@@ -245,6 +246,16 @@ Route::middleware('auth:api')->group(function () {
         Route::group(['prefix' => 'sales'], function () {
             Route::get('/', [SalesController::class, 'index']);
         });
+        Route::group(['prefix' => 'doctors'], function () {
+            Route::get('/', [DoctorController::class, 'index']);
+        });
+
+        Route::group(['prefix' => 'admin'], function () {
+            Route::post('/add-staff', [UserController::class, 'storeStaffFromAdmin']);
+            Route::get('get-staff-types' , [UserController::class , 'getTypes']);
+        });
+
+
         Route::group(['prefix' => 'user-subscriptions'], function () {
             Route::post('/', [UserSubscriptionController::class, 'store']);
         });

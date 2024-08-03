@@ -129,10 +129,10 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return UserTypeEnum::fromValue($value);
     }
 
-    public function setTypeAttribute(UserTypeEnum $type)
-    {
-        $this->attributes['type'] = $type->value;
-    }
+//    public function setTypeAttribute(UserTypeEnum $type)
+//    {
+//        $this->attributes['type'] = $type->value;
+//    }
 
     public function getFormStatusAttribute($value): FormStatusEnum
     {

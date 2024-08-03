@@ -27,4 +27,17 @@ enum UserTypeEnum: int {
             default => throw new \UnexpectedValueException("Invalid user type value: $value"),
         };
     }
+
+    public static function getValues(): array {
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function getKeyValuePairs(): array {
+        $cases = self::cases();
+        $keyValuePairs = [];
+        foreach ($cases as $case) {
+            $keyValuePairs[$case->name] =   $case->value;
+        }
+        return $keyValuePairs;
+    }
 }

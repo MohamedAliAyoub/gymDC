@@ -7,7 +7,7 @@ use App\Http\Resources\Dashboard\ClientResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
-class SalesController extends Controller
+class DoctorController extends Controller
 {
 
     /**
@@ -23,6 +23,9 @@ class SalesController extends Controller
         //TODO ->where('role', 'client')
         $clients = User::query()
             ->where('type', 8) // client
+            ->whereHas('subscriptions', function ($query) {
+                $query->where('nutrition_coach_id', auth()->id());
+            })
             ->when(request('scopeHasFirstPlanNeeded'), function ($query) {
                 $query->scopeHasFirstPlanNeeded();
             })->when(request('scopeUpdateNeeded'), function ($query) {

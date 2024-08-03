@@ -91,7 +91,7 @@ class Subscription extends Model
     protected static function booted()
     {
         static::created(function ($userSubscription) {
-            if ($userSubscription->paid_amount) {
+            if ($userSubscription->paid_amount != null) {
                 SubscriptionLogs::query()->create([
                     'sale_id' => $userSubscription->sale_id,
                     'client_id' => $userSubscription->client_id,

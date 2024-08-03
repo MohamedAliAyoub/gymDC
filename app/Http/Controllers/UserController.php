@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserTypeEnum;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use function App\Http\Helpers\uploadImage;
 
 class UserController extends Controller
@@ -79,5 +81,46 @@ class UserController extends Controller
                 'code' => 200
             ]);
 
+    }
+
+    public function storeStaffFromAdmin(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string',
+            'type' => ['required', 'integer' ,Rule::in(UserTypeEnum::getValues())],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+
+        // Upload the profile picture and get the path
+        if ($request->hasFile('image'))
+            $path = uploadImage($request->file('image'), 'public', 'users');
+        else
+            $path = null;
+
+
+        $user = User::query()->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'type' => $request->type,
+            'image' => $path,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Staff created successfully',
+            'user' => $user,
+        ]);
+    }
+
+    public  function getTypes(): JsonResponse
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Types retrieved successfully',
+            'types' => UserTypeEnum::getKeyValuePairs(),
+        ]);
     }
 }
