@@ -10,11 +10,16 @@ use App\Models\CheckIn\CheckIn;
 use App\Models\CheckIn\CheckInWorkout;
 use App\Models\CheckIn\FirstCheckInForm;
 use App\Models\Dashboard\Subscription;
+use App\Models\Diet\Plan;
+use App\Models\Diet\UserPlan;
+use App\Models\Exercise\PlanExercise;
+use App\Models\Exercise\UserPlanExercise;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -134,6 +139,15 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 //        $this->attributes['type'] = $type->value;
 //    }
 
+    public function plans(): HasManyThrough
+    {
+        return $this->hasManyThrough(Plan::class , UserPlan::class , 'user_id' , 'id' , 'id' , 'plan_id');
+    }
+
+    public function plan_exercises(): HasManyThrough
+    {
+        return $this->hasManyThrough(PlanExercise::class , UserPlanExercise::class , 'user_id' , 'id' , 'id' , 'weekly_plan_id');
+    }
     public function getFormStatusAttribute($value): FormStatusEnum
     {
         return FormStatusEnum::fromValue($value);
@@ -194,7 +208,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(CheckInWorkout::class);
     }
 
-    public function scopeHasFirstPlanNeeded($query)
+    public function scopeFirstPlanNeeded($query)
     {
         return $query->whereHas('firstCheckInForm')
             ->whereDoesntHave('checkIn')
@@ -205,16 +219,28 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     {
         return $query->whereHas('checkIn')
             ->whereHas('checkInWorkout')
-            ->whereDoesntHave('plan');
+            ->whereDoesntHave('plans');
     }
 
     public function ScopeAllReadyHasPlan($query)
     {
         return $query->whereHas('checkIn')
             ->whereHas('checkInWorkout')
-            ->whereHas('plan')
+            ->whereHas('plan_exercises')
             ->whereHas('firstCheckInForm');
     }
 
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('name', 'like', '%' . $search . '%')
+            ->orWhere('email', 'like', '%' . $search . '%')
+            ->orWhere('mobile', 'like', '%' . $search . '%')
+            ->orWhere('id', 'like', $search);
+    }
+
+    public function scopeType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
 
 }

@@ -123,4 +123,18 @@ class UserController extends Controller
             'types' => UserTypeEnum::getKeyValuePairs(),
         ]);
     }
+
+    public function getStaff(): JsonResponse
+    {
+        $staff = User::query()
+            ->when(request('filter'), function ($query) {
+                $query->filter(request('filter'));
+            })
+            ->paginate(10);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Staff retrieved successfully',
+            'staff' => $staff,
+        ]);
+    }
 }

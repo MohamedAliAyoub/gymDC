@@ -26,12 +26,14 @@ class DoctorController extends Controller
             ->whereHas('subscriptions', function ($query) {
                 $query->where('nutrition_coach_id', auth()->id());
             })
-            ->when(request('scopeHasFirstPlanNeeded'), function ($query) {
-                $query->scopeHasFirstPlanNeeded();
-            })->when(request('scopeUpdateNeeded'), function ($query) {
-                $query->scopeUpdateNeeded();
-            })->when(request('scopeAllReadyHasPlan'), function ($query) {
-                $query->scopeAllReadyHasPlan();
+            ->when(request('firstPlanNeeded'), function ($query) {
+                $query->firstPlanNeeded();
+            })->when(request('updateNeeded'), function ($query) {
+                $query->updateNeeded();
+            })->when(request('allReadyHasPlan'), function ($query) {
+                $query->allReadyHasPlan();
+            })->when(request('search'), function ($query) {
+                $query->search(request('search'));
             });
             $clients =$query->paginate(10);
         return response()->json([
@@ -39,6 +41,14 @@ class DoctorController extends Controller
             'message' => 'client get successfully',
             'clients' => ClientResource::collection($clients),
             'count' => $clients->count(),
+            'pagination' => [
+                'total' => $clients->total(),
+                'per_page' => $clients->perPage(),
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'from' => $clients->firstItem(),
+                'to' => $clients->lastItem(),
+            ],
         ]);
     }
 }
