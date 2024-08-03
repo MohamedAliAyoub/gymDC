@@ -21,7 +21,7 @@ class DoctorController extends Controller
     {
 
         //TODO ->where('role', 'client')
-        $clients = User::query()
+        $query = User::query()
             ->where('type', 8) // client
             ->whereHas('subscriptions', function ($query) {
                 $query->where('nutrition_coach_id', auth()->id());
@@ -32,11 +32,13 @@ class DoctorController extends Controller
                 $query->scopeUpdateNeeded();
             })->when(request('scopeAllReadyHasPlan'), function ($query) {
                 $query->scopeAllReadyHasPlan();
-            })->paginate(10);
+            });
+            $clients =$query->paginate(10);
         return response()->json([
             'status' => 'success',
             'message' => 'client get successfully',
             'clients' => ClientResource::collection($clients),
+            'count' => $clients->count(),
         ]);
     }
 }

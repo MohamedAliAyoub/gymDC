@@ -21,7 +21,7 @@ class SalesController extends Controller
     {
 
         //TODO ->where('role', 'client')
-        $clients = User::query()
+        $query = User::query()
             ->where('type', 8) // client
             ->when(request('scopeHasFirstPlanNeeded'), function ($query) {
                 $query->scopeHasFirstPlanNeeded();
@@ -29,11 +29,14 @@ class SalesController extends Controller
                 $query->scopeUpdateNeeded();
             })->when(request('scopeAllReadyHasPlan'), function ($query) {
                 $query->scopeAllReadyHasPlan();
-            })->paginate(10);
+            });
+            $clients = $query->paginate(10);
+
         return response()->json([
             'status' => 'success',
             'message' => 'client get successfully',
             'clients' => ClientResource::collection($clients),
+            'count' => $clients->count(),
         ]);
     }
 }
