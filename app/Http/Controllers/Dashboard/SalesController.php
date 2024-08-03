@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\ClientResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -18,11 +19,20 @@ class SalesController extends Controller
      */
     public function index(): JsonResponse
     {
-        $clients = User::query()->paginate(10);
+
+        //TODO ->where('role', 'client')
+        $clients = User::query()
+            ->when(request('scopeHasFirstPlanNeeded'), function ($query) {
+                $query->scopeHasFirstPlanNeeded();
+            })->when(request('scopeUpdateNeeded'), function ($query) {
+                $query->scopeUpdateNeeded();
+            })->when(request('scopeAllReadyHasPlan'), function ($query) {
+                $query->scopeAllReadyHasPlan();
+            })->paginate(10);
         return response()->json([
             'status' => 'success',
             'message' => 'client get successfully',
-            'clients' => $clients,
+            'clients' => ClientResource::collection($clients),
         ]);
     }
 }

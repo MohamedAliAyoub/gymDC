@@ -7,6 +7,7 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Http\Resources\Dashboard\ClientSubscriptionsResource;
 use App\Http\Resources\Dashboard\SubscriptionResource;
 use App\Models\Dashboard\Subscription;
+use App\Models\Dashboard\SubscriptionLogs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -200,7 +201,15 @@ class SubscriptionController extends Controller
      */
     public function store(SubscriptionRequest $request): JsonResponse
     {
+
         $subscription = Subscription::query()->create($request->validated());
+        if ($request->paid_amount ){
+            SubscriptionLogs::query()->create([
+                'sale_id' => $request->sale_id ?? auth()->id(),
+                'client_id' => $request->client_id,
+                'log' => 'Baha: Paid Amount changed from null to' . $request->paid_amount,
+            ]);
+        }
         return response()->json(SubscriptionResource::make(
             $subscription->load('nutritionCoach', 'workoutCoach', 'client', 'sale')),
             201);

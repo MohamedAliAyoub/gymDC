@@ -13,9 +13,9 @@ class ClientResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'mobile' => $this->mobile,
-            'forms_updated_at' => $this->activeSubscription?->updated_at ??$this->activeSubscription?->ctreated_at,
-            'packages' => $this->userDetails?->packages,
-            'form_status' => $this->userDetails?->form_status,
+            'forms_updated_at' => $this->activeSubscription?->updated_at ?? $this->activeSubscription?->ctreated_at,
+            'packages' => $this->userDetails()->latest()->first()?->packages,
+            'form_status' => $this->userDetails()->latest()->first()?->form_status,
             'created_at' => $this->created_at,
         ];
     }

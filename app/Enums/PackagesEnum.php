@@ -13,4 +13,8 @@ enum PackagesEnum: int {
             default => throw new \UnexpectedValueException("Invalid subscription status value: $value"),
         };
     }
+
+    public static function getValues(): array {
+        return [0, 1];
+    }
 }

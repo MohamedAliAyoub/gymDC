@@ -20,11 +20,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject, CanResetPassword
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -192,4 +193,28 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     {
         return $this->hasMany(CheckInWorkout::class);
     }
+
+    public function scopeHasFirstPlanNeeded($query)
+    {
+        return $query->whereHas('firstCheckInForm')
+            ->whereDoesntHave('checkIn')
+            ->whereDoesntHave('checkInWorkout');
+    }
+
+    public function scopeUpdateNeeded($query)
+    {
+        return $query->whereHas('checkIn')
+            ->whereHas('checkInWorkout')
+            ->whereDoesntHave('plan');
+    }
+
+    public function ScopeAllReadyHasPlan($query)
+    {
+        return $query->whereHas('checkIn')
+            ->whereHas('checkInWorkout')
+            ->whereHas('plan')
+            ->whereHas('firstCheckInForm');
+    }
+
+
 }

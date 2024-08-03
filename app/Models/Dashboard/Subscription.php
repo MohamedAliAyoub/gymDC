@@ -78,8 +78,7 @@ class Subscription extends Model
     }
 
 
-
- public function getPackagesNameAttribute(): string
+    public function getPackagesNameAttribute(): string
     {
         return PackagesEnum::fromValue($this->attributes['type'])->name;
     }
@@ -88,5 +87,49 @@ class Subscription extends Model
     {
         return SubscriptionStatusEnum::fromValue($this->attributes['status'])->name;
     }
+
+    protected static function booted()
+    {
+        static::created(function ($userSubscription) {
+            if ($userSubscription->paid_amount) {
+                SubscriptionLogs::query()->create([
+                    'sale_id' => $userSubscription->sale_id,
+                    'client_id' => $userSubscription->client_id,
+                    'log' => 'Paid Amount changed from null to' . $userSubscription->paid_amount,
+                ]);
+            }
+        });
+
+        static::updated(function ($subscription) {
+            $changes = $subscription->getChanges();
+            $log = 'Subscription updated: ';
+
+            foreach ($changes as $field => $newValue) {
+                $oldValue = $subscription->getOriginal($field);
+
+                if ($field === 'sale_id' || $field === 'client_id') {
+                    $oldValue = User::query()->find($oldValue)->name;
+                    $newValue = User::query()->find($newValue)->name;
+                }
+
+                // Replace underscores with spaces
+                $field = str_replace('_', ' ', $field);
+
+                // If the field ends with '_id', remove the last 3 characters
+                if (str_ends_with($field, 'id')) {
+                    $field = substr($field, 0, -2);
+                }
+
+                $log .= "{$field} changed from {$oldValue} to {$newValue}, ";
+            }
+
+            SubscriptionLogs::query()->create([
+                'sale_id' => $subscription->sale_id,
+                'client_id' => $subscription->client_id,
+                'log' => rtrim($log, ', '),
+            ]);
+        });
+    }
+
 
 }

@@ -31,8 +31,12 @@ use Illuminate\Support\Facades\Route;
 // Exercise Controllers
 
 // Dashboard Controllers
-use App\Http\Controllers\Dashboard\CheckIn\CheckInWorkoutController;
 use App\Http\Controllers\Dashboard\CheckIn\CheckInController;
+use App\Http\Controllers\Dashboard\CheckIn\CheckInWorkoutController;
+
+use App\Http\Controllers\Dashboard\SalesController;
+use App\Http\Controllers\Dashboard\UserSubscriptionController;
+use App\Http\Controllers\Dashboard\SubscriptionLogsController;
 
 // Other Controllers
 
@@ -171,7 +175,7 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/plan/{id}', [WeeklyPlanExerciseController::class, 'deletePlanExercises']);
             Route::delete('/exercise/{id}', [WeeklyPlanExerciseController::class, 'deleteExercise']);
 
-            });
+        });
         Route::group(['prefix' => 'done'], function () {
 
             Route::post('/createWithDetails', [DoneExerciseController::class, 'createWithDetails']);
@@ -228,6 +232,8 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{id}', [SubscriptionController::class, 'update']);
             Route::delete('/{id}', [SubscriptionController::class, 'destroy']);
             Route::get('/client/{id}', [SubscriptionController::class, 'get_client_subscriptions']);
+
+            Route::get('/get-sales/logs', [SubscriptionLogsController::class , 'getSalesLogs']);
         });
         Route::prefix('user-details')->group(function () {
             Route::post('/assignUserDetailsOfClient', [UserController::class, 'assignUserDetailsOfClient']);
@@ -236,6 +242,12 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/check-in-workout', [\App\Http\Controllers\ChechIn\CheckInWorkoutController::class, 'store']);
         Route::post('/check-in-diet', [\App\Http\Controllers\ChechIn\CheckInController::class, 'store']);
         Route::get('/get-all-client-check-in-forms', [FirstCheckInFormController::class, 'getAllClientCheckInForms']);
+        Route::group(['prefix' => 'sales'], function () {
+            Route::get('/', [SalesController::class, 'index']);
+        });
+        Route::group(['prefix' => 'user-subscriptions'], function () {
+            Route::post('/', [UserSubscriptionController::class, 'store']);
+        });
     });
 
 
