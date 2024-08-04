@@ -466,7 +466,7 @@ class PlanController extends Controller
                         // Handle the case where the item does not exist
                         return response()->json([
                             'status' => 'error',
-                            'message' => 'Item not found in the meal in the plan ' . $item['id'] .$existing_item
+                            'message' => 'Item not found in the meal in the plan '
                         ], 404);
                     }
 
