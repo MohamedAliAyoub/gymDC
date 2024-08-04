@@ -342,7 +342,7 @@ class PlanExerciseController extends Controller
 
         foreach ($request->plans as $planData) {
 
-            $plan = null ;
+            $plan = null;
             if (isset($planData['id']))
                 $plan = PlanExercise::query()->find($planData['id']);
             if ($plan) {
@@ -421,7 +421,7 @@ class PlanExerciseController extends Controller
                 'user_ids' => $request->user_ids,
                 'is_work' => $planData['is_work'] ?? true,
                 'weekly_plan_id' => $weeklyPlan->id,
-                'days' => $planData['days'] ,
+                'days' => $planData['days'],
             ];
 
             $requestData = new \Illuminate\Http\Request();
@@ -461,6 +461,8 @@ class PlanExerciseController extends Controller
      */
     public function assignPlanToUsers(Request $request): JsonResponse
     {
+        $plan = Plan::find($request->plan_id);
+
         $request->validate([
             'user_ids' => 'required|array',
             'user_ids.*' => 'required|integer|exists:users,id',
@@ -475,7 +477,7 @@ class PlanExerciseController extends Controller
 
         if ($is_work == 1)
             UserPlanExercise::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
-        $userPlans = UserPlanExercise::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work, $request->weekly_plan_id , $request->days);
+        $userPlans = UserPlanExercise::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work, $request->weekly_plan_id, $request->days);
 
         return response()->json([
             'status' => 'success',
