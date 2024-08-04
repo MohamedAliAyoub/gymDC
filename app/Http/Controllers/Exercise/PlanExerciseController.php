@@ -461,12 +461,11 @@ class PlanExerciseController extends Controller
      */
     public function assignPlanToUsers(Request $request): JsonResponse
     {
-        $plan = Plan::find($request->plan_id);
 
         $request->validate([
             'user_ids' => 'required|array',
             'user_ids.*' => 'required|integer|exists:users,id',
-            'plan_id' => 'required|integer|exists:plans,id',
+            'plan_id' => 'required|integer|exists:plan_exercises,id',
             'is_work' => 'boolean',
             'weekly_plan_id' => 'nullable|integer|exists:weekly_plans,id',
             'days' => 'required|array',
