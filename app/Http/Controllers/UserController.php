@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserTypeEnum;
+use App\Models\Exercise\UserPlanExercise;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Http\JsonResponse;
@@ -89,7 +90,7 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string',
-            'type' => ['required', 'integer' ,Rule::in(UserTypeEnum::getValues())],
+            'type' => ['required', 'integer', Rule::in(UserTypeEnum::getValues())],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
@@ -115,7 +116,7 @@ class UserController extends Controller
         ]);
     }
 
-    public  function getTypes(): JsonResponse
+    public function getTypes(): JsonResponse
     {
         return response()->json([
             'status' => 'success',
@@ -135,6 +136,25 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'Staff retrieved successfully',
             'staff' => $staff,
+        ]);
+    }
+
+    public function getStatstics($id): JsonResponse
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        $plansCount = $user->getCoachPlansCount($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Statistics retrieved successfully',
+            'plansCount' => $plansCount,
         ]);
     }
 }

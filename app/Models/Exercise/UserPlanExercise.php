@@ -34,7 +34,7 @@ class UserPlanExercise extends Model
     const FRIDAY = 5;
     const SATURDAY = 6;
 
-    protected $appends = ['day_names' , 'day_key'];
+    protected $appends = ['day_names' , 'day_key' , 'coach_id'];
 
 
     protected $fillable = [
@@ -154,5 +154,12 @@ class UserPlanExercise extends Model
 
         return $userPlans;
     }
+
+    public function getCoachIdAttribute(): ?int
+    {
+        return optional($this->user->activeSubscription)->coach_id;
+    }
+
+
 
 }

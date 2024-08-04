@@ -141,13 +141,14 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function plans(): HasManyThrough
     {
-        return $this->hasManyThrough(Plan::class , UserPlan::class , 'user_id' , 'id' , 'id' , 'plan_id');
+        return $this->hasManyThrough(Plan::class, UserPlan::class, 'user_id', 'id', 'id', 'plan_id');
     }
 
     public function plan_exercises(): HasManyThrough
     {
-        return $this->hasManyThrough(PlanExercise::class , UserPlanExercise::class , 'user_id' , 'id' , 'id' , 'weekly_plan_id');
+        return $this->hasManyThrough(PlanExercise::class, UserPlanExercise::class, 'user_id', 'id', 'id', 'weekly_plan_id');
     }
+
     public function getFormStatusAttribute($value): FormStatusEnum
     {
         return FormStatusEnum::fromValue($value);
@@ -241,6 +242,15 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     public function scopeType($query, $type)
     {
         return $query->where('type', $type);
+    }
+
+    public function getCoachPlansCount($coach_id): int
+    {
+        return $this->plan_exercises()->whereHas('userPlanExercise.plan', function ($query) use ($coach_id) {
+            $query->whereHas('user.subscriptions', function ($query) use ($coach_id) {
+                $query->where('workout_coach_id', $coach_id);
+            });
+        })->count();
     }
 
 }
