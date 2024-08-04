@@ -456,10 +456,19 @@ class PlanController extends Controller
                 $existing_meal->note()->update(['content' => $meal['note'], "user_id" => auth()->id()]);
             }
 
+
             foreach ($meal['items'] as $item) {
-                if (isset($item['id'])) {
-                    $existing_item = $existing_meal->items()->where('items.id', $item['id'])->first();
-                    $existing_item->update($item);
+                if (isset($item['id']) && $item['id'] != null) {
+                    $existing_item = Item::query()->where('items.id', $item['id'])->first();
+                    if ($existing_item) {
+                        $existing_item->update($item);
+                    } else {
+                        // Handle the case where the item does not exist
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Item not found in the meal in the plan ' . $item['id'] .$existing_item
+                        ], 404);
+                    }
 
                 } else {
                     $existing_item = $existing_meal->items()->create($item);
