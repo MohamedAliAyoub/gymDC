@@ -141,7 +141,7 @@ class UserController extends Controller
 
     public function getStatstics($id): JsonResponse
     {
-        $user = User::find($id);
+        $user = User::query()->find($id);
         if (!$user) {
             return response()->json([
                 'status' => 'error',
@@ -149,7 +149,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        $plansCount = $user->getCoachPlansCount($id);
+        $plansCount = $user->getCoachPlansCount();
 
         return response()->json([
             'status' => 'success',

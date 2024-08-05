@@ -14,6 +14,7 @@ use App\Models\Diet\Plan;
 use App\Models\Diet\UserPlan;
 use App\Models\Exercise\PlanExercise;
 use App\Models\Exercise\UserPlanExercise;
+use App\Models\Exercise\WeeklyPlan;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -146,7 +147,13 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function plan_exercises(): HasManyThrough
     {
-        return $this->hasManyThrough(PlanExercise::class, UserPlanExercise::class, 'user_id', 'id', 'id', 'weekly_plan_id');
+        return $this->hasManyThrough(PlanExercise::class, UserPlanExercise::class, 'user_id', 'id', 'id', 'plan_id');
+    }
+
+
+    public function weekly_plan(): HasManyThrough
+    {
+        return $this->hasManyThrough(WeeklyPlan::class, UserPlanExercise::class, 'user_id', 'id', 'id', 'weekly_plan_id');
     }
 
     public function getFormStatusAttribute($value): FormStatusEnum
@@ -192,6 +199,11 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class, 'client_id');
+    }
+
+    public function coachSubscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'workout_coach_id');
     }
 
     public function firstCheckInForm(): HasOne
@@ -244,13 +256,57 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $query->where('type', $type);
     }
 
-    public function getCoachPlansCount($coach_id): int
+    public function getCoachPlansCount()
     {
-        return $this->plan_exercises()->whereHas('userPlanExercise.plan', function ($query) use ($coach_id) {
-            $query->whereHas('user.subscriptions', function ($query) use ($coach_id) {
-                $query->where('workout_coach_id', $coach_id);
-            });
-        })->count();
+        $plan_done = $this->coachSubscriptions()
+            ->whereHas('client.checkIn')
+            ->whereHas('client.checkInWorkout')
+            ->whereHas('client.firstCheckInForm')
+            ->with(['client' => function ($query) {
+                $query->withCount('weekly_plan as plan_exercises_count');
+            }])->get()->sum('client.plan_exercises_count');
+
+
+        $plan_done_this_month = $this->coachSubscriptions()
+            ->whereHas('client.checkIn')
+            ->whereHas('client.checkInWorkout')
+            ->whereHas('client.firstCheckInForm')
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->with(['client' => function ($query) {
+                $query->withCount(['weekly_plan as plan_exercises_count' => function ($query) {
+                    $query->whereHas('userPlanExercises', function ($query) {
+                        $query->where('created_at', '>=', now()->startOfMonth());
+                    });
+                }]);
+            }])->get()->sum('client.plan_exercises_count');
+
+
+        $plan_needed = $this->coachSubscriptions()
+            ->whereDoesntHave('client.checkIn')
+            ->whereDoesntHave('client.checkInWorkout')
+            ->whereDoesntHave('client.firstCheckInForm')
+            ->with(['client' => function ($query) {
+                $query->withCount('weekly_plan as plan_exercises_count');
+            }])->get()->sum('client.plan_exercises_count');
+        $this_month_plan_needed = $this->coachSubscriptions()
+            ->whereDoesntHave('client.checkIn')
+            ->whereDoesntHave('client.checkInWorkout')
+            ->whereDoesntHave('client.firstCheckInForm')
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->with(['client' => function ($query) {
+                $query->withCount(['weekly_plan as plan_exercises_count' => function ($query) {
+                    $query->whereHas('userPlanExercises', function ($query) {
+                        $query->where('created_at', '>=', now()->startOfMonth());
+                    });
+                }]);
+            }])->get()->sum('client.plan_exercises_count');
+        return [
+            'plan_done' => $plan_done,
+            'plan_done_this_month' => $plan_done_this_month,
+            'plan_needed' => $plan_needed,
+            'this_month_plan_needed' => $this_month_plan_needed,
+        ];
+
     }
 
 }
