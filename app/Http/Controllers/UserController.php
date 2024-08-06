@@ -139,22 +139,55 @@ class UserController extends Controller
         ]);
     }
 
-    public function getStatstics($id): JsonResponse
+
+ public function getNutritionStatstics(): JsonResponse
+{
+    $users = User::query()->where('type', UserTypeEnum::Doctor)->get();
+    if ($users->isEmpty()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No coach users found',
+        ], 404);
+    }
+
+    $plansCount = $users->map(function ($user) {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'plansCount' => $user->getNutritionPlansCount(),
+        ];
+    });
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Statistics retrieved successfully',
+        'plansCount' => $plansCount,
+    ]);
+}
+
+    public function getCoachStatstics(): JsonResponse
     {
-        $user = User::query()->find($id);
-        if (!$user) {
+        $users = User::query()->where('type', UserTypeEnum::Coach)->get();
+        if ($users->isEmpty()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User not found',
+                'message' => 'No coach users found',
             ], 404);
         }
 
-        $plansCount = $user->getCoachPlansCount();
 
+        $plansCount = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'plansCount' => $user->getWorkoutPlans(),
+            ];
+        });
         return response()->json([
             'status' => 'success',
             'message' => 'Statistics retrieved successfully',
             'plansCount' => $plansCount,
         ]);
     }
+
 }

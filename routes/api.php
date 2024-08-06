@@ -253,7 +253,8 @@ Route::middleware('auth:api')->group(function () {
         Route::group(['prefix' => 'admin'], function () {
             Route::post('/add-staff', [UserController::class, 'storeStaffFromAdmin']);
             Route::get('get-staff-types' , [UserController::class , 'getTypes']);
-            Route::get('get-statstics/{id}' , [UserController::class , 'getStatstics']);
+            Route::get('get-coach-statstics' , [UserController::class , 'getCoachStatstics']);
+            Route::get('get-nutrition-statstics' , [UserController::class , 'getNutritionStatstics']);
         });
 
 
