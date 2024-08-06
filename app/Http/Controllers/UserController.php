@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserTypeEnum;
+use App\Models\Dashboard\Subscription;
 use App\Models\Exercise\UserPlanExercise;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -144,10 +145,10 @@ class UserController extends Controller
     public function getUsersStatistics(Request $request): JsonResponse
     {
         $request->validate([
-            'type' => ['nullable', 'integer', Rule::in(UserTypeEnum::Doctor , UserTypeEnum::Coach , UserTypeEnum::Sales )],
+            'type' => ['nullable', 'integer', Rule::in(UserTypeEnum::Doctor, UserTypeEnum::Coach, UserTypeEnum::Sales)],
         ]);
         $users = User::query()
-            ->when(request('type'), function ($query ) {
+            ->when(request('type'), function ($query) {
                 $query->type(request('type'));
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
@@ -199,6 +200,8 @@ class UserController extends Controller
 
     public function getAdminStatistics(): JsonResponse
     {
+        $users = User::query()
+            ->where('type', UserTypeEnum::Client)->count();
         $currentMonthUsers = User::query()
             ->where('type', UserTypeEnum::Client)
             ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
@@ -212,12 +215,67 @@ class UserController extends Controller
             ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
             ->count();
 
+        // Calculate the percentage change
+        if ($previousMonthUsers > 0) {
+            $percentageChange = (($currentMonthUsers - $previousMonthUsers) / $previousMonthUsers) * 100;
+        } else {
+            // If previous month count is 0, handle the percentage change
+            $percentageChange = $currentMonthUsers > 0 ? 100 : 0; // Assuming 100% increase if there are users in the current month
+        }
+
+        // Determine if the ratio is higher or lower
+        $ratioComparison = $percentageChange > 0 ? 'higher' : 'lower';
+
+        $subscriptions = Subscription::query()->count();
+        $currentMonthSubscriptions = Subscription::query()
+            ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->count();
+
+        $previousMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $previousMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+
+        $previousMonthSubscriptions = Subscription::query()
+            ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
+            ->count();
+
+        // Calculate the percentage change
+        if ($previousMonthSubscriptions > 0) {
+            $percentageChange = (($currentMonthSubscriptions - $previousMonthSubscriptions) / $previousMonthSubscriptions) * 100;
+        } else {
+            // If previous month count is 0, handle the percentage change
+            $percentageChange = $currentMonthSubscriptions > 0 ? 100 : 0; // Assuming 100% increase if there are subscriptions in the current month
+        }
+
+// Determine if the ratio is higher or lower
+        $ratioComparison = $percentageChange > 0 ? 'higher' : 'lower';
+
+        // Calculate the rates
+        $currentMonthRate = $currentMonthUsers > 0 ? ($currentMonthSubscriptions / $currentMonthUsers) * 100 : 0;
+        $previousMonthRate = $previousMonthUsers > 0 ? ($previousMonthSubscriptions / $previousMonthUsers) * 100 : 0;
 
         return response()->json([
             'status' => 'success',
             'message' => 'Statistics retrieved successfully',
-            'users' => $usersData,
+            'clients' => [
+                'all'=> $users,
+                'current_month' => $currentMonthUsers,
+                'previous_month' => $previousMonthUsers,
+                'percentage_change' => abs($percentageChange),
+                'comparison' => $ratioComparison,
+            ],
+            'subscriptions' => [
+                'all'=> $subscriptions,
+                'current_month' => $currentMonthSubscriptions,
+                'previous_month' => $previousMonthSubscriptions,
+                'percentage_change' => abs($percentageChange),
+                'comparison' => $ratioComparison,
+            ],
+            'rate'=>[
+                'current_month' => $currentMonthRate,
+                'previous_month' => $previousMonthRate,
+            ],
         ]);
+
     }
 
 }

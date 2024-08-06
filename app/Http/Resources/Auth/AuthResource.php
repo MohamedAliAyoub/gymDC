@@ -21,6 +21,7 @@ class AuthResource extends JsonResource
             'email' => $this->email,
             'image' =>  $this->image_url,
             'mobile' => $this->mobile,
+            'type' => $this->type,
             'created_at' =>  $this->created_at,
 
         ];
