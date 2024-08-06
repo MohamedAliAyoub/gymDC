@@ -6,6 +6,7 @@ use App\Enums\UserTypeEnum;
 use App\Models\Exercise\UserPlanExercise;
 use App\Models\User;
 use App\Models\UserDetails;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -139,7 +140,7 @@ class UserController extends Controller
         ]);
     }
 
-
+    // get statics of sales, doctors, and coaches
     public function getUsersStatistics(Request $request): JsonResponse
     {
         $request->validate([
@@ -193,6 +194,29 @@ class UserController extends Controller
                 'current_page' => $users->currentPage(),
                 'total_pages' => $users->lastPage(),
             ]
+        ]);
+    }
+
+    public function getAdminStatistics(): JsonResponse
+    {
+        $currentMonthUsers = User::query()
+            ->where('type', UserTypeEnum::Client)
+            ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->count();
+
+        $previousMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $previousMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+
+        $previousMonthUsers = User::query()
+            ->where('type', UserTypeEnum::Client)
+            ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
+            ->count();
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Statistics retrieved successfully',
+            'users' => $usersData,
         ]);
     }
 
