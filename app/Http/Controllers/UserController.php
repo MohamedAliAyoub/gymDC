@@ -143,7 +143,7 @@ class UserController extends Controller
     public function getUsersStatistics(Request $request): JsonResponse
     {
         $request->validate([
-            'type' => ['required', 'integer', Rule::in(UserTypeEnum::Doctor , UserTypeEnum::Coach , UserTypeEnum::Sales )],
+            'type' => ['nullable', 'integer', Rule::in(UserTypeEnum::Doctor , UserTypeEnum::Coach , UserTypeEnum::Sales )],
         ]);
         $users = User::query()
             ->when(request('type'), function ($query ) {
