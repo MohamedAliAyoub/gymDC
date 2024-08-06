@@ -140,53 +140,59 @@ class UserController extends Controller
     }
 
 
- public function getNutritionStatstics(): JsonResponse
-{
-    $users = User::query()->where('type', UserTypeEnum::Doctor)->get();
-    if ($users->isEmpty()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'No coach users found',
-        ], 404);
-    }
-
-    $plansCount = $users->map(function ($user) {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'plansCount' => $user->getNutritionPlansCount(),
-        ];
-    });
-
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Statistics retrieved successfully',
-        'plansCount' => $plansCount,
-    ]);
-}
-
-    public function getCoachStatstics(): JsonResponse
+    public function getUsersStatistics(Request $request): JsonResponse
     {
-        $users = User::query()->where('type', UserTypeEnum::Coach)->get();
+        $request->validate([
+            'type' => ['required', 'integer', Rule::in(UserTypeEnum::Doctor , UserTypeEnum::Coach , UserTypeEnum::Sales )],
+        ]);
+        $users = User::query()
+            ->when(request('type'), function ($query ) {
+                $query->type(request('type'));
+            })->when(request('search'), function ($query) {
+                $query->search(request('search'));
+            })
+            ->whereIn('type', [UserTypeEnum::Coach, UserTypeEnum::Doctor, UserTypeEnum::Sales])->paginate(10);
         if ($users->isEmpty()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'No coach users found',
+                'message' => 'No users found',
             ], 404);
         }
 
+        $usersData = $users->map(function ($user) {
+            $plansCount = 0;
+            switch ($user->type) {
+                case UserTypeEnum::Coach:
+                    $plansCount = $user->getWorkoutPlans();
+                    break;
+                case UserTypeEnum::Doctor:
+                    $plansCount = $user->getNutritionPlansCount();
+                    break;
+                case UserTypeEnum::Sales:
+                    $plansCount = $user->getSalePlans();
+                    break;
+            }
 
-        $plansCount = $users->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
-                'plansCount' => $user->getWorkoutPlans(),
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'plansCount' => $plansCount,
             ];
         });
+
         return response()->json([
             'status' => 'success',
             'message' => 'Statistics retrieved successfully',
-            'plansCount' => $plansCount,
+            'users' => $usersData,
+            'pagination' => [
+                'total' => $users->total(),
+                'count' => $users->count(),
+                'per_page' => $users->perPage(),
+                'current_page' => $users->currentPage(),
+                'total_pages' => $users->lastPage(),
+            ]
         ]);
     }
 

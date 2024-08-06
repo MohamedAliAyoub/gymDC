@@ -211,6 +211,11 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(Subscription::class, 'workout_coach_id');
     }
 
+    public function saleSubscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'sale_id');
+    }
+
     public function firstCheckInForm(): HasOne
     {
         return $this->hasOne(FirstCheckInForm::class);
@@ -258,6 +263,8 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function scopeType($query, $type)
     {
+        if ($type == null)
+            return $query;
         return $query->where('type', $type);
     }
 
@@ -327,6 +334,52 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     private function getWorkoutPlanCount(string $relation1, string $relation2, string $relation3, bool $thisMonth = false, bool $doesntHave = false)
     {
         $query = $this->workoutSubscriptions();
+
+        if ($doesntHave) {
+            $query->whereDoesntHave($relation1)
+                ->whereDoesntHave($relation2)
+                ->whereDoesntHave($relation3);
+        } else {
+            $query->whereHas($relation1)
+                ->whereHas($relation2)
+                ->whereHas($relation3);
+        }
+
+        if ($thisMonth) {
+            $query->where('created_at', '>=', now()->startOfMonth());
+        }
+
+        return $query->with(['client' => function ($query) use ($thisMonth) {
+            $query->withCount(['weekly_plan as plan_exercises_count' => function ($query) use ($thisMonth) {
+                if ($thisMonth) {
+                    $query->whereHas('userPlanExercises', function ($query) {
+                        $query->where('created_at', '>=', now()->startOfMonth());
+                    });
+                }
+            }]);
+        }])->get()->sum('client.plan_exercises_count');
+    }
+
+    public function getSalePlans(): array
+    {
+        $plan_done = $this->getSalePlanCount('client.checkIn', 'client.checkInWorkout', 'client.firstCheckInForm');
+        $plan_done_this_month = $this->getSalePlanCount('client.checkIn', 'client.checkInWorkout', 'client.firstCheckInForm', true);
+        $plan_needed = $this->getSalePlanCount('client.checkIn', 'client.checkInWorkout', 'client.firstCheckInForm', false, true);
+        $this_month_plan_needed = $this->getSalePlanCount('client.checkIn', 'client.checkInWorkout', 'client.firstCheckInForm', true, true);
+
+        return [
+            'plan_done' => $plan_done,
+            'plan_done_this_month' => $plan_done_this_month,
+            'plan_needed' => $plan_needed,
+            'this_month_plan_needed' => $this_month_plan_needed,
+            'full_plans' => $plan_done + $plan_needed,
+            'full_plans_this_month' => $plan_done_this_month + $this_month_plan_needed
+        ];
+    }
+
+    private function getSalePlanCount(string $relation1, string $relation2, string $relation3, bool $thisMonth = false, bool $doesntHave = false)
+    {
+        $query = $this->saleSubscriptions();
 
         if ($doesntHave) {
             $query->whereDoesntHave($relation1)
