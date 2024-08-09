@@ -135,11 +135,6 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return UserTypeEnum::fromValue($value);
     }
 
-//    public function setTypeAttribute(UserTypeEnum $type)
-//    {
-//        $this->attributes['type'] = $type->value;
-//    }
-
     public function plans(): HasManyThrough
     {
         return $this->hasManyThrough(Plan::class, UserPlan::class, 'user_id', 'id', 'id', 'plan_id');

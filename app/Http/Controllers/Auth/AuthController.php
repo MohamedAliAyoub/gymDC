@@ -153,7 +153,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'image' => $path,
             'mobile' => $request->mobile,
-            'type' => UserTypeEnum::Client
+            'type' => 8
         ]);
         $user->save();
 
