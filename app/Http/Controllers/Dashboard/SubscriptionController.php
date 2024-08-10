@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
+use App\Http\Requests\SubscriptionUpdateRequest;
 use App\Http\Resources\Dashboard\ClientSubscriptionsResource;
 use App\Http\Resources\Dashboard\SubscriptionResource;
 use App\Models\Dashboard\Subscription;
@@ -308,7 +309,7 @@ class SubscriptionController extends Controller
      * )
      */
 
-    public function update(SubscriptionRequest $request, $id): JsonResponse
+    public function update(SubscriptionUpdateRequest $request, $id): JsonResponse
     {
         $subscription = Subscription::findOrFail($id);
         if (!$subscription) {
