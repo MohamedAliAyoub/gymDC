@@ -137,6 +137,62 @@ class DoneExerciseController extends Controller
         ]);
     }
 
+
+
+
+    public function createWithDetails(Request $request)
+    {
+        $request->validate([
+            'exercise_details_id' => 'required|exists:exercise_details,id',
+            'reps' => 'nullable|integer',
+            'kg' => 'nullable|integer',
+            'rir' => 'nullable|integer',
+            'tempo' => 'nullable|string',
+            'rest' => 'nullable|integer',
+            'run_duration' => 'nullable|integer',
+            'sets' => 'nullable|integer',
+        ]);
+
+        $doneExercise = DoneExercise::query()
+            ->where('user_id', auth()->id())
+            ->where('exercise_id', $request->exercise_id)
+            ->whereDate('created_at', now()->toDateString())
+            ->first();
+
+        if ($doneExercise) {
+            $doneExercise->update(['is_done' => !$doneExercise->is_done]);
+
+        } else {
+            $doneExercise = DoneExercise::create([
+                'user_id' => auth()->id(),
+                'exercise_id' => $request->exercise_id,
+                'reps' => $request->reps,
+                'kg' => $request->kg,
+                'rir' => $request->rir,
+                'tempo' => $request->tempo,
+                'rest' => $request->rest,
+                'run_duration' => $request->run_duration,
+                'sets' => $request->sets,
+                'status' => 1,
+                'is_done' => 1,
+            ]);
+        }
+
+        $doneResponse = [
+            'id' => $doneExercise->id,
+            'is_done' => $doneExercise->is_done
+        ];
+        if ($request->run_duration != null) {
+            $doneResponse['run_duration'] = $request->run_duration;
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Done exercise created or updated successfully',
+            'doneExercise' => $doneResponse,
+
+        ]);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/exercise/createWithPlan",
