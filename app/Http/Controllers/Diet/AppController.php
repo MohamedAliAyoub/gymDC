@@ -49,7 +49,7 @@ class AppController extends Controller
         $userPlan = UserPlan::query()
             ->where('user_id', auth()->id())
             ->where('is_work', true)->first();
-        $userPlan->loadUserPlanDetails();
+
 
         if (!$userPlan) {
             return response()->json([
@@ -57,6 +57,8 @@ class AppController extends Controller
                 'message' => 'No active plan found',
             ], 404);
         }
+        $userPlan->loadUserPlanDetails();
+
 
         $plan = $userPlan->plan;
         $plan->is_work = $userPlan->is_work;
