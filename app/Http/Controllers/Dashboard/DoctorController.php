@@ -48,7 +48,7 @@ class DoctorController extends Controller
                 'last_page' => $clients->lastPage(),
                 'from' => $clients->firstItem(),
                 'to' => $clients->lastItem(),
-            ],
+            ]
         ]);
     }
 }

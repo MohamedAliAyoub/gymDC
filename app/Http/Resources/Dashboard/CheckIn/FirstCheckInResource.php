@@ -6,10 +6,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class FirstCheckInResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
-            'height' => $this->height,
+            'height' => $this->height ,
             'weight' => $this->weight,
             'age' => $this->age,
             'gender' => $this->gender,
@@ -47,6 +47,7 @@ class FirstCheckInResource extends JsonResource
             'subscribe_reason' => $this->subscribe_reason,
             'notes' => $this->notes,
             'body_images' => $this->bodyImages ? BodyImageResource::collection($this->bodyImages) : [],
+            'created_at' => $this->created_at->format('Y-M-d'),
 
         ];
     }

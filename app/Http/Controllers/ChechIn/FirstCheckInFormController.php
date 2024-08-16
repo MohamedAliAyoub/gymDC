@@ -56,9 +56,9 @@ class FirstCheckInFormController extends Controller
         $checkIn = $user->checkIn()->with('bodyImages')->get();
         $checkInWorkout = $user->checkInWorkout()->get();
         return response()->json([
-            'first_check_in_form' => FirstCheckInResource::make($firstCheckInForm),
+            'first_check_in_form' => $firstCheckInForm ? FirstCheckInResource::make($firstCheckInForm) : null,
             'check_in' => CheckInNutritionResource::collection($checkIn),
-            'check_in_workout' => CheckInWorkOutResource::collection($checkInWorkout),
+            'check_in_workout' => CheckInWorkOutResource::collection($checkInWorkout)
         ]);
     }
 }
