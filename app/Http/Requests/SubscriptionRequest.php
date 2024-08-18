@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\PackagesEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SubscriptionRequest extends FormRequest
 {
@@ -19,7 +21,7 @@ class SubscriptionRequest extends FormRequest
             'client_id' => 'required|exists:users,id',
             'sale_id' => 'nullable|exists:users,id',
             'duration' => 'nullable|integer',
-            'type' => 'nullable|integer',
+            'type' => ['nullable', 'integer', Rule::in(PackagesEnum::getValues())],
             'started_at' => 'nullable|date',
             'paid_amount' => 'nullable|numeric',
             'freeze_start_at' => 'nullable|date',

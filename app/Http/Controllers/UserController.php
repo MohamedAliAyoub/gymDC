@@ -130,10 +130,10 @@ class UserController extends Controller
     public function getStaff(): JsonResponse
     {
         $staff = User::query()
-            ->when(request('filter'), function ($query) {
-                $query->filter(request('filter'));
-            })
-            ->paginate(10);
+    ->when(request('filter'), function ($query) {
+        $query->filter(request('filter'));
+    })
+    ->get(['id', 'name', 'type']);
         return response()->json([
             'status' => 'success',
             'message' => 'Staff retrieved successfully',
@@ -274,8 +274,19 @@ class UserController extends Controller
                 'current_month' => $currentMonthRate,
                 'previous_month' => $previousMonthRate,
             ],
+            'total' => [
+                'all' => $this->getUserCountByType([UserTypeEnum::Coach ,UserTypeEnum::Doctor , UserTypeEnum::Sales ]),
+                'coaches' => $this->getUserCountByType([UserTypeEnum::Coach]),
+                'doctors' => $this->getUserCountByType([UserTypeEnum::Doctor]),
+                'sales' => $this->getUserCountByType([UserTypeEnum::Sales]),
+            ]
         ]);
 
+    }
+
+    private function getUserCountByType($type)
+    {
+        return User::query()->whereIn('type', $type)->count();
     }
 
 }

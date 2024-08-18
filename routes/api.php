@@ -251,6 +251,7 @@ Route::middleware('auth:api')->group(function () {
         });
 
         Route::group(['prefix' => 'admin'], function () {
+            Route::get('/get-all-users', [UserController::class, 'getStaff']);
             Route::post('/add-staff', [UserController::class, 'storeStaffFromAdmin']);
             Route::get('get-staff-types' , [UserController::class , 'getTypes']);
             Route::get('get-users-statstics' , [UserController::class , 'getUsersStatistics']);

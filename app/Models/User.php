@@ -400,4 +400,9 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
             }]);
         }])->get()->sum('client.plan_exercises_count');
     }
+
+    public function ScopeFilter($query, $filter)
+    {
+        return $query->where('type' , $filter);
+    }
 }
