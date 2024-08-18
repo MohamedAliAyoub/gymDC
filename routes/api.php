@@ -38,6 +38,7 @@ use App\Http\Controllers\Dashboard\SalesController;
 use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\UserSubscriptionController;
 use App\Http\Controllers\Dashboard\SubscriptionLogsController;
+use App\Http\Controllers\Dashboard\CoachController;
 
 // Other Controllers
 
@@ -248,6 +249,9 @@ Route::middleware('auth:api')->group(function () {
         });
         Route::group(['prefix' => 'doctors'], function () {
             Route::get('/', [DoctorController::class, 'index']);
+        });
+        Route::group(['prefix' => 'coaches'], function () {
+            Route::get('/', [CoachController::class, 'index']);
         });
 
         Route::group(['prefix' => 'admin'], function () {
