@@ -22,6 +22,7 @@ class Subscription extends Model
     protected $fillable = [
         'nutrition_coach_id',
         'workout_coach_id',
+        'team_leader_id',
         'client_id',
         'sale_id',
         'duration',
@@ -119,6 +120,7 @@ class Subscription extends Model
                 if (str_ends_with($field, 'id')) {
                     $field = substr($field, 0, -2);
                 }
+
 
                 $log .= "{$field} changed from {$oldValue} to {$newValue}, ";
             }

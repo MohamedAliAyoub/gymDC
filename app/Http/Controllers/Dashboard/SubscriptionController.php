@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\SubscriptionStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use App\Http\Requests\SubscriptionUpdateRequest;
@@ -203,7 +204,9 @@ class SubscriptionController extends Controller
     public function store(SubscriptionRequest $request): JsonResponse
     {
 
-        $subscription = Subscription::query()->create($request->validated());
+        $validatedData = $request->validated();
+        $validatedData['team_leader_id'] = auth()->id();
+        $subscription = Subscription::query()->create($validatedData);
         if ($request->paid_amount ){
             SubscriptionLogs::query()->create([
                 'sale_id' => $request->sale_id ?? auth()->id(),
@@ -328,6 +331,20 @@ class SubscriptionController extends Controller
         }
         $subscription->delete();
         return response()->json(['message' => 'Subscription deleted successfully']);
+    }
+
+    public function refunded($id): JsonResponse
+    {
+        $subscription = Subscription::query()->find($id);
+        if (!$subscription) {
+            return response()->json(['message' => 'Subscription not found'], 404);
+        }
+
+        $subscription->update([
+            'status' => SubscriptionStatusEnum::Refunded->value ,
+            'paid_amount' => 0
+        ]);
+        return response()->json(['message' => 'Subscription refunded successfully']);
     }
 
 

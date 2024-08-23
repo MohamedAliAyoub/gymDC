@@ -39,6 +39,7 @@ use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\UserSubscriptionController;
 use App\Http\Controllers\Dashboard\SubscriptionLogsController;
 use App\Http\Controllers\Dashboard\CoachController;
+use App\Http\Controllers\Dashboard\TeamLeaderController;
 
 // Other Controllers
 
@@ -234,7 +235,7 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/{id}', [SubscriptionController::class, 'update']);
             Route::delete('/{id}', [SubscriptionController::class, 'destroy']);
             Route::get('/client/{id}', [SubscriptionController::class, 'get_client_subscriptions']);
-
+            Route::post('refunded/{id}', [SubscriptionController::class, 'refunded']);
             Route::get('/get-sales/logs', [SubscriptionLogsController::class , 'getSalesLogs']);
         });
         Route::prefix('user-details')->group(function () {
@@ -252,6 +253,9 @@ Route::middleware('auth:api')->group(function () {
         });
         Route::group(['prefix' => 'coaches'], function () {
             Route::get('/', [CoachController::class, 'index']);
+        });
+        Route::group(['prefix' => 'team-leaders'], function () {
+            Route::get('/', [TeamLeaderController::class, 'index']);
         });
 
         Route::group(['prefix' => 'admin'], function () {
