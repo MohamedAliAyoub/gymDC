@@ -19,19 +19,28 @@ class TeamLeaderController extends Controller
      */
     public function index(): JsonResponse
     {
+
         $query = User::query()
             ->where('type', 8) // client
-           ->where('team_leader_id', auth()->id())
+            ->whereHas('subscriptions', function ($query) {
+                $teamLeaderId = auth()->id();
+                $coachIds = User::where('team_leader_id', $teamLeaderId)->pluck('id')->toArray();
+                $query->whereIn('workout_coach_id', $coachIds);
+            })
             ->when(request('firstPlanNeeded'), function ($query) {
                 $query->firstPlanNeeded();
-            })->when(request('updateNeeded'), function ($query) {
+            })
+            ->when(request('updateNeeded'), function ($query) {
                 $query->updateNeeded();
-            })->when(request('allReadyHasPlan'), function ($query) {
+            })
+            ->when(request('allReadyHasPlan'), function ($query) {
                 $query->allReadyHasPlan();
-            })->when(request('search'), function ($query) {
+            })
+            ->when(request('search'), function ($query) {
                 $query->search(request('search'));
             });
-            $clients =$query->paginate(10);
+
+        $clients = $query->paginate(10);
         return response()->json([
             'status' => 'success',
             'message' => 'client get successfully',

@@ -227,6 +227,12 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(CheckInWorkout::class);
     }
 
+    public function getCoachesOfTeamLeader(): HasMany
+    {
+        return $this->hasMany(User::class, 'team_leader_id')
+            ->where('type', UserTypeEnum::Coach);
+    }
+
     public function scopeFirstPlanNeeded($query)
     {
         return $query->whereHas('firstCheckInForm')
