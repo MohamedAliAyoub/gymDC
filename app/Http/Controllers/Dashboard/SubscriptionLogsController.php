@@ -10,10 +10,10 @@ use Illuminate\Http\JsonResponse;
 
 class SubscriptionLogsController extends Controller
 {
-    public function getSalesLogs(): JsonResponse
+    public function getClientLogs($id): JsonResponse
     {
         $subscriptionLogs = SubscriptionLogs::query()
-            ->where('sale_id', auth()->id())
+            ->where('client_id', $id)
             ->with('client', 'sale')
             ->paginate(10);
 

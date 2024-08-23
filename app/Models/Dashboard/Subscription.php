@@ -122,11 +122,14 @@ class Subscription extends Model
                 }
 
 
-                $log .= "{$field} changed from {$oldValue} to {$newValue}, ";
+                if ($oldValue == null)
+                    $log .= "{$field} changed to {$newValue}, ";
+                else
+                    $log .= "{$field} changed from {$oldValue} to {$newValue}, ";
             }
 
             SubscriptionLogs::query()->create([
-                'sale_id' => $subscription->sale_id,
+                'subscription_id' => $subscription->id,
                 'client_id' => $subscription->client_id,
                 'log' => rtrim($log, ', '),
             ]);

@@ -236,7 +236,7 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/{id}', [SubscriptionController::class, 'destroy']);
             Route::get('/client/{id}', [SubscriptionController::class, 'get_client_subscriptions']);
             Route::post('refunded/{id}', [SubscriptionController::class, 'refunded']);
-            Route::get('/get-sales/logs', [SubscriptionLogsController::class , 'getSalesLogs']);
+            Route::get('/get-client/logs/{id}', [SubscriptionLogsController::class , 'getClientLogs']);
         });
         Route::prefix('user-details')->group(function () {
             Route::post('/assignUserDetailsOfClient', [UserController::class, 'assignUserDetailsOfClient']);

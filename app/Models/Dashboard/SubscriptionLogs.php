@@ -12,7 +12,6 @@ class SubscriptionLogs extends Model
     use HasFactory;
     protected $fillable = [
         'client_id',
-        'sale_id',
         'log'
     ];
 
