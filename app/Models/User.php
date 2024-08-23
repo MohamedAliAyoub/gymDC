@@ -58,6 +58,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         'vib',
         'nutrition_coach_id',
         'work_out_coach_id',
+        'team_leader_id',
     ];
 
     protected $appends = ['image_url'];

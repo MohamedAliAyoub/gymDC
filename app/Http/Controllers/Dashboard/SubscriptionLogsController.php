@@ -15,7 +15,7 @@ class SubscriptionLogsController extends Controller
         $subscriptionLogs = SubscriptionLogs::query()
             ->where('client_id', $id)
             ->with('client', 'sale')
-            ->paginate(10);
+            ->get();
 
         return response()->json([
             'status' => 'success',

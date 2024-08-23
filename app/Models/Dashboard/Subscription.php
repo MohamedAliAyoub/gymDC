@@ -91,16 +91,19 @@ class Subscription extends Model
 
     protected static function booted()
     {
-        static::created(function ($userSubscription) {
-            if ($userSubscription->paid_amount != null) {
-                SubscriptionLogs::query()->create([
-                    'sale_id' => $userSubscription->sale_id,
-                    'client_id' => $userSubscription->client_id,
-                    'log' => 'Paid Amount changed from null to' . $userSubscription->paid_amount,
-                ]);
-            }
-        });
+        static::created(function ($subscription) {
+            $clientName = User::query()->find($subscription->client_id)->name;
+            $type = $subscription->type;
+            $paidAmount = $subscription->paid_amount;
 
+            $log = "Subscription created: client name set to {$clientName}, type set to {$type}, paid amount set to {$paidAmount}";
+
+            SubscriptionLogs::query()->create([
+                'subscription_id' => $subscription->id,
+                'client_id' => $subscription->client_id,
+                'log' => $log,
+            ]);
+        });
         static::updated(function ($subscription) {
             $changes = $subscription->getChanges();
             $log = 'Subscription updated: ';
@@ -108,7 +111,7 @@ class Subscription extends Model
             foreach ($changes as $field => $newValue) {
                 $oldValue = $subscription->getOriginal($field);
 
-                if ($field === 'sale_id' || $field === 'client_id') {
+                if ($field === 'client_id' || $field === 'nutrition_coach_id' || $field === 'workout_coach_id' || $field === 'sale_id') {
                     $oldValue = User::query()->find($oldValue)->name;
                     $newValue = User::query()->find($newValue)->name;
                 }

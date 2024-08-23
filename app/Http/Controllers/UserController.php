@@ -109,6 +109,7 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
             'type' => $request->type,
             'image' => $path,
+            'team_leader_id' => auth()->id(),
         ]);
 
         return response()->json([
@@ -130,10 +131,10 @@ class UserController extends Controller
     public function getStaff(): JsonResponse
     {
         $staff = User::query()
-    ->when(request('filter'), function ($query) {
-        $query->filter(request('filter'));
-    })
-    ->get(['id', 'name', 'type']);
+            ->when(request('filter'), function ($query) {
+                $query->filter(request('filter'));
+            })
+            ->get(['id', 'name', 'type']);
         return response()->json([
             'status' => 'success',
             'message' => 'Staff retrieved successfully',
@@ -257,25 +258,25 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'Statistics retrieved successfully',
             'clients' => [
-                'all'=> $users,
+                'all' => $users,
                 'current_month' => $currentMonthUsers,
                 'previous_month' => $previousMonthUsers,
                 'percentage_change' => abs($percentageChange),
                 'comparison' => $ratioComparison,
             ],
             'subscriptions' => [
-                'all'=> $subscriptions,
+                'all' => $subscriptions,
                 'current_month' => $currentMonthSubscriptions,
                 'previous_month' => $previousMonthSubscriptions,
                 'percentage_change' => abs($percentageChange),
                 'comparison' => $ratioComparison,
             ],
-            'rate'=>[
+            'rate' => [
                 'current_month' => $currentMonthRate,
                 'previous_month' => $previousMonthRate,
             ],
             'total' => [
-                'all' => $this->getUserCountByType([UserTypeEnum::Coach ,UserTypeEnum::Doctor , UserTypeEnum::Sales ]),
+                'all' => $this->getUserCountByType([UserTypeEnum::Coach, UserTypeEnum::Doctor, UserTypeEnum::Sales]),
                 'coaches' => $this->getUserCountByType([UserTypeEnum::Coach]),
                 'doctors' => $this->getUserCountByType([UserTypeEnum::Doctor]),
                 'sales' => $this->getUserCountByType([UserTypeEnum::Sales]),

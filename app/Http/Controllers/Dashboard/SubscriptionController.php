@@ -207,13 +207,7 @@ class SubscriptionController extends Controller
         $validatedData = $request->validated();
         $validatedData['team_leader_id'] = auth()->id();
         $subscription = Subscription::query()->create($validatedData);
-        if ($request->paid_amount ){
-            SubscriptionLogs::query()->create([
-                'sale_id' => $request->sale_id ?? auth()->id(),
-                'client_id' => $request->client_id,
-                'log' => 'Baha: Paid Amount changed from null to' . $request->paid_amount,
-            ]);
-        }
+
         return response()->json(SubscriptionResource::make(
             $subscription->load('nutritionCoach', 'workoutCoach', 'client', 'sale')),
             201);
