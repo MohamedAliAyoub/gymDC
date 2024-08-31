@@ -8,9 +8,9 @@ use App\Models\Diet\Item;
 use App\Models\Diet\ItemDetails;
 use App\Models\Diet\Standard;
 use Illuminate\Http\Request;
-
 class ItemDetailsController extends Controller
 {
+
     /**
      * @OA\Get(
      *     path="/api/diet/itemdetails",
@@ -21,12 +21,7 @@ class ItemDetailsController extends Controller
     public function index()
     {
         $items = ItemDetails::query()->with('item')->paginate(15);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Item details retrieved successfully',
-            'items' => ItemDetailsResource::collection($items),
-        ]);
+        return $this->paginateResponse($items, 'Item details retrieved successfully');
     }
 
 

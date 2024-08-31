@@ -8,6 +8,7 @@ use App\Models\Exercise\Exercise;
 use App\Models\Exercise\PlanExercise;
 use App\Models\Exercise\WeeklyPlan;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class WeeklyPlanExerciseController extends Controller
 {
@@ -20,19 +21,7 @@ class WeeklyPlanExerciseController extends Controller
             }, 'run', 'note', 'userPlanExercises']);
         }])->orderByDesc('id')->paginate(10);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Plan by date retrieved successfully',
-            'plan' => WeeklyPlanExerciseResource::collection($weeklyPlans),
-            'pagination' => [
-                'total' => $weeklyPlans->total(),
-                'per_page' => $weeklyPlans->perPage(),
-                'current_page' => $weeklyPlans->currentPage(),
-                'last_page' => $weeklyPlans->lastPage(),
-                'from' => $weeklyPlans->firstItem(),
-                'to' => $weeklyPlans->lastItem(),
-            ],
-        ]);
+       return $this->paginateResponse($weeklyPlans, 'Plan by date retrieved successfully');
     }
 
     public function show(WeeklyPlan $weeklyPlan): JsonResponse

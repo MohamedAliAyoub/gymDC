@@ -15,15 +15,12 @@ class ItemController extends Controller
      *     @OA\Response(response="200", description="Items retrieved successfully")
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $items = Item::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Items retrieved successfully',
-            'items' => $items,
-        ]);
+       return $this->paginateResponse($items, 'Items retrieved successfully');
+
     }
 
 

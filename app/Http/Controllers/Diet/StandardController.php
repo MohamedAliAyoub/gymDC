@@ -19,11 +19,7 @@ class StandardController extends Controller
     {
         $standards = Standard::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Standards retrieved successfully',
-            'standards' => $standards,
-        ]);
+      return $this->paginateResponse($standards, 'Standards retrieved successfully');
     }
 
     /**

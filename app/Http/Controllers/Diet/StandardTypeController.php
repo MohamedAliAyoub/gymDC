@@ -19,11 +19,7 @@ class StandardTypeController extends Controller
     {
         $standardTypes = StandardType::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Standard types retrieved successfully',
-            'standardTypes' => $standardTypes,
-        ]);
+     return $this->paginateResponse($standardTypes, 'Standard types retrieved successfully');
     }
 
     /**

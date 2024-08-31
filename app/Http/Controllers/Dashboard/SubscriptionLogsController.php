@@ -17,10 +17,6 @@ class SubscriptionLogsController extends Controller
             ->with('client', 'sale')
             ->get();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Clients logs retrieved successfully',
-            'logs' => SubscriptionLogsResource::collection($subscriptionLogs),
-        ]);
+        return $this->paginateResponse($subscriptionLogs, 'Subscription logs retrieved successfully');
     }
 }

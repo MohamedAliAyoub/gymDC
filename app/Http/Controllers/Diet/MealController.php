@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Diet;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diet\Meal;
-use App\Models\Diet\UserMeal;
 use Illuminate\Http\Request;
 
 class MealController extends Controller
 {
+
     /**
      * @OA\Get(
      *     path="/api/diet/meal",
@@ -20,11 +20,8 @@ class MealController extends Controller
     {
         $meals = Meal::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Meals retrieved successfully',
-            'meals' => $meals,
-        ]);
+
+        return $this->paginateResponse($meals, 'Meals retrieved successfully');
     }
 
     /**

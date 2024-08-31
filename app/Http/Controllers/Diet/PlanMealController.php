@@ -21,11 +21,7 @@ class PlanMealController extends Controller
     {
         $planMeals = PlanMeal::query()->with(['meal', 'plan'])->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Plan meals retrieved successfully',
-            'planMeals' => PlanMealResource::collection($planMeals),
-        ]);
+      return $this->paginateResponse($planMeals, 'Plan meals retrieved successfully');
     }
 
     /**

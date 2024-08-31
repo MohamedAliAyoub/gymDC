@@ -102,19 +102,7 @@ class PlanController extends Controller
             $plan->loadPlanDetails();
         });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Plans retrieved successfully',
-            'plans' => PlanResource::collection($plans),
-            'pagination' => [
-                'total' => $plans->total(),
-                'per_page' => $plans->perPage(),
-                'current_page' => $plans->currentPage(),
-                'last_page' => $plans->lastPage(),
-                'from' => $plans->firstItem(),
-                'to' => $plans->lastItem(),
-            ]
-        ]);
+       return $this->paginateResponse($plans, 'Plans retrieved successfully');
     }
 
     /**
@@ -574,11 +562,7 @@ class PlanController extends Controller
             }
         });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'plans retrieved successfully',
-            'plan' => PlanResource::collection($plans),
-        ]);
+      return $this->paginateResponse($plans, 'Plans retrieved successfully');
     }
 
     public function duplicatePlan($id): JsonResponse

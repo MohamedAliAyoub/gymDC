@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Exercise;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Exercise\DoneExerciseResource;
 use App\Models\Exercise\DoneExercise;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class DoneExerciseController extends Controller
 {
@@ -16,15 +16,11 @@ class DoneExerciseController extends Controller
      *     @OA\Response(response="200", description="Done exercises retrieved successfully")
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $doneExercises = DoneExercise::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Done exercises retrieved successfully',
-            'doneExercises' => $doneExercises,
-        ]);
+      return $this->paginateResponse($doneExercises, 'Done exercises retrieved successfully');
     }
 
     /**

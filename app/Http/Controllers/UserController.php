@@ -184,19 +184,7 @@ class UserController extends Controller
                 'plansCount' => $plansCount,
             ];
         });
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Statistics retrieved successfully',
-            'users' => $usersData,
-            'pagination' => [
-                'total' => $users->total(),
-                'count' => $users->count(),
-                'per_page' => $users->perPage(),
-                'current_page' => $users->currentPage(),
-                'total_pages' => $users->lastPage(),
-            ]
-        ]);
+        return $this->paginateResponse($usersData, 'Users retrieved successfully');
     }
 
     public function getAdminStatistics(): JsonResponse

@@ -12,6 +12,7 @@ use App\Models\Exercise\UserPlanExercise;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class UserPlanExerciseController extends Controller
 {
@@ -23,15 +24,11 @@ class UserPlanExerciseController extends Controller
      *     @OA\Response(response="200", description="User plan exercises retrieved successfully")
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $userPlanExercises = UserPlanExercise::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User plan exercises retrieved successfully',
-            'userPlanExercises' => $userPlanExercises,
-        ]);
+        return $this->paginateResponse($userPlanExercises, 'User plan exercises retrieved successfully');
     }
 
     /**

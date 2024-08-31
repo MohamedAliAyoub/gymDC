@@ -19,7 +19,6 @@ class SalesController extends Controller
      */
     public function index(): JsonResponse
     {
-
         //TODO ->where('role', 'client')
         $query = User::query()
             ->where('type', 8) // client
@@ -34,20 +33,7 @@ class SalesController extends Controller
             });
             $clients = $query->paginate(10);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'client get successfully',
-            'clients' => ClientResource::collection($clients),
-            'count' => $clients->count(),
-            'pagination' =>[
-                'total' => $clients->total(),
-                'per_page' => $clients->perPage(),
-                'current_page' => $clients->currentPage(),
-                'last_page' => $clients->lastPage(),
-                'from' => $clients->firstItem(),
-                'to' => $clients->lastItem(),
-            ],
+        return $this->paginateResponse($clients, 'Clients retrieved successfully');
 
-        ]);
     }
 }

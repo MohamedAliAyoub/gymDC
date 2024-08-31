@@ -22,11 +22,7 @@ class NoteExerciseCotroller extends Controller
     {
         $noteExercises = NoteExercise::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Note exercises retrieved successfully',
-            'noteExercises' => $noteExercises,
-        ]);
+     return $this->paginateResponse($noteExercises, 'Note exercises retrieved successfully');
     }
 
     /**

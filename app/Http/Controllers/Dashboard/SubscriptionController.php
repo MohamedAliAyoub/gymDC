@@ -9,12 +9,12 @@ use App\Http\Requests\SubscriptionUpdateRequest;
 use App\Http\Resources\Dashboard\ClientSubscriptionsResource;
 use App\Http\Resources\Dashboard\SubscriptionResource;
 use App\Models\Dashboard\Subscription;
-use App\Models\Dashboard\SubscriptionLogs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
+
 
 
     /**
@@ -47,11 +47,7 @@ class SubscriptionController extends Controller
                 'sale'
             ])->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'subscriptions fetched successfully',
-            'data' => SubscriptionResource::collection($subscriptions),
-        ]);
+        return $this->paginateResponse($subscriptions, 'Clients retrieved successfully');
     }
 
     /**
@@ -143,6 +139,12 @@ class SubscriptionController extends Controller
         $userDetails = $user?->userDetails?->first();
 
 
+        if ($subscriptions->currentPage() > $subscriptions->lastPage()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No more pages available',
+            ], 400);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'client subscriptions  successfully',
@@ -160,6 +162,14 @@ class SubscriptionController extends Controller
                 'height' => $userDetails->height ?? null,
                 'in_body_image' => $userDetails->in_body_url ?? 'No in body image found',
                 'created_at' => $userDetails->created_at->format('Y-m-d')
+            ],
+            'pagination' => [
+                'total' => $subscriptions->total(),
+                'per_page' => $subscriptions->perPage(),
+                'current_page' => $subscriptions->currentPage(),
+                'last_page' => $subscriptions->lastPage(),
+                'from' => $subscriptions->firstItem(),
+                'to' => $subscriptions->lastItem(),
             ],
         ]);
     }

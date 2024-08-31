@@ -31,11 +31,7 @@ class PlanExerciseController extends Controller
     {
         $plans = PlanExercise::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Plans retrieved successfully',
-            'plans' => $plans,
-        ]);
+       return $this->paginateResponse($plans, 'Plans retrieved successfully');
     }
 
     /**

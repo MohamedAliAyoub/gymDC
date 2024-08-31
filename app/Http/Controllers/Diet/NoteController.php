@@ -19,11 +19,7 @@ class NoteController extends Controller
     {
         $notes = Note::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Notes retrieved successfully',
-            'notes' => $notes,
-        ]);
+      return $this->paginateResponse($notes, 'Notes retrieved successfully');
     }
 
     /**

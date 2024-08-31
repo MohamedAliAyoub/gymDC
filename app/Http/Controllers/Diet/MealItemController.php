@@ -19,12 +19,8 @@ class MealItemController extends Controller
     public function index()
     {
         $mealItems = MealItem::query()->paginate(15);
+        return $this->paginateResponse($mealItems, 'Meal items retrieved successfully');
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Meal items retrieved successfully',
-            'mealItems' => $mealItems,
-        ]);
     }
 
     /**

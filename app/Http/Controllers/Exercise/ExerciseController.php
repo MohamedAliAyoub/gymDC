@@ -20,11 +20,7 @@ class ExerciseController extends Controller
     {
         $exercises = Exercise::query()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Exercises retrieved successfully',
-            'exercises' => $exercises,
-        ]);
+       return $this->paginateResponse($exercises, 'Exercises retrieved successfully');
     }
 
     /**
