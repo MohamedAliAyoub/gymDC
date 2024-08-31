@@ -131,7 +131,8 @@ class WeeklyPlanExerciseController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Plan by date retrieved successfully',
-            'plan' => WeeklyPlanExerciseResource::collection($weeklyPlans)
+            'plan' => WeeklyPlanExerciseResource::collection($weeklyPlans),
+            'count' => $weeklyPlans->count(),
         ]);
     }
 }
