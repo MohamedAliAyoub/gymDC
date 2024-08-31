@@ -137,6 +137,7 @@ class UserPlanExercise extends Model
     {
         $userPlans = [];
         foreach ($userIds as $userId) {
+
             $userPlans[] = self::query()->updateOrCreate(
                 [
                     'user_id' => $userId,

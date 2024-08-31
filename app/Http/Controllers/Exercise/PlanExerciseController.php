@@ -31,7 +31,7 @@ class PlanExerciseController extends Controller
     {
         $plans = PlanExercise::query()->paginate(15);
 
-       return $this->paginateResponse($plans, 'Plans retrieved successfully');
+        return $this->paginateResponse($plans, 'Plans retrieved successfully');
     }
 
     /**
@@ -373,7 +373,7 @@ class PlanExerciseController extends Controller
                 } else {
                     $exercise->update([
                         'name' => $exerciseData['name'],
-                        'run_duration' => $exerciseData['run_duration'],
+                        'run_duration' => $exerciseData['run_duration'] ?? 0,
                     ]);
                 }
 
@@ -414,10 +414,10 @@ class PlanExerciseController extends Controller
             //assign plan to UserPlanExercise
             $data = [
                 'plan_id' => $plan->id,
-                'user_ids' => $request->user_ids,
+                'user_ids' => [$request->user_ids],
                 'is_work' => $planData['is_work'] ?? true,
                 'weekly_plan_id' => $weeklyPlan->id,
-                'days' => $planData['days'],
+                'days' => [$planData['days']],
             ];
 
             $requestData = new \Illuminate\Http\Request();
