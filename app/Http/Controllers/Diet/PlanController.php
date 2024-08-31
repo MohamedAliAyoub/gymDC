@@ -562,7 +562,12 @@ class PlanController extends Controller
             }
         });
 
-      return $this->paginateResponse($plans, 'Plans retrieved successfully');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'plans retrieved successfully',
+            'plan' => PlanResource::collection($plans),
+        ]);
+        return $this->paginateResponse(PlanResource::collection($plans), 'Plans retrieved successfully');
     }
 
     public function duplicatePlan($id): JsonResponse

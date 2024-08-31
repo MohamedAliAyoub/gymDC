@@ -19,7 +19,7 @@ trait PaginateResponseTrait
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => $data->items(),
+            'data' => $data,
             'count' => $data->count(),
             'pagination' => [
                 'total' => $data->total(),
