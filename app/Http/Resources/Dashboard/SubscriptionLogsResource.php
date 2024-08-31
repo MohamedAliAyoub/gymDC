@@ -11,7 +11,7 @@ class SubscriptionLogsResource  extends JsonResource
         return [
             'id' => $this->id,
             'log' => $this->client->name .' '.$this->log,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at->format('Y-M-d H:i:s'),
         ];
     }
 }
