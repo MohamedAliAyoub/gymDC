@@ -8,6 +8,7 @@ enum SubscriptionStatusEnum: int {
     case Expired = 2;
     case Freezed = 3;
     case Refunded = 4;
+    case NoStatusFound = 5 ;
 
     public static function fromValue(int $value): SubscriptionStatusEnum
     {
@@ -17,6 +18,7 @@ enum SubscriptionStatusEnum: int {
             2 => self::Expired,
             3 => self::Freezed,
             4 => self::Refunded,
+            default => self::NoStatusFound,
         };
     }
 
@@ -28,6 +30,7 @@ enum SubscriptionStatusEnum: int {
             'Expired' => self::Expired,
             'Freezed' => self::Freezed,
             'Refunded' => self::Refunded,
+            default => self::NoStatusFound,
         };
     }
 }

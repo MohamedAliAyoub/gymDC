@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Validation\ValidationException;
+
 
 class Subscription extends Model
 {
@@ -92,6 +94,16 @@ class Subscription extends Model
     protected static function booted()
     {
         static::created(function ($subscription) {
+            $activeSubscription = Subscription::where('client_id', $subscription->client_id)
+                ->where('status', 1)
+                ->first();
+
+            if ($activeSubscription) {
+                throw ValidationException::withMessages([
+                    'client_id' => ['The client already has an active subscription.'],
+                ]);
+            }
+
             $clientName = User::query()->find($subscription->client_id)->name;
             $type = $subscription->type;
             $paidAmount = $subscription->paid_amount;
@@ -105,6 +117,18 @@ class Subscription extends Model
             ]);
         });
         static::updated(function ($subscription) {
+            if ($subscription->isDirty('status') && $subscription->status == 1) {
+                $activeSubscription = Subscription::where('client_id', $subscription->client_id)
+                    ->where('status', 1)
+                    ->where('id', '!=', $subscription->id)
+                    ->first();
+
+                if ($activeSubscription) {
+                    throw ValidationException::withMessages([
+                        'status' => ['The client already has an active subscription.'],
+                    ]);
+                }
+            }
             $changes = $subscription->getChanges();
             $log = 'Subscription updated: ';
 
@@ -138,6 +162,7 @@ class Subscription extends Model
             ]);
         });
     }
+
 
 
 }

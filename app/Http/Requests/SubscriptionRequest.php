@@ -16,8 +16,8 @@ class SubscriptionRequest extends FormRequest
     public function rules()
     {
         return [
-            'nutrition_coach_id' => 'required|exists:users,id',
-            'workout_coach_id' => 'required|exists:users,id',
+            'nutrition_coach_id' => 'nullable|exists:users,id',
+            'workout_coach_id' => 'nullable|exists:users,id',
             'client_id' => 'required|exists:users,id',
             'sale_id' => 'nullable|exists:users,id',
             'duration' => 'nullable|integer',
