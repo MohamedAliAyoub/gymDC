@@ -25,6 +25,7 @@ class ExerciseDetailsResource extends JsonResource
             'is_done' => DoneExercise::hasDoneExerciseDetailsToday($this->id),
             'sets' => $this->sets,
             'rir' => $this->rir,
+            'tempo' => $this->tempo,
             'reps' => $this->reps,
             'rest' => $this->rest,
             'weight' => $this->weight,
