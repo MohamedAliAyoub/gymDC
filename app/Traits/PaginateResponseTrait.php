@@ -2,12 +2,13 @@
 
 namespace App\Traits;
 
+use http\Client;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 
 trait PaginateResponseTrait
 {
-    public function paginateResponse(LengthAwarePaginator $data, string $message = 'Data retrieved successfully'): JsonResponse
+    public function paginateResponse(LengthAwarePaginator $data, string $message = 'Data retrieved successfully', array $clientCount = []): JsonResponse
     {
         if ($data->currentPage() > $data->lastPage()) {
             return response()->json([
@@ -16,7 +17,7 @@ trait PaginateResponseTrait
             ], 400);
         }
 
-        return response()->json([
+        $response = [
             'status' => 'success',
             'message' => $message,
             'data' => $data,
@@ -29,6 +30,12 @@ trait PaginateResponseTrait
                 'from' => $data->firstItem(),
                 'to' => $data->lastItem(),
             ],
-        ]);
+        ];
+
+        if (!empty($clientCount)) {
+            $response['clientCount'] = $clientCount;
+        }
+
+        return response()->json($response);
     }
 }

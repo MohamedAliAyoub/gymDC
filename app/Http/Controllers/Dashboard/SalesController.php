@@ -31,9 +31,20 @@ class SalesController extends Controller
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
             });
-            $clients = $query->paginate(10);
+        $clients = $query->paginate(10);
 
-        return $this->paginateResponse($clients, 'Clients retrieved successfully');
+
+        $clientcount = [
+            'allUsersCount' => $query->count(),
+            'firstPlanNeededCount' => $query->firstPlanNeeded()->count(),
+            'updateNeededCount' => $query->updateNeeded()->count(),
+            'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
+        ];
+
+
+        return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientcount);
 
     }
+
+
 }
