@@ -13,12 +13,12 @@ class ClientSubscriptionsResource extends JsonResource
         $user = auth()->user();
         return [
             'id' => $this->id,
-            'nutrition_coach' => $this->nutritionCoach->name,
-            'workout_coach' => $this->workoutCoach->name,
+            'nutrition_coach' => $this->nutritionCoach->name ?? 'the coach will specify the nutrition coach',
+            'workout_coach' => $this->workoutCoach->name ?? 'the coach will specify the workout coach',
             'type' => $this->packages_name,
             'package' => $this->packages_name,
             'duration' => $this->duration,
-            'current_duration' => 6,
+            'current_duration' => 6, //todo import from the model
             'status' => $this->status_name,
             'is_active' => $this->status == 1,
             'started_at' => $this->started_at?->format('Y-M-d') ?? 'the coach will specify the start date',
