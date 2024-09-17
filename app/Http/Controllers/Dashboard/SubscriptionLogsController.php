@@ -16,7 +16,10 @@ class SubscriptionLogsController extends Controller
             ->where('client_id', $id)
             ->with('client', 'sale')
             ->get();
-
-        return $this->paginateResponse($subscriptionLogs, 'Subscription logs retrieved successfully');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Subscription logs retrieved successfully',
+            'data' => $subscriptionLogs,
+        ]);
     }
 }
