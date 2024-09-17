@@ -86,6 +86,8 @@ class UserPlanExercise extends Model
     // If there's only one item in the array, return it as a string
     if (count($result) === 1) {
         return $result[0];
+    }else if (count($result) === 0) {
+        return null;
     }
 
     // Otherwise, return the array
