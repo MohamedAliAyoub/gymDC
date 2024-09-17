@@ -34,7 +34,7 @@ class UserPlanExercise extends Model
     const FRIDAY = 5;
     const SATURDAY = 6;
 
-    protected $appends = ['day_names' , 'day_key' , 'coach_id'];
+    protected $appends = ['day_names', 'day_key', 'coach_id'];
 
 
     protected $fillable = [
@@ -67,45 +67,45 @@ class UserPlanExercise extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-  public function getDayNamesAttribute()
-{
-    $dayNames = [
-        self::SUNDAY => 'Sunday',
-        self::MONDAY => 'Monday',
-        self::TUESDAY => 'Tuesday',
-        self::WEDNESDAY => 'Wednesday',
-        self::THURSDAY => 'Thursday',
-        self::FRIDAY => 'Friday',
-        self::SATURDAY => 'Saturday',
-    ];
+    public function getDayNamesAttribute()
+    {
+        $dayNames = [
+            self::SUNDAY => 'Sunday',
+            self::MONDAY => 'Monday',
+            self::TUESDAY => 'Tuesday',
+            self::WEDNESDAY => 'Wednesday',
+            self::THURSDAY => 'Thursday',
+            self::FRIDAY => 'Friday',
+            self::SATURDAY => 'Saturday',
+        ];
 
-    $result = array_map(function ($day) use ($dayNames) {
-        return $dayNames[$day];
-    }, $this->days);
+        $result = array_map(function ($day) use ($dayNames) {
+            return array_key_exists($day, $dayNames) ? $dayNames[$day] : null;
+        }, $this->days);
 
-    // If there's only one item in the array, return it as a string
-    if (count($result) === 1) {
-        return $result[0];
-    }else if (count($result) === 0) {
-        return null;
+        // If there's only one item in the array, return it as a string
+        if (count($result) === 1) {
+            return $result[0];
+        } else if (count($result) === 0) {
+            return null;
+        }
+
+        // Otherwise, return the array
+        return $result;
     }
 
-    // Otherwise, return the array
-    return $result;
-}
+    public function getDayKeyAttribute()
+    {
+        $result = $this->days;
 
- public function getDayKeyAttribute()
-{
-    $result = $this->days;
+        // If there's only one item in the array, return it as a string
+        if (count($result) === 1) {
+            return $result[0];
+        }
 
-    // If there's only one item in the array, return it as a string
-    if (count($result) === 1) {
-        return $result[0];
+        // Otherwise, return the array
+        return $result;
     }
-
-    // Otherwise, return the array
-    return $result;
-}
 
     /**
      * Get the plan of today
@@ -135,7 +135,7 @@ class UserPlanExercise extends Model
             ->first();
     }
 
-    public static function assignPlanToUsers($userIds, $planId, $isWork = 1 , $weekly_plan_id , $days): array
+    public static function assignPlanToUsers($userIds, $planId, $isWork = 1, $weekly_plan_id, $days): array
     {
         $userPlans = [];
         foreach ($userIds as $userId) {
@@ -162,7 +162,6 @@ class UserPlanExercise extends Model
     {
         return optional($this->user->activeSubscription)->coach_id;
     }
-
 
 
 }
