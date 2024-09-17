@@ -27,7 +27,7 @@ class FullEsxercisePlanRequest extends FormRequest
             'plans' => 'required|array',
             'plans.*.id' => 'nullable|integer',
             'plans.*.name' => 'required|string',
-            'plans.*.days' => 'required|integer',
+            'plans.*.days' => 'required|integer|between:0,6',
             'plans.*.note' => 'nullable|string',
             'plans.*.exercises' => 'required|array',
             'plans.*.exercises.*.id' => 'nullable|integer',
