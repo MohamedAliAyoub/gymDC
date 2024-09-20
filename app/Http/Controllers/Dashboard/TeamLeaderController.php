@@ -22,7 +22,7 @@ class TeamLeaderController extends Controller
     public function index(): JsonResponse
     {
 
-        $query = User::query()
+        $clients = User::query()
             ->where('type', 8) // client
             ->whereHas('subscriptions', function ($query) {
                 $teamLeaderId = auth()->id();
@@ -40,9 +40,16 @@ class TeamLeaderController extends Controller
             })
             ->when(request('search'), function ($query) {
                 $query->search(request('search'));
+            })->paginate(10);
+
+        $query = User::query()
+            ->where('type', 8) // client
+            ->whereHas('subscriptions', function ($query) {
+                $teamLeaderId = auth()->id();
+                $coachIds = User::where('team_leader_id', $teamLeaderId)->pluck('id')->toArray();
+                $query->whereIn('workout_coach_id', $coachIds);
             });
 
-        $clients = $query->paginate(10);
         $clientCount = [
             'allUsersCount' => $query->count(),
             'firstPlanNeededCount' => $query->firstPlanNeeded()->count(),

@@ -20,7 +20,7 @@ class SalesController extends Controller
     public function index(): JsonResponse
     {
         //TODO ->where('role', 'client')
-        $query = User::query()
+        $clients = User::query()
             ->where('type', 8) // client
             ->when(request('firstPlanNeeded'), function ($query) {
                 $query->firstPlanNeeded();
@@ -30,9 +30,10 @@ class SalesController extends Controller
                 $query->allReadyHasPlan();
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
-            });
-        $clients = $query->paginate(10);
+            })->paginate(10);
 
+        $query = User::query()
+            ->where('type', 8);
 
         $clientcount = [
             'allUsersCount' => $query->count(),
@@ -40,8 +41,6 @@ class SalesController extends Controller
             'updateNeededCount' => $query->updateNeeded()->count(),
             'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
         ];
-
-
         return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientcount);
 
     }

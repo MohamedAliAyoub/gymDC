@@ -19,9 +19,7 @@ class DoctorController extends Controller
      */
     public function index(): JsonResponse
     {
-
-        //TODO ->where('role', 'client')
-        $query = User::query()
+        $clients = User::query()
             ->where('type', 8) // client
             ->whereHas('subscriptions', function ($query) {
                 $query->where('nutrition_coach_id', auth()->id());
@@ -34,8 +32,14 @@ class DoctorController extends Controller
                 $query->allReadyHasPlan();
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
+            })->paginate(10);
+
+
+        $query = User::query()
+            ->where('type', 8) // client
+            ->whereHas('subscriptions', function ($query) {
+                $query->where('nutrition_coach_id', auth()->id());
             });
-            $clients =$query->paginate(10);
             $clientCount = [
                 'allUsersCount' => $query->count(),
                 'firstPlanNeededCount' => $query->firstPlanNeeded()->count(),
