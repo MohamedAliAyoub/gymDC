@@ -160,8 +160,7 @@ class UserPlanExercise extends Model
 
     public function getCoachIdAttribute(): ?int
     {
-        return optional($this->user->activeSubscription)->coach_id;
+        return $this->user->activeSubscription->coach_id ?? null;
     }
-
 
 }

@@ -21,6 +21,9 @@ class WeeklyPlanExerciseController extends Controller
             }, 'run', 'note', 'userPlanExercises']);
         }])->orderByDesc('id')->paginate(10);
 
+        $weeklyPlans->getCollection()->transform(function ($item) {
+            return new WeeklyPlanExerciseResource($item);
+        });
        return $this->paginateResponse($weeklyPlans, 'Plan by date retrieved successfully');
     }
 
