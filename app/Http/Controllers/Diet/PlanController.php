@@ -101,6 +101,9 @@ class PlanController extends Controller
         $plans->each(function ($plan) {
             $plan->loadPlanDetails();
         });
+        $plans->getCollection()->transform(function ($item) {
+            return new PlanResource($item);
+        });
 
        return $this->paginateResponse($plans, 'Plans retrieved successfully');
     }
@@ -255,7 +258,7 @@ class PlanController extends Controller
         $plan->meals()->detach();
 
         // Detach the plan from all users
-        $plan->userPlans()->delete();
+        $plan->userPlan()->delete();
         // Delete the plan
         $plan->delete();
 
@@ -290,8 +293,7 @@ class PlanController extends Controller
     public function assignPlanToUsers(Request $request): JsonResponse
     {
         $request->validate([
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'required|integer|exists:users,id',
+            'user_id' => 'required|integer|exists:users,id',
             'plan_id' => 'required|integer|exists:plans,id',
             'is_work' => 'boolean',
         ]);
@@ -299,8 +301,8 @@ class PlanController extends Controller
         $is_work = $request->is_work == 1 ? 1 : 0;
 
         if ($is_work == 1)
-            UserPlan::query()->whereIn('user_id', $request->user_ids)->update(['is_work' => false]);
-        $userPlans = UserPlan::assignPlanToUsers($request->user_ids, $request->plan_id, $is_work);
+            UserPlan::query()->where('user_id', $request->user_id)->update(['is_work' => false]);
+        $userPlans = UserPlan::assignPlanToUsers($request->user_id, $request->plan_id, $is_work);
 
         return response()->json([
             'status' => 'success',
@@ -492,18 +494,20 @@ class PlanController extends Controller
                 }
             }
         }
-
-        if ($request->user_ids)
-            $this->assignPlanToUsers(new Request([
-                'user_ids' => $request->user_ids,
+        if ($request->user_id) {
+            $user_plan = $this->assignPlanToUsers(new Request([
+                'user_id' => $request->user_id,
                 'plan_id' => $plan->id,
                 'is_work' => $request->is_work ?? false,
             ]));
-
+            $plan_with_details = Plan::query()->with('userPlan' )->findOrFail($plan->id);
+        } else {
+            $plan_with_details = $plan;
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Plan updated successfully',
-            'plan' => PlanResource::make($plan),
+            'plan' => PlanResource::make($plan_with_details->loadPlanDetails())
         ]);
     }
 

@@ -31,17 +31,14 @@ class UserPlan extends Model
         return $this->belongsTo(Plan::class);
     }
 
-    public static function assignPlanToUsers($userIds, $planId, $isWork = 1)
+    public static function assignPlanToUsers($userId, $planId, $isWork = 1)
     {
-        $userPlans = [];
-        foreach ($userIds as $userId) {
-            $userPlans[] = self::create([
+            $userPlans = self::create([
                 'user_id' => $userId,
                 'plan_id' => $planId,
                 'status' => true,
                 'is_work' => $isWork,
             ]);
-        }
 
         return $userPlans;
     }

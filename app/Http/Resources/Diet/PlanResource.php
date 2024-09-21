@@ -36,7 +36,7 @@ class PlanResource extends JsonResource
                 'total_carbohydrate' => $this->total_carbohydrate,
                 'total_protein' => $this->total_protein,
                 'total_fat' => $this->total_fat,
-                'is_work' => $this->is_work != null ? $this->is_work : false,
+                'is_work' => $this->userPlan->is_work ?? false,
                 'notes' => $this->note?->content,
                 'meals' => MealResource::collection($this->meals),
             ];

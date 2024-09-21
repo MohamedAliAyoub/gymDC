@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Plan
@@ -73,10 +74,15 @@ class Plan extends Model
         return $this->hasMany(UserPlan::class);
     }
 
+    public function userPlan  (): HasOne
+    {
+        return $this->hasOne(UserPlan::class);
+    }
+
 
     public function loadPlanDetails(): Plan
     {
-        return $this->load(['meals' => function ($q) {
+        return $this->load(['userPlan','meals' => function ($q) {
             $q->with(['items' => function ($q) {
                 $q->with(['standard' => function ($q) {
                     $q->with('standardType');
