@@ -83,7 +83,7 @@ class Subscription extends Model
 
     public function getPackagesNameAttribute(): string
     {
-        return PackagesEnum::fromValue($this->attributes['type'])->name;
+        return PackagesEnum::fromValue($this->attributes['type'])->name ?? 'no package found';
     }
 
     public function getStatusNameAttribute(): string
