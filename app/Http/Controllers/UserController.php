@@ -154,7 +154,11 @@ class UserController extends Controller
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
             })
-            ->whereIn('type', [UserTypeEnum::Coach, UserTypeEnum::Doctor, UserTypeEnum::Sales])->paginate(10);
+            ->whereIn('type', [
+                UserTypeEnum::Coach,
+                UserTypeEnum::Doctor,
+                UserTypeEnum::Sales
+            ])->paginate(10);
         if ($users->isEmpty()) {
             return response()->json([
                 'status' => 'error',
@@ -184,6 +188,7 @@ class UserController extends Controller
                 'plansCount' => $plansCount,
             ];
         });
+
         return $this->paginateResponse($usersData, 'Users retrieved successfully');
     }
 

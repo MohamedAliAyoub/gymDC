@@ -336,6 +336,7 @@ class PlanExerciseController extends Controller
             $weeklyPlan->update(['name' => $request->weekly_plan_name]);
         }
 
+
         foreach ($request->plans as $planData) {
 
             $plan = null;
