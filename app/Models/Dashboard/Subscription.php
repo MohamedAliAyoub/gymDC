@@ -94,19 +94,9 @@ class Subscription extends Model
     protected static function booted()
     {
         static::created(function ($subscription) {
-            $activeSubscription = Subscription::where('client_id', $subscription->client_id)
-                ->where('status', 1)
-                ->first();
-
-            if ($activeSubscription) {
-                throw ValidationException::withMessages([
-                    'client_id' => ['The client already has an active subscription.'],
-                ]);
-            }
-
-            $clientName = User::query()->find($subscription->client_id)->name;
-            $type = $subscription->type;
-            $paidAmount = $subscription->paid_amount;
+            $clientName = User::query()->find($subscription->client_id)->name ;
+            $type = $subscription->type ?? 'no package found';
+            $paidAmount = $subscription->paid_amount ?? 0;
 
             $log = "Subscription created: client name set to {$clientName}, type set to {$type}, paid amount set to {$paidAmount}";
 

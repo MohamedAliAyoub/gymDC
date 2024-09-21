@@ -216,6 +216,9 @@ class SubscriptionController extends Controller
 
         $validatedData = $request->validated();
         $validatedData['team_leader_id'] = auth()->id();
+        if(!$request->has('status')){
+            $validatedData['status'] = SubscriptionStatusEnum::NotStarted->value;
+        }
         $subscription = Subscription::query()->create($validatedData);
 
         return response()->json(SubscriptionResource::make(
