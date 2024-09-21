@@ -26,6 +26,7 @@ class SubscriptionUpdateRequest extends FormRequest
             'freeze_duration' => 'nullable|integer',
             'paid_at' => 'nullable|date',
             'status' => 'nullable|integer',
+            'whats_group_link' => 'nullable|url',
         ];
     }
 }

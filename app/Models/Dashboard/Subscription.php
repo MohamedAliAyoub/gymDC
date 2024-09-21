@@ -35,6 +35,7 @@ class Subscription extends Model
         'freeze_duration',
         'paid_at',
         'status',
+        'whats_group_link'
     ];
 
     /**
