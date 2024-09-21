@@ -24,6 +24,8 @@ class FullEsxercisePlanRequest extends FormRequest
         return [
             'weekly_plan_id' => 'nullable|integer',
             'weekly_plan_name' => 'required|string',
+            'note' => 'nullable|string',
+            'is_work' => 'nullable|boolean',
             'plans' => 'required|array',
             'plans.*.id' => 'nullable|integer',
             'plans.*.name' => 'required|string',

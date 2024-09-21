@@ -9,18 +9,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class WeeklyPlan extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'status'];
+
+    protected $fillable = ['name', 'status', 'client_id', 'is_work' , 'note'];
+
 
     protected $appends = ['is_work'];
+    protected $casts = [
+        'status' => 'boolean',
+        'is_work' => 'boolean',
+    ];
+
 
     public function planExercises(): HasMany
     {
-        return $this->hasMany(PlanExercise::class , 'weekly_plan_id' , 'id');
+        return $this->hasMany(PlanExercise::class, 'weekly_plan_id', 'id');
     }
 
     public function userPlanExercises(): HasMany
     {
-        return $this->hasMany(UserPlanExercise::class , 'plan_id' , 'id');
+        return $this->hasMany(UserPlanExercise::class, 'plan_id', 'id');
     }
 
 
@@ -32,15 +39,10 @@ class WeeklyPlan extends Model
         });
     }
 
-  public function userPlanExercise(): HasMany
-  {
-    return $this->hasMany(UserPlanExercise::class , 'weekly_plan_id' , 'id');
-  }
+    public function userPlanExercise(): HasMany
+    {
+        return $this->hasMany(UserPlanExercise::class, 'weekly_plan_id', 'id');
+    }
 
-public function getIsWorkAttribute(): bool
-{
-    return $this->userPlanExercise->contains(function ($userPlanExercise) {
-        return $userPlanExercise->is_work;
-    });
-}
+
 }

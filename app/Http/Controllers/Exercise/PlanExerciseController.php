@@ -331,10 +331,21 @@ class PlanExerciseController extends Controller
         $weeklyPlan = WeeklyPlan::find($request->weekly_plan_id);
 
         if (!$weeklyPlan) {
-            $weeklyPlan = WeeklyPlan::create(['name' => $request->weekly_plan_name]);
+            $weeklyPlan = WeeklyPlan::create([
+                'name' => $request->weekly_plan_name,
+                'client_id' => $request->user_ids,
+                'note' => $request->note
+            ]);
         } else {
-            $weeklyPlan->update(['name' => $request->weekly_plan_name]);
+            $weeklyPlan->update([
+                'name' => $request->weekly_plan_name,
+                'client_id' => $request->user_ids,
+                'note' => $request->note
+            ]);
         }
+
+        if($request->is_work == 1)
+            $this->activatePlan($weeklyPlan->id , $request->user_ids);
 
 
         foreach ($request->plans as $planData) {
@@ -427,10 +438,11 @@ class PlanExerciseController extends Controller
             $this->assignPlanToUsers($requestData);
         }
 
+
         return response()->json([
             'status' => 'success',
             'message' => 'Exercise plan created or updated successfully',
-            'plan' => WeeklyPlanExerciseResource::make($weeklyPlan),
+            'plan' => WeeklyPlanExerciseResource::make($weeklyPlan->refresh()),
         ]);
     }
 
@@ -480,6 +492,15 @@ class PlanExerciseController extends Controller
             'message' => 'Plan assigned to users successfully',
             'userPlans' => $userPlans,
         ]);
+    }
+
+    private function activatePlan($id , $user_id)
+    {
+        WeeklyPlan::query()
+            ->where('id', '!=', $id)
+            ->where('client_id', $user_id)
+            ->update(['is_work' => false]);
+        WeeklyPlan::query()->where('id', $id)->update(['is_work' => true]);
     }
 
 }
