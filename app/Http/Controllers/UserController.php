@@ -283,4 +283,34 @@ class UserController extends Controller
         return User::query()->whereIn('type', $type)->count();
     }
 
+    public function getAllClients(): JsonResponse
+    {
+        $clients = User::query()
+            ->where('type', 8) // client
+            ->whereHas('subscriptions', function ($query) {
+                $query->where('nutrition_coach_id', auth()->id());
+            })
+            ->when(request('firstPlanNeeded'), function ($query) {
+                $query->firstPlanNeeded();
+            })->when(request('updateNeeded'), function ($query) {
+                $query->updateNeeded();
+            })->when(request('allReadyHasPlan'), function ($query) {
+                $query->allReadyHasPlan();
+            })->when(request('search'), function ($query) {
+                $query->search(request('search'));
+            })->paginate(10);
+
+
+        $query = User::query()
+            ->where('type', 8) // client
+            ->whereHas('subscriptions');
+        $clientCount = [
+            'allUsersCount' => $query->count(),
+            'firstPlanNeededCount' => $query->firstPlanNeeded()->count(),
+            'updateNeededCount' => $query->updateNeeded()->count(),
+            'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
+        ];
+        return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientCount);
+    }
+
 }

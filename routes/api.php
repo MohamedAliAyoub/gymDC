@@ -264,7 +264,9 @@ Route::middleware('auth:api')->group(function () {
             Route::get('get-staff-types' , [UserController::class , 'getTypes']);
             Route::get('get-users-statstics' , [UserController::class , 'getUsersStatistics']);
             Route::get('get-admin-statstics' , [UserController::class , 'getAdminStatistics']);
-               });
+            Route::get('get-all-clients' , [UserController::class , 'getAllClients']);
+
+        });
         Route::group(['prefix' => 'user-subscriptions'], function () {
             Route::post('/', [UserSubscriptionController::class, 'store']);
         });
