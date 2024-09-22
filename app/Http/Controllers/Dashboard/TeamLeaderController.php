@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\ClientResource;
+use App\Http\Resources\Dashboard\MessagesResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -57,5 +58,23 @@ class TeamLeaderController extends Controller
             'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
         ];
       return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientCount);
+    }
+
+    public function getUsersToMessages(): JsonResponse
+    {
+        $clients = User::query()
+            ->select('id', 'name')
+            ->whereHas('subscriptions', function ($query) {
+                $teamLeaderId = auth()->id();
+                $coachIds = User::where('team_leader_id', $teamLeaderId)->pluck('id')->toArray();
+                $query->whereIn('workout_coach_id', $coachIds);
+            })
+            ->where('type', 8)
+            ->get();
+
+        return response()->json([
+            'data' => MessagesResource::collection($clients),
+            'message' => 'Clients retrieved successfully'
+        ]);
     }
 }

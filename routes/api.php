@@ -247,15 +247,24 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/get-all-client-check-in-forms', [FirstCheckInFormController::class, 'getAllClientCheckInForms']);
         Route::group(['prefix' => 'sales'], function () {
             Route::get('/', [SalesController::class, 'index']);
+            Route::get('/get-users-to-messages', [SalesController::class, 'getUsersToMessages']);
+
         });
         Route::group(['prefix' => 'doctors'], function () {
             Route::get('/', [DoctorController::class, 'index']);
+            Route::get('/get-users-to-messages', [DoctorController::class, 'getUsersToMessages']);
+
         });
         Route::group(['prefix' => 'coaches'], function () {
             Route::get('/', [CoachController::class, 'index']);
+            Route::get('/get-users-to-messages', [CoachController::class, 'getUsersToMessages']);
+
+
         });
         Route::group(['prefix' => 'team-leaders'], function () {
             Route::get('/', [TeamLeaderController::class, 'index']);
+            Route::get('/get-users-to-messages', [TeamLeaderController::class, 'getUsersToMessages']);
+
         });
 
         Route::group(['prefix' => 'admin'], function () {
@@ -265,6 +274,7 @@ Route::middleware('auth:api')->group(function () {
             Route::get('get-users-statstics' , [UserController::class , 'getUsersStatistics']);
             Route::get('get-admin-statstics' , [UserController::class , 'getAdminStatistics']);
             Route::get('get-all-clients' , [UserController::class , 'getAllClients']);
+            Route::get('/get-users-to-messages', [UserController::class, 'getUsersToMessages']);
 
         });
         Route::group(['prefix' => 'user-subscriptions'], function () {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\ClientResource;
+use App\Http\Resources\Dashboard\MessagesResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -43,6 +44,19 @@ class SalesController extends Controller
         ];
         return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientcount);
 
+    }
+
+    public function getUsersToMessages(): JsonResponse
+    {
+        $clients = User::query()
+            ->select('id', 'name')
+            ->where('type', 8)
+            ->get();
+
+        return response()->json([
+            'data' => MessagesResource::collection($clients),
+            'message' => 'Clients retrieved successfully'
+        ]);
     }
 
 
