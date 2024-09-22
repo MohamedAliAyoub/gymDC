@@ -565,6 +565,7 @@ class PlanController extends Controller
             'status' => 'success',
             'message' => 'plans retrieved successfully',
             'plan' => PlanResource::collection($plans) ?? [],
+            'count' => $plans->count(),
         ]);
     }
 
