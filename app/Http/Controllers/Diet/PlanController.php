@@ -105,7 +105,7 @@ class PlanController extends Controller
             return new PlanResource($item);
         });
 
-       return $this->paginateResponse($plans, 'Plans retrieved successfully');
+        return $this->paginateResponse($plans, 'Plans retrieved successfully');
     }
 
     /**
@@ -500,7 +500,7 @@ class PlanController extends Controller
                 'plan_id' => $plan->id,
                 'is_work' => $request->is_work ?? false,
             ]));
-            $plan_with_details = Plan::query()->with('userPlan' )->findOrFail($plan->id);
+            $plan_with_details = Plan::query()->with('userPlan')->findOrFail($plan->id);
         } else {
             $plan_with_details = $plan;
         }
@@ -546,12 +546,6 @@ class PlanController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        if ($userPlans->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No plans founded',
-            ], 404);
-        }
 
         $userPlans->load(['plan.meals.items.standard.standardType']);
 
@@ -570,9 +564,8 @@ class PlanController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'plans retrieved successfully',
-            'plan' => PlanResource::collection($plans),
+            'plan' => PlanResource::collection($plans) ?? [],
         ]);
-        return $this->paginateResponse(PlanResource::collection($plans), 'Plans retrieved successfully');
     }
 
     public function duplicatePlan($id): JsonResponse
