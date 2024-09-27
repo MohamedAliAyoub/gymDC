@@ -187,6 +187,12 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(UserDetails::class);
     }
 
+    public function getLatestUserDetails(): HasOne
+    {
+        return $this->hasOne(UserDetails::class)->latest();
+    }
+
+
     public function activeSubscription(): HasOne
     {
         return $this->hasOne(Subscription::class, 'client_id')->where('status', SubscriptionStatusEnum::Active);

@@ -8,13 +8,13 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Http\Requests\SubscriptionUpdateRequest;
 use App\Http\Resources\Dashboard\ClientSubscriptionsResource;
 use App\Http\Resources\Dashboard\SubscriptionResource;
+use App\Http\Resources\Dashboard\SubscriptionUserDetailsResource;
 use App\Models\Dashboard\Subscription;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
-
 
 
     /**
@@ -99,7 +99,6 @@ class SubscriptionController extends Controller
      */
     public function get_client_subscriptions(Request $request): JsonResponse
     {
-        //TODO solve error of client not found
 
         $query = Subscription::query()
             ->where('client_id', $request->id)
@@ -113,56 +112,39 @@ class SubscriptionController extends Controller
 
         $subscriptions = $query->paginate(15);
 
-        if($subscriptions->isEmpty()){
+
+        if ($subscriptions->isEmpty()) {
             return response()->json([
+                'data' => [],
                 'status' => 'error',
                 'message' => 'No subscriptions found for the given client_id',
-            ], 404);
+            ], 200);
         }
 
         $activeSubscription = $query->where('status', 1)
             ->orderByDesc('id')
             ->first();
-        $user = $subscriptions->first()->client;
-        $userDetails = $user?->userDetails?->first();
 
-        $firstSubscription = $subscriptions->first();
 
-        if ($firstSubscription == null) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No subscriptions found for the given client_id',
-            ], 404);
-        }
+        $user =  $subscriptions->first()?->client->with(['getLatestUserDetails'])->first();
 
-        $user = $firstSubscription->client;
-        $userDetails = $user?->userDetails?->first();
 
 
         if ($subscriptions->currentPage() > $subscriptions->lastPage()) {
             return response()->json([
+                'data' => [],
                 'status' => 'error',
                 'message' => 'No more pages available',
-            ], 400);
+            ], 200);
         }
+
         return response()->json([
             'status' => 'success',
             'message' => 'client subscriptions  successfully',
             'count' => $subscriptions->count(),
             'data' => ClientSubscriptionsResource::collection($subscriptions),
-            'active_subscription' => ClientSubscriptionsResource::make($activeSubscription) ?? [],
-            'user_details' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'mobile' => $user->mobile,
-                'image' => $user->image_url,
-                'age' => $userDetails->age ?? null,
-                'weight' => $userDetails->weight ?? null,
-                'height' => $userDetails->height ?? null,
-                'in_body_image' => $userDetails->in_body_url ?? 'No in body image found',
-                'created_at' => $userDetails->created_at->format('Y-m-d')
-            ],
+            'active_subscription' => $activeSubscription != null ? ClientSubscriptionsResource::make($activeSubscription) : "No subscriptions found for the given client_id",
+            'user_details' => new SubscriptionUserDetailsResource($user),
             'pagination' => [
                 'total' => $subscriptions->total(),
                 'per_page' => $subscriptions->perPage(),
@@ -216,7 +198,7 @@ class SubscriptionController extends Controller
 
         $validatedData = $request->validated();
         $validatedData['team_leader_id'] = auth()->id();
-        if(!$request->has('status')){
+        if (!$request->has('status')) {
             $validatedData['status'] = SubscriptionStatusEnum::NotStarted->value;
         }
         $subscription = Subscription::query()->create($validatedData);
@@ -348,7 +330,7 @@ class SubscriptionController extends Controller
         }
 
         $subscription->update([
-            'status' => SubscriptionStatusEnum::Refunded->value ,
+            'status' => SubscriptionStatusEnum::Refunded->value,
             'paid_amount' => 0
         ]);
         return response()->json(['message' => 'Subscription refunded successfully']);
