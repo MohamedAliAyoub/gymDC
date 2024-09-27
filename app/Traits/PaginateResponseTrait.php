@@ -39,7 +39,7 @@ trait PaginateResponseTrait
             'status' => 'success',
             'message' => $message,
             'data' => $data->all(),
-            'count' => $count,
+            'count' => $data->total(),
             'pagination' => $pagination,
         ];
 
