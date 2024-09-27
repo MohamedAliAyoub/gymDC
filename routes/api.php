@@ -277,8 +277,5 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/get-users-to-messages', [UserController::class, 'getUsersToMessages']);
 
         });
-        Route::group(['prefix' => 'user-subscriptions'], function () {
-            Route::post('/', [UserSubscriptionController::class, 'store']);
-        });
     });
 });
