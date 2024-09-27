@@ -13,9 +13,10 @@ trait PaginateResponseTrait
         if ($data instanceof LengthAwarePaginator) {
             if ($data->currentPage() > $data->lastPage()) {
                 return response()->json([
+                    'data' => [],
                     'status' => 'error',
                     'message' => 'No more pages available',
-                ], 400);
+                ], 200);
             }
 
             $pagination = [
@@ -37,7 +38,7 @@ trait PaginateResponseTrait
         $response = [
             'status' => 'success',
             'message' => $message,
-            'data' => $data->items(),
+            'data' => $data->all(),
             'count' => $count,
             'pagination' => $pagination,
         ];

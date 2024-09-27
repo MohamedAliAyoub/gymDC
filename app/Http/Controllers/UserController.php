@@ -160,36 +160,28 @@ class UserController extends Controller
                 UserTypeEnum::Doctor,
                 UserTypeEnum::Sales
             ])->paginate(10);
-        if ($users->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No users found',
-            ], 404);
-        }
 
-        $usersData = $users->map(function ($user) {
-            $plansCount = 0;
-            switch ($user->type) {
-                case UserTypeEnum::Coach:
-                    $plansCount = $user->getWorkoutPlans();
-                    break;
-                case UserTypeEnum::Doctor:
-                    $plansCount = $user->getNutritionPlansCount();
-                    break;
-                case UserTypeEnum::Sales:
-                    $plansCount = $user->getSalePlans();
-                    break;
-            }
-
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'created_at' => $user->created_at,
-                'plansCount' => $plansCount,
-            ];
-        });
-
+        $usersData = new \Illuminate\Pagination\LengthAwarePaginator(
+            $users->map(function ($user) {
+                $plansCount = 0;
+                switch ($user->type) {
+                    case UserTypeEnum::Coach:
+                        $plansCount = $user->getWorkoutPlans();
+                        break;
+                    case UserTypeEnum::Doctor:
+                        $plansCount = $user->getNutritionPlansCount();
+                        break;
+                    case UserTypeEnum::Sales:
+                        $plansCount = $user->getSalePlans();
+                        break;
+                }
+                return array_merge($user->toArray(), ['plans_count' => $plansCount]);
+            }),
+            $users->total(),
+            $users->perPage(),
+            $users->currentPage(),
+            ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath()]
+        );
         return $this->paginateResponse($usersData, 'Users retrieved successfully');
     }
 
@@ -311,7 +303,7 @@ class UserController extends Controller
             'updateNeededCount' => $query->updateNeeded()->count(),
             'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
         ];
-        return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientCount);
+        return $this->paginateResponse($clients, 'Clients retrieved successfully', $clientCount);
     }
 
     public function getUsersToMessages(): JsonResponse

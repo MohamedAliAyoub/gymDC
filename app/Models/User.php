@@ -212,6 +212,11 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(Subscription::class, 'sale_id');
     }
 
+    public function workoutPlans(): HasManyThrough
+    {
+        return $this->hasManyThrough(Plan::class, UserPlan::class, 'user_id', 'id', 'id', 'plan_id');
+    }
+
     public function firstCheckInForm(): HasOne
     {
         return $this->hasOne(FirstCheckInForm::class);
@@ -410,6 +415,6 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function ScopeFilter($query, $filter)
     {
-        return $query->where('type' , $filter);
+        return $query->where('type', $filter);
     }
 }
