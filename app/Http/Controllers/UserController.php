@@ -92,6 +92,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
+            'mobile' => ['nullable','regex:/^(\+?\d{1,4}|\d{1,4})?\s?\d{7,14}$/'],
             'password' => 'required|string',
             'type' => ['required', 'integer', Rule::in(UserTypeEnum::getValues())],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
@@ -107,6 +108,7 @@ class UserController extends Controller
         $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->email,
+            'mobile' => $request->mobile,
             'password' => bcrypt($request->password),
             'type' => $request->type,
             'image' => $path,

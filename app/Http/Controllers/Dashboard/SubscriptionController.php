@@ -100,17 +100,14 @@ class SubscriptionController extends Controller
     public function get_client_subscriptions(Request $request): JsonResponse
     {
 
-        $query = Subscription::query()
+        $subscriptions = Subscription::query()
             ->where('client_id', $request->id)
             ->with(['client' => function ($q) {
                 $q->with('userDetails', function ($q) {
                     $q->latest();
                 });
             }])
-            ->orderByDesc('id');
-
-
-        $subscriptions = $query->paginate(15);
+            ->orderByDesc('id')->get();
 
 
         if ($subscriptions->isEmpty()) {
@@ -121,22 +118,9 @@ class SubscriptionController extends Controller
             ], 200);
         }
 
-        $activeSubscription = $query->where('status', 1)
-            ->orderByDesc('id')
-            ->first();
-
+        $activeSubscription = $subscriptions->where('status', 1)->first() ;
 
         $user =  $subscriptions->first()?->client->with(['getLatestUserDetails'])->first();
-
-
-
-        if ($subscriptions->currentPage() > $subscriptions->lastPage()) {
-            return response()->json([
-                'data' => [],
-                'status' => 'error',
-                'message' => 'No more pages available',
-            ], 200);
-        }
 
         return response()->json([
             'status' => 'success',
@@ -144,15 +128,7 @@ class SubscriptionController extends Controller
             'count' => $subscriptions->count(),
             'data' => ClientSubscriptionsResource::collection($subscriptions),
             'active_subscription' => $activeSubscription != null ? ClientSubscriptionsResource::make($activeSubscription) : "No subscriptions found for the given client_id",
-            'user_details' => new SubscriptionUserDetailsResource($user),
-            'pagination' => [
-                'total' => $subscriptions->total(),
-                'per_page' => $subscriptions->perPage(),
-                'current_page' => $subscriptions->currentPage(),
-                'last_page' => $subscriptions->lastPage(),
-                'from' => $subscriptions->firstItem(),
-                'to' => $subscriptions->lastItem(),
-            ],
+            'user_details' =>  SubscriptionUserDetailsResource::make($user),
         ]);
     }
 
