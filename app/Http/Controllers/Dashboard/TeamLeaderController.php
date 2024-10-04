@@ -28,18 +28,22 @@ class TeamLeaderController extends Controller
             ->whereHas('subscriptions', function ($query) {
                 $teamLeaderId = auth()->id();
                 $coachIds = User::where('team_leader_id', $teamLeaderId)->pluck('id')->toArray();
-                $query->whereIn('workout_coach_id', $coachIds);
+                $query->whereIn('workout_coach_id', $coachIds)
+                    ->orWhereIn('nutrition_coach_id', $coachIds);
             })
-            ->when(request('firstPlanNeeded'), function ($query) {
-                $query->firstPlanNeeded();
+            ->when(request('needNutrition'), function ($query) {
+                $query->needNutrition();
             })
-            ->when(request('updateNeeded'), function ($query) {
-                $query->updateNeeded();
+            ->when(request('needWorkout'), function ($query) {
+                $query->needWorkout();
             })
             ->when(request('allReadyHasPlan'), function ($query) {
                 $query->allReadyHasPlan();
-            })
-            ->when(request('search'), function ($query) {
+            })->when(request('nutrition_unassigned'), function ($query) {
+                $query->needNutrition();
+            })->when(request('workout_unassigned'), function ($query) {
+                $query->needWorkout();
+            })->when(request('search'), function ($query) {
                 $query->search(request('search'));
             })->paginate(10);
 
@@ -48,7 +52,8 @@ class TeamLeaderController extends Controller
             ->whereHas('subscriptions', function ($query) {
                 $teamLeaderId = auth()->id();
                 $coachIds = User::where('team_leader_id', $teamLeaderId)->pluck('id')->toArray();
-                $query->whereIn('workout_coach_id', $coachIds);
+                $query->whereIn('workout_coach_id', $coachIds)
+                    ->orWhereIn('nutrition_coach_id', $coachIds);
             });
 
         $clientCount = [
@@ -57,7 +62,21 @@ class TeamLeaderController extends Controller
             'updateNeededCount' => $query->updateNeeded()->count(),
             'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
         ];
-      return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientCount);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Clients retrieved successfully',
+            'data' => ClientResource::collection($clients),
+            'count' => $clients->total(),
+            'pagination' => [
+                'total' => $clients->total(),
+                'per_page' => $clients->perPage(),
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'from' => $clients->firstItem(),
+                'to' => $clients->lastItem(),
+            ],
+            'clientCount' => $clientCount,
+        ]);
     }
 
     public function getUsersToMessages(): JsonResponse

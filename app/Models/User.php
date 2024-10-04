@@ -152,7 +152,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasManyThrough(WeeklyPlan::class, UserPlanExercise::class, 'user_id', 'id', 'id', 'weekly_plan_id');
     }
 
-    public function getFormStatusAttribute($value): FormStatusEnum
+    public function getFormStatusAttribute($value): ?FormStatusEnum
     {
         return FormStatusEnum::fromValue($value);
     }
@@ -244,13 +244,38 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
             ->where('type', UserTypeEnum::Coach);
     }
 
-    public function scopeFirstPlanNeeded($query)
+    public function scopeFirstPlanNeeded()
     {
-        return $query->whereHas('firstCheckInForm')
+        return $this->whereHas('firstCheckInForm')
             ->whereDoesntHave('checkIn')
             ->whereDoesntHave('checkInWorkout');
     }
 
+    public function scopeNeedNutrition()
+    {
+        return $this->whereHas('subscriptions' , function ($query) {
+            $query->where('nutrition_coach_id' , null);
+        });
+    }
+
+    public function scopeNeedWorkout()
+    {
+        return $this->whereHas('subscriptions', function ($query) {
+            $query->where('workout_coach_id' , null);
+        });
+    }
+
+    public function  getFormStatusValueAttribute($query): string
+    {
+        if ($this->scopeFirstPlanNeeded($query)->count() > 0)
+            return "First Plan Needed";
+        elseif ($this->scopeNeedNutrition()->count() > 0)
+            return "Update Needed";
+        elseif ($this->scopeNeedWorkout()->count() > 0)
+            return "Update Needed";
+        else
+            return "All Ready Has Plan";
+    }
     public function scopeUpdateNeeded($query)
     {
         return $query->whereHas('checkIn')

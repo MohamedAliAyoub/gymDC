@@ -6,17 +6,20 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClientResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
+        $userDetails = $this->userDetails()->latest()->first();
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'mobile' => $this->mobile,
-            'forms_updated_at' => $this->activeSubscription?->updated_at ?? $this->activeSubscription?->ctreated_at,
-            'packages' => $this->userDetails()->latest()->first()?->packages,
-            'form_status' => $this->userDetails()->latest()->first()?->form_status,
             'created_at' => $this->created_at->format('Y-m-d'),
+            'forms_updated_at' => $this->activeSubscription?->updated_at->format('Y-m-d') ?? $this->activeSubscription?->created_at->format('Y-m-d'),
+            'packages' => $userDetails?->package_value,
+            'form_status' => $this->form_status_value,
+            'subscription' => $userDetails?->subscription_value,
         ];
     }
 }

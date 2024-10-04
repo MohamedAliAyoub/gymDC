@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\FormStatusEnum;
+use App\Enums\PackagesEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -91,4 +93,16 @@ class UserDetails extends Model
     {
         return $this->in_body_image ? Storage::disk('public')->url($this->in_body_image) : null;
     }
+
+    public function getPackageValueAttribute(): ?string
+    {
+        return PackagesEnum::fromValue($this->packages)?->name;
+    }
+
+    public function getSubscriptionValueAttribute(): ?string
+    {
+        return FormStatusEnum::fromValue($this->form_status)?->name;
+    }
+
+
 }
