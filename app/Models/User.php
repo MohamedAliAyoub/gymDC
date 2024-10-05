@@ -254,14 +254,16 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     public function scopeNeedNutrition()
     {
         return $this->whereHas('subscriptions' , function ($query) {
-            $query->where('nutrition_coach_id' , null);
+            $query->where('nutrition_coach_id' , null)
+            ->orderBy('id' , 'desc');
         });
     }
 
     public function scopeNeedWorkout()
     {
         return $this->whereHas('subscriptions', function ($query) {
-            $query->where('workout_coach_id' , null);
+            $query->where('workout_coach_id' , null)
+                ->orderBy('id' , 'desc');
         });
     }
 

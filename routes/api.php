@@ -263,6 +263,7 @@ Route::middleware('auth:api')->group(function () {
         });
         Route::group(['prefix' => 'team-leaders'], function () {
             Route::get('/', [TeamLeaderController::class, 'index']);
+            Route::get('/get-clients-as-coach', [TeamLeaderController::class, 'getClientsCoach']);
             Route::get('/get-users-to-messages', [TeamLeaderController::class, 'getUsersToMessages']);
 
         });
