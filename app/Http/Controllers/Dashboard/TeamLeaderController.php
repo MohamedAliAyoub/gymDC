@@ -26,12 +26,6 @@ class TeamLeaderController extends Controller
 
         $clients = User::query()
             ->where('type', 8) // client
-            ->when(request('needNutrition'), function ($query) {
-                $query->needNutrition();
-            })
-            ->when(request('needWorkout'), function ($query) {
-                $query->needWorkout();
-            })
             ->when(request('allReadyHasPlan'), function ($query) {
                 $query->allReadyHasPlan();
             })->when(request('nutrition_unassigned'), function ($query) {
@@ -41,6 +35,7 @@ class TeamLeaderController extends Controller
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
             })->paginate(10);
+
 
         $query = User::query()
             ->where('type', 8); // clients
