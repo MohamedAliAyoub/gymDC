@@ -189,6 +189,14 @@ class UserController extends Controller
             'coaches' => $coachesCount,
             'doctors' => $doctorsCount,
             'sales' => $salesCount,
+            'pagination' => [
+                'total' => $users->total(),
+                'per_page' => $users->perPage(),
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'from' => $users->firstItem(),
+                'to' => $users->lastItem(),
+            ]
         ]);
     }
 
