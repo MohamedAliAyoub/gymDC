@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserTypeEnum;
+use App\Http\Resources\Dashboard\ClientResource;
 use App\Http\Resources\Dashboard\MessagesResource;
 use App\Models\Dashboard\Subscription;
 use App\Models\Exercise\UserPlanExercise;
@@ -305,7 +306,20 @@ class UserController extends Controller
             'updateNeededCount' => $query->updateNeeded()->count(),
             'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
         ];
-        return $this->paginateResponse($clients, 'Clients retrieved successfully', $clientCount);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Clients retrieved successfully',
+            'data' => ClientResource::collection($clients),
+            'clientCount' => $clientCount,
+            'pagination' => [
+                'total' => $clients->total(),
+                'per_page' => $clients->perPage(),
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'from' => $clients->firstItem(),
+                'to' => $clients->lastItem(),
+            ]
+        ]);
     }
 
     public function getUsersToMessages(): JsonResponse
