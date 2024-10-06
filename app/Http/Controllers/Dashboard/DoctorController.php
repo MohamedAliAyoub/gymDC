@@ -47,7 +47,20 @@ class DoctorController extends Controller
                 'updateNeededCount' => $query->updateNeeded()->count(),
                 'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
             ];
-        return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientCount);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Clients retrieved successfully',
+            'data' => ClientResource::collection($clients),
+            'clientCount' => $clientCount,
+            'pagination' => [
+                'total' => $clients->total(),
+                'per_page' => $clients->perPage(),
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'from' => $clients->firstItem(),
+                'to' => $clients->lastItem(),
+            ]
+        ]);
     }
 
     public function getUsersToMessages(): JsonResponse
