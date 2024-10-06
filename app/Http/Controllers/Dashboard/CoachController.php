@@ -21,18 +21,16 @@ class CoachController extends Controller
      */
     public function index(): JsonResponse
     {
-
         $clients = User::query()
             ->where('type', 8) // client
             ->whereHas('subscriptions', function ($query) {
                 $query->where('workout_coach_id', auth()->id());
-            })
-            ->when(request('firstPlanNeeded'), function ($query) {
+            })->when(request('firstPlanNeeded'), function ($query) {
                 $query->firstPlanNeeded();
             })->when(request('updateNeeded'), function ($query) {
-                $query->updateNeeded();
+                $query->clone()->updateNeeded();
             })->when(request('allReadyHasPlan'), function ($query) {
-                $query->allReadyHasPlan();
+                $query->clone()->allReadyHasPlan();
             })->when(request('search'), function ($query) {
                 $query->search(request('search'));
             })->paginate(10);
@@ -42,14 +40,36 @@ class CoachController extends Controller
             ->whereHas('subscriptions', function ($query) {
                 $query->where('workout_coach_id', auth()->id());
             });
-            $clientCount = [
-                'allUsersCount' => $query->count(),
-                'firstPlanNeededCount' => $query->firstPlanNeeded()->count(),
-                'updateNeededCount' => $query->updateNeeded()->count(),
-                'allReadyHasPlanCount' => $query->allReadyHasPlan()->count(),
-            ];
-        return $this->paginateResponse($clients, 'Clients retrieved successfully' , $clientCount);
+
+
+        $firstPlanNeeded = User::query()
+            ->where('type', 8) // client
+            ->whereHas('subscriptions', function ($query) {
+                $query->where('workout_coach_id', auth()->id());
+            })->firstPlanNeeded()->get();
+        $clientCount = [
+            'allUsersCount' => $query->clone()->count(),
+            'firstPlanNeededCount' => $query->clone()->firstPlanNeeded()->count(),
+            'updateNeededCount' => $query->clone()->updateNeeded()->count(),
+            'allReadyHasPlanCount' => $query->clone()->allReadyHasPlan()->count(),
+        ];
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Clients retrieved successfully',
+            'data' => ClientResource::collection($clients),
+            'clientCount' => $clientCount,
+            'firstPlanNeeded' => $firstPlanNeeded,
+            'pagination' => [
+                'total' => $clients->total(),
+                'per_page' => $clients->perPage(),
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'from' => $clients->firstItem(),
+                'to' => $clients->lastItem(),
+            ],
+        ]);
     }
+
 
     public function getUsersToMessages(): JsonResponse
     {
