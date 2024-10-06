@@ -283,9 +283,7 @@ class UserController extends Controller
     {
         $clients = User::query()
             ->where('type', 8) // client
-            ->whereHas('subscriptions', function ($query) {
-                $query->where('nutrition_coach_id', auth()->id());
-            })
+            ->whereHas('subscriptions')
             ->when(request('firstPlanNeeded'), function ($query) {
                 $query->firstPlanNeeded();
             })->when(request('updateNeeded'), function ($query) {
