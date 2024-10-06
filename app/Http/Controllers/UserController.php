@@ -93,7 +93,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'mobile' => ['nullable','regex:/^(\+?\d{1,4}|\d{1,4})?\s?\d{7,14}$/'],
+            'mobile' => ['nullable', 'regex:/^(\+?\d{1,4}|\d{1,4})?\s?\d{7,14}$/'],
             'password' => 'required|string',
             'type' => ['required', 'integer', Rule::in(UserTypeEnum::getValues())],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
@@ -163,29 +163,33 @@ class UserController extends Controller
                 UserTypeEnum::Doctor,
                 UserTypeEnum::Sales
             ])->paginate(10);
+        $userCount = User::query()->whereIn('type', [
+            UserTypeEnum::Coach,
+            UserTypeEnum::Doctor,
+            UserTypeEnum::Sales
+        ])->count();
+        $coachesCount = User::query()->where('type', UserTypeEnum::Coach)->count();
+        $doctorsCount = User::query()->where('type', UserTypeEnum::Doctor)->count();
+        $salesCount = User::query()->where('type', UserTypeEnum::Sales)->count();
 
-        $usersData = new \Illuminate\Pagination\LengthAwarePaginator(
-            $users->map(function ($user) {
-                $plansCount = 0;
-                switch ($user->type) {
-                    case UserTypeEnum::Coach:
-                        $plansCount = $user->getWorkoutPlans();
-                        break;
-                    case UserTypeEnum::Doctor:
-                        $plansCount = $user->getNutritionPlansCount();
-                        break;
-                    case UserTypeEnum::Sales:
-                        $plansCount = $user->getSalePlans();
-                        break;
-                }
-                return array_merge($user->toArray(), ['plans_count' => $plansCount]);
-            }),
-            $users->total(),
-            $users->perPage(),
-            $users->currentPage(),
-            ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath()]
-        );
-        return $this->paginateResponse($usersData, 'Users retrieved successfully');
+        $usersData = $users->map(function ($user) {
+            $plansCount = match ($user->type) {
+                UserTypeEnum::Coach => $user->getWorkoutPlans(),
+                UserTypeEnum::Doctor => $user->getNutritionPlansCount(),
+                UserTypeEnum::Sales => $user->getSalePlans(),
+                default => 0,
+            };
+            return array_merge($user->toArray(), ['plans_count' => $plansCount]);
+        });
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Users retrieved successfully',
+            'data' => $usersData,
+            'all' => $userCount,
+            'coaches' => $coachesCount,
+            'doctors' => $doctorsCount,
+            'sales' => $salesCount,
+        ]);
     }
 
     public function getAdminStatistics(): JsonResponse
