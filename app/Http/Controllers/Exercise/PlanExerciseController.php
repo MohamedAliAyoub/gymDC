@@ -344,8 +344,8 @@ class PlanExerciseController extends Controller
             ]);
         }
 
-        if($request->is_work == 1)
-            $this->activatePlan($weeklyPlan->id , $request->user_ids);
+        if ($request->is_work == 1)
+            $this->activatePlan($weeklyPlan->id, $request->user_ids);
 
 
         foreach ($request->plans as $planData) {
@@ -399,26 +399,28 @@ class PlanExerciseController extends Controller
                         ['content' => $exerciseData['note'], 'user_id' => auth()->id()]
                     );
                 }
-                foreach ($exerciseData['exercise_details'] as $detail) {
-                    $exerciseDetails = ExerciseDetails::query()->find($detail['id'] ?? null);
+                if (isset($exerciseData['exercise_details']) ){
+                    foreach ($exerciseData['exercise_details'] as $detail) {
+                        $exerciseDetails = ExerciseDetails::query()->find($detail['id'] ?? null);
 
-                    if (!$exerciseDetails) {
-                        $exerciseDetails = ExerciseDetails::create([
-                            'name' => $detail['name'],
-                            'previous' => $detail['previous'],
-                            'rir' => $detail['rir'],
-                            'tempo' => $detail['tempo'],
-                            'rest' => $detail['rest'],
-                            'kg' => $detail['kg'],
-                            'sets' => $detail['sets'],
-                            'reps' => $detail['reps'],
-                            'status' => $detail['status'],
-                            'exercise_id' => $exercise->id,
-                            'duration' => $detail['duration'],
-                        ]);
-                    } else {
+                        if (!$exerciseDetails) {
+                            $exerciseDetails = ExerciseDetails::create([
+                                'name' => $detail['name'],
+                                'previous' => $detail['previous'],
+                                'rir' => $detail['rir'],
+                                'tempo' => $detail['tempo'],
+                                'rest' => $detail['rest'],
+                                'kg' => $detail['kg'],
+                                'sets' => $detail['sets'],
+                                'reps' => $detail['reps'],
+                                'status' => $detail['status'],
+                                'exercise_id' => $exercise->id,
+                                'duration' => $detail['duration'],
+                            ]);
+                        } else {
 
-                        $exerciseDetails->update($detail);
+                            $exerciseDetails->update($detail);
+                        }
                     }
                 }
             }
@@ -494,7 +496,7 @@ class PlanExerciseController extends Controller
         ]);
     }
 
-    private function activatePlan($id , $user_id)
+    private function activatePlan($id, $user_id)
     {
         WeeklyPlan::query()
             ->where('id', '!=', $id)
