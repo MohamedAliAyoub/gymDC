@@ -29,6 +29,10 @@ class Meal extends Model
         'pivot'
     ];
 
+    protected $appends = [
+        'is_eaten'
+    ];
+
     /**
      * Get the plan that the meal belongs to.
      */
@@ -42,7 +46,7 @@ class Meal extends Model
      */
     public function items(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Item::class , 'meal_items' );
+        return $this->belongsToMany(Item::class, 'meal_items');
     }
 
     /**
@@ -53,13 +57,22 @@ class Meal extends Model
         return $this->hasOne(Note::class);
     }
 
-    public static function hasEatenMealToday($mealId) : bool
+    public static function hasEatenMealToday($mealId): bool
     {
         return UserMeal::query()
             ->where('user_id', auth()->id())
             ->where('meal_id', $mealId)
             ->whereDate('created_at', now()->toDateString())
             ->first()->is_eaten ?? false;
+    }
+    public function getIsEatenDoneAttribute(): bool
+    {
+        return self::hasEatenMealToday($this->id);
+    }
+
+    public function getCountDoneCaloriesAttribute(): int
+    {
+        return $this->is_eaten_done ? $this->calories : 0;
     }
 
 }

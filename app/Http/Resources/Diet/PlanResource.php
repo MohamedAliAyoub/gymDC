@@ -27,6 +27,11 @@ class PlanResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $meals = MealResource::collection($this->meals);
+
+        $count_done_calories = $meals->sum(function ($meal) {
+            return $meal->count_done_calories;
+        });
         if ($this->resource) {
             return [
                 'id' => $this->id,
@@ -38,6 +43,7 @@ class PlanResource extends JsonResource
                 'total_fat' => $this->total_fat,
                 'is_work' => $this->userPlan->is_work ?? false,
                 'notes' => $this->note?->content,
+                'count_done_calories' => $count_done_calories,
                 'meals' => MealResource::collection($this->meals),
             ];
         }

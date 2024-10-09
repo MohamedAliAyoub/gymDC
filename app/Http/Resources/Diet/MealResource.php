@@ -30,6 +30,8 @@ class MealResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -39,8 +41,9 @@ class MealResource extends JsonResource
             'protein' => $this->protein,
             'items_count' => $this->items->count(),
             'note' => $this->note->content ?? null,
+            'is_eaten' => $this->is_eaten_done,
+            'count_done_calories' => $this->count_done_calories,
             'items' => ItemResource::collection($this->items),
-            'is_eaten' => Meal::hasEatenMealToday($this->id)  ,
         ];
     }
 }
