@@ -74,7 +74,9 @@ class AuthController extends Controller
         $token = Auth::guard('api')->attempt($credentials);
 
         // Get the authenticated user
-        $user = Auth::guard('api')->user();
+       $user = Auth::guard('api')->user();
+
+       $user->load('firstCheckInForm');
 
         // Return success response with token and user data
         return response()->json([

@@ -225,7 +225,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function firstCheckInForm(): HasOne
     {
-        return $this->hasOne(FirstCheckInForm::class);
+        return $this->hasOne(FirstCheckInForm::class)->orderBy('id', 'desc');
     }
 
     public function checkIn(): HasMany

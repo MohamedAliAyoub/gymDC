@@ -13,16 +13,17 @@ class AuthResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request ): array
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'image' =>  $this->image_url,
+            'image' => $this->image_url,
             'mobile' => $this->mobile,
             'type' => $this->type,
-            'created_at' =>  $this->created_at,
+            'main_mails_number' => $this->firstCheckInForm ? $this->firstCheckInForm->main_mails_number : null,
+            'created_at' => $this->created_at,
 
         ];
     }
