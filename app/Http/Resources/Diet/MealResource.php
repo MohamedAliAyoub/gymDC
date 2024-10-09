@@ -42,7 +42,7 @@ class MealResource extends JsonResource
             'items_count' => $this->items->count(),
             'note' => $this->note->content ?? null,
             'is_eaten' => $this->is_eaten_done,
-            'count_done_calories' => $this->count_done_calories,
+            //'count_done_calories' => $this->count_done_calories,
             'items' => ItemResource::collection($this->items),
         ];
     }
