@@ -23,6 +23,7 @@ class AuthResource extends JsonResource
             'mobile' => $this->mobile,
             'type' => $this->type,
             'main_mails_number' => $this->firstCheckInForm ? $this->firstCheckInForm->main_mails_number : null,
+            'days_number_for_exercise' => $this->firstCheckInForm ? $this->firstCheckInForm->days_number_for_exercise : null,
             'created_at' => $this->created_at,
 
         ];
